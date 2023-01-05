@@ -1,5 +1,5 @@
 function [oscillations] = getOscillations(experiment, signal, fs, freq_band, rel_thresholds, ...
-    abs_thresholds, durations, save_data, repeatCalc, results_folder, channel, verbose)
+    abs_thresholds, threshold_artifact, durations, save_data, repeatCalc, results_folder, channel, area, verbose)
 %    by Mattia based on buszaki code:
 %    https://github.com/buzsakilab/buzcode/blob/master/detectors/detectEvents/bz_FindRipples.m
 %    similar to getRipples but includes also an absolute threshold to make
@@ -50,9 +50,34 @@ else
     convolvedSignal = conv(squaredSignal, window, 'same'); clear squaredSignal
     stdev = std(convolvedSignal);
     normSignal = (convolvedSignal - mean(convolvedSignal)) / stdev; 
-    
+  
     % Detect oscillations by thresholding normalized squared signal
     thresholded = normSignal > rel_thresholds(1) | convolvedSignal > abs_thresholds(1);
+    
+    % detect artifact peak by thresholding normSignal & convolvedSignal 
+    artifact = normSignal > threshold_artifact(2) | convolvedSignal > threshold_artifact(1); 
+    
+    % generate artifact-related outputs
+    start_a = find(diff(artifact) > 0); 
+    stop_a = find(diff(artifact) < 0); 
+    
+    % this correct special cases when signal starts and/or stops with an artifact period 
+    if length(stop_a) > length(start_a) % signal starts with an artifact period 
+        start_a = [1, start_a]; 
+    elseif length(stop_a) < length(start_a) % signal stops with an artifact 
+        stop_a = [stop_a, length(thresholded)]; 
+    elseif start_a(1) > stop_a(1) 
+        start_a = [1, start_a]; 
+        stop_a = [stop_a, length(thresholded)]; 
+    end 
+    
+    % create output variables of artifact periods 
+    timestamps_artifact = [start_a; stop_a]';
+    len_artifact = sum(artifact); 
+    
+    % delete artifact period 
+    thresholded = thresholded - artifact; 
+    
     start = find(diff(thresholded) > 0);
     stop = find(diff(thresholded) < 0);
     
@@ -147,12 +172,13 @@ else
         if verbose > 0
             disp(['After duration test: ' num2str(size(oscillations, 1)) ' events.']);
         end
-        
-        %% put into a structure
+                 
+        % put into a structure
         
         osc = oscillations; clear oscillations
         
         oscillations.timestamps = osc(:, [1 3]);
+        oscillations.timestamps_artifact = timestamps_artifact; 
         oscillations.peaks = osc(:, 2); % peaktimes
         oscillations.peakNormedPower = osc(:, 4); % amplitudes
         oscillations.stdev = stdev;
@@ -162,6 +188,7 @@ else
         oscillations.nnz_abs = nnz(convolvedSignal > abs_thresholds(1)) / length(signal);
         oscillations.fs = fs;
         oscillations.len_rec = length(signal);
+        oscillations.len_artifact = len_artifact; 
     else
         oscillations.timestamps = NaN;
         oscillations.peaks = NaN; % peaktimes
@@ -172,9 +199,22 @@ else
         oscillations.nnz_norm = NaN;
         oscillations.nnz_abs = NaN;
     end
+%     
+%     %extra code to get power of non-oscillatory periods 
+%     peakNormPowerNonOsc = [];
+%     peakAbsPowerNonOsc = [];
+%     for i = 1 : size(oscillations.timestamps, 1) - 1
+%         nonoscmax_rel = max(normSignal([oscillations.timestamps(i, end) : oscillations.timestamps(i+1, 1)]));
+%         nonoscmax_abs = max(convolvedSignal([oscillations.timestamps(i, end) : oscillations.timestamps(i+1, 1)]));
+%         peakNormPowerNonOsc = [peakNormPowerNonOsc ; nonoscmax_rel];
+%         peakAbsPowerNonOsc = [peakAbsPowerNonOsc ; nonoscmax_abs];
+%     end
+%     oscillations.NonOscPowerNorm = peakNormPowerNonOsc; 
+%     oscillations.NonOscPowerAbs = peakAbsPowerNonOsc; 
+%     %end of extra code 
     
     if save_data == 1
-        save(strcat(strcat(results_folder, experiment.animal_ID)), 'oscillations')
+        save(strcat(strcat(results_folder, experiment.animal_ID, '_', area)), 'oscillations')
     else
         if verbose > 0
             disp('Data not saved!')

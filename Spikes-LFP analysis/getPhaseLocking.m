@@ -11,6 +11,6 @@ function [spikePhase] = getPhaseLocking(signalFilt, spikeIndx)
 %       spike_phase: vector containing the LFP phase at each spike
 
 % NOTE: This script can be memory heavy if long signal
-[~, signal_phase] = HilbertTransf(signalFilt);
+[~, signal_phase] = hilbert(signalFilt);
 spikePhase = signal_phase(spikeIndx);
 end

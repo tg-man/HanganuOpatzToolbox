@@ -1,4 +1,4 @@
-function PRM2folder(animal, DATfolder_animal, PRMfolder)
+function PRM2folder(animal, DATfolder_animal, PRMfolder, TH_mode)
 
 if ~ exist(PRMfolder)
     mkdir(PRMfolder)
@@ -19,8 +19,13 @@ str6 = '    n_channels = 16,';
 str7 = '    dtype = ''int16'',';
 str8 = ')';
 str9 = 'spikedetekt = dict(';
-str9bis = '    threshold_strong_std_factor = 6,';
-str10 = '    threshold_weak_std_factor = 4.5,';
+if TH_mode == 1 
+    str9bis = '    threshold_strong_std_factor = 4.5,';
+    str10 = '    threshold_weak_std_factor = 3.5,';
+else 
+    str9bis = '    threshold_strong_std_factor = 6,';
+    str10 = '    threshold_weak_std_factor = 4.5,';
+end 
 str11 = ')';
 str12 = 'klustakwik2 = dict(';
 str13 = '    num_starting_clusters = 100,';

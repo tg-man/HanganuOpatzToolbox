@@ -1,5 +1,5 @@
 function [PSD, PSD_slow, PSD_fast, freqs, freqs_slow, freqs_fast, time_slow, time_fast] = ...
-    getPSD_across_timescales(LFP, fs, freq2analyze, slow_freqs, fast_freqs, folder2save, animal_name, save_data)
+    getPSD_across_timescales(LFP, fs, freq2analyze, slow_freqs, fast_freqs, folder2save, animal_name, area, save_data)
 % from Mattia 06.20
 % compute power spectra:
 % 1. down to very low frequencies using multitapers of different length, 
@@ -23,6 +23,7 @@ function [PSD, PSD_slow, PSD_fast, freqs, freqs_slow, freqs_fast, time_slow, tim
 %           - fast_freqs: single window power, for fast frequencies
 %           - folder2save: where to save stuff
 %           - animal_name: string, for name of saved file
+%           - area: string, brain area analyzed, for name of saved file
 %           - save_data: 1=true, 0=false
 % output:   - PSDstruct with the following fields: 
 %               - PSD: multitaper PSD (channels * freqs)
@@ -84,6 +85,10 @@ window(1) = 1 / fast_freqs(1) * 10;
 window(2) = window(1) / 2;
 [PSD_fast, time_fast, freqs_fast] = mtspecgramc(LFP', window, params);
 
+% extract name of brain area for naming saved file 
+% getname = @(x) inputname(1);
+% name = getname(LFP);
+
 % put everything into a structure
 PSDstruct.PSD = PSD;
 PSDstruct.PSD_fast = PSD_fast;
@@ -94,12 +99,11 @@ PSDstruct.freqs_slow = freqs_slow;
 PSDstruct.time_fast = time_fast;
 PSDstruct.time_slow = time_slow;
 
-
 if save_data == 1
     if ~ exist(folder2save, 'dir')
         mkdir(folder2save)
     end
-    save(strcat(strcat(folder2save, animal_name)), 'PSDstruct')
+    save(strcat(strcat(folder2save, animal_name, '_', area)), 'PSDstruct')
 end
 
 end

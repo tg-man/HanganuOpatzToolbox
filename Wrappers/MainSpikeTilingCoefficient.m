@@ -7,9 +7,10 @@
 % temporal scale at which the coefficient is computed
 
 %% load experiments and set a few variable
-
+clear; 
 klusta = 1;
 experiments = get_experiment_redux(klusta);
+experiments = experiments([45:67]);
 lags = [5, 10, 20, 50, 100, 500]; % single lags for which to compute tiling coeff
 repeat_calc = 0;
 save_data = 1;
@@ -17,8 +18,8 @@ stim_period = 'baseline';
 output_folder = 'YOUR FOLDER HERE'; % where to save
 output_folderTilCum = 'YOUR FOLDER HERE'; % where to save
 output_folderGH = 'YOUR FOLDER HERE'; % where to save
-resultsKlusta = 'YOUR FOLDER HERE'; % folder in which you have SUA files
-output_folder_SM = 'YOUR FOLDER HERE'; % where to save spike matrix
+resultsKlusta = 'Q:\Personal\Tony\Analysis\Results_3Probe_SUAinfo\PFC\'; % folder in which you have SUA files
+output_folder_SM = 'Q:\Personal\Tony\Analysis\Results_3Probe_SpikeMatrix\PFC\'; % where to save spike matrix
 
 % Extract unique animals from the experiment list. animals are the "unit"
 % around which the rest is calculated
@@ -40,5 +41,14 @@ for animal_idx = 1 : length(animals)
         experiments, resultsKlusta, save_data, repeat_calc, output_folder_SM);
     % compute GLOBAL spike-time tiling coefficient
     getSTTC_global(animal_name, spike_matrix, lags, repeat_calc, save_data, output_folder)
-    disp(['animal ', animal_name, ' pairs ', num2str(Tcoeff.num_pairs)])    
+    disp(['animal ', animal_name, ' pairs ', num2str(TcHeyyoeff.num_pairs)])    
 end
+
+
+
+
+
+
+
+
+

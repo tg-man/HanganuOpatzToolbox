@@ -8,8 +8,8 @@ if nargin < 1
     klusta = 0;
 end
 
-Path = 'YOUR EXCEL FILE HERE';
-ExcelSheet = 'Sheet1';
+Path = 'Q:\Personal\Tony\Analysis\ExampleExperimentPlan.xlsx';
+ExcelSheet = 'Pooled';
 xlRange = 'A1:DZ1000';
 [~, ~, InfoandDevMil] = xlsread(Path, ExcelSheet, xlRange); % Import recording summary from excel sheet
 
@@ -28,8 +28,13 @@ xlRange = 'A1:DZ1000';
 [~, idxC_baseline] = find(strcmp(InfoandDevMil, 'baseline'));
 [~, idxC_PL] = find(strcmp(InfoandDevMil, 'PFC_PL'));
 [~, idxC_klusta] = find(strcmp(InfoandDevMil, 'Klusta'));
+[~, idxC_noisy] = find(strcmp(InfoandDevMil, 'noisy ch'));
+[~, idxC_RecKeep] = find(strcmp(InfoandDevMil, 'Rec Keep'));
+[~, idxC_Area1] = find(strcmp(InfoandDevMil, 'Area1'));
+[~, idxC_Area2] = find(strcmp(InfoandDevMil, 'Area2'));
+[~, idxC_Area3] = find(strcmp(InfoandDevMil, 'Area3'));
 
-
+count=0;
 for row = 6:1000
     if (klusta > 0 && InfoandDevMil{row,  idxC_klusta} == klusta) || klusta == 0
         if isa(InfoandDevMil{row,  idxC_n_experiment}, 'numeric') && ~isnan(InfoandDevMil{row, idxC_n_experiment})
@@ -50,6 +55,16 @@ for row = 6:1000
             experiments(InfoandDevMil{row,  idxC_n_experiment}).baseline = InfoandDevMil{row,  idxC_baseline};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).PL = InfoandDevMil{row,  idxC_PL};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).Klusta = InfoandDevMil{row,  idxC_klusta};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).RecKeep = InfoandDevMil{row,  idxC_RecKeep};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).Area1 = InfoandDevMil{row,  idxC_Area1};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).Area2 = InfoandDevMil{row,  idxC_Area2};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).Area3 = InfoandDevMil{row,  idxC_Area3};
+            try
+                experiments(InfoandDevMil{row,  idxC_n_experiment}).NoisyCh = str2num(InfoandDevMil{row,  idxC_noisy});
+            catch
+                experiments(InfoandDevMil{row,  idxC_n_experiment}).NoisyCh = InfoandDevMil{row,  idxC_noisy};
+            end
+
             try
                 experiments(InfoandDevMil{row,  idxC_n_experiment}).PL = str2num(InfoandDevMil{row,  idxC_PL});
             end
