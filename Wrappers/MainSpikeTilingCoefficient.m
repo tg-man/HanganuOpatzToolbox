@@ -37,7 +37,7 @@ for animal_idx = 1 : length(animals)
     
     animal_name = cell2mat(animals(animal_idx)); % extract name of the animal
     % load spike matrix
-    [spike_matrix, clusters] = getSpikeMatrixKlustaBaseline(animal_name, ...
+    [spike_matrix, clusters] = getSpikeMatrixBaseline(animal_name, ...
         experiments, resultsKlusta, save_data, repeat_calc, output_folder_SM);
     % compute GLOBAL spike-time tiling coefficient
     getSTTC_global(animal_name, spike_matrix, lags, repeat_calc, save_data, output_folder)
