@@ -15,11 +15,11 @@ lags = [5, 10, 20, 50, 100, 500]; % single lags for which to compute tiling coef
 repeat_calc = 0;
 save_data = 1;
 stim_period = 'baseline';
-output_folder_STTCglobal = 'Q:\Personal\Tony\Analysis\Results_3Probe_STTCglobal\TH3\'; % where to save
-% output_folderTilCum = 'YOUR FOLDER HERE'; % where to save
-% output_folderGH = 'YOUR FOLDER HERE'; % where to save
-resultsKlusta = 'Q:\Personal\Tony\Analysis\Results_3Probe_SUAinfo\TH3\'; % folder in which you have SUA files
-output_folder_SM = 'Q:\Personal\Tony\Analysis\Results_3Probe_SpikeMatrix\TH3\'; % where to save spike matrix
+output_folder_STTCglobal = 'Q:\Personal\Tony\Analysis\Results_3Probe_STTCglobal\PFC'; % where to save
+output_folderTilCum = 'YOUR FOLDER HERE'; % where to save
+output_folderGH = 'YOUR FOLDER HERE'; % where to save
+resultsKlusta = 'Q:\Personal\Tony\Analysis\Results_3Probe_SUAinfo\PFC\'; % folder in which you have SUA files
+output_folder_SM = 'Q:\Personal\Tony\Analysis\Results_3Probe_SpikeMatrix\PFC\'; % where to save spike matrix
 
 % Extract unique animals from the experiment list. animals are the "unit"
 % around which the rest is calculated
@@ -41,7 +41,6 @@ for animal_idx = 1 : length(animals)
         experiments, resultsKlusta, save_data, repeat_calc, output_folder_SM);
     % compute GLOBAL spike-time tiling coefficient
 %     disp(['animal ', animal_name, ' pairs ', num2str(TcHeyyoeff.num_pairs)])   
-    disp(['animal ', animal_name])
     getSTTC_global(animal_name, spike_matrix, lags, repeat_calc, save_data, output_folder_STTCglobal);
 end
 

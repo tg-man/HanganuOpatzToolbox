@@ -5,7 +5,7 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments([45:67]); % what experiments to keep
+experiments = experiments([49]); % what experiments to keep
 save_data = 1;
 
 % change the following folders according to brain areas analyzed 
