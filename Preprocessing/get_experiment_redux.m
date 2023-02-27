@@ -8,7 +8,7 @@ if nargin < 1
     klusta = 0;
 end
 
-Path = 'Q:\Personal\Tony\Analysis\ExampleExperimentPlan.xlsx';
+Path = 'Q:\Personal\Tony\Analysis\ExperimentPlan_Tony.xlsx';
 ExcelSheet = 'Pooled';
 xlRange = 'A1:DZ1000';
 [~, ~, InfoandDevMil] = xlsread(Path, ExcelSheet, xlRange); % Import recording summary from excel sheet
@@ -33,6 +33,11 @@ xlRange = 'A1:DZ1000';
 [~, idxC_Area1] = find(strcmp(InfoandDevMil, 'Area1'));
 [~, idxC_Area2] = find(strcmp(InfoandDevMil, 'Area2'));
 [~, idxC_Area3] = find(strcmp(InfoandDevMil, 'Area3'));
+[~, idxC_USV_path] = find(strcmp(InfoandDevMil, 'USV_path'));
+[~, idxC_Lag_behind_ephys] = find(strcmp(InfoandDevMil, 'Lag_behind_ephys (s)'));
+[~, idxC_USV_naive_comparison] = find(strcmp(InfoandDevMil, 'USV_naive_comparison'));
+[~, idxC_USV_file] = find(strcmp(InfoandDevMil, 'USV_file'));
+[~, idxC_OffCh] = find(strcmp(InfoandDevMil, 'off target ch'));
 
 count=0;
 for row = 6:1000
@@ -59,12 +64,23 @@ for row = 6:1000
             experiments(InfoandDevMil{row,  idxC_n_experiment}).Area1 = InfoandDevMil{row,  idxC_Area1};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).Area2 = InfoandDevMil{row,  idxC_Area2};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).Area3 = InfoandDevMil{row,  idxC_Area3};
+            
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).USV_path = InfoandDevMil{row,  idxC_USV_path};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).Lag_behind_ephys = InfoandDevMil{row,  idxC_Lag_behind_ephys};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).USV_naive_comparison = InfoandDevMil{row,  idxC_USV_naive_comparison};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).USV_file = InfoandDevMil{row,  idxC_USV_file};
             try
                 experiments(InfoandDevMil{row,  idxC_n_experiment}).NoisyCh = str2num(InfoandDevMil{row,  idxC_noisy});
             catch
                 experiments(InfoandDevMil{row,  idxC_n_experiment}).NoisyCh = InfoandDevMil{row,  idxC_noisy};
             end
-
+            
+            try
+                experiments(InfoandDevMil{row,  idxC_n_experiment}).OffCh = str2num(InfoandDevMil{row,  idxC_OffCh});
+            catch 
+                experiments(InfoandDevMil{row,  idxC_n_experiment}).OffCh = InfoandDevMil{row,  idxC_OffCh};
+            end 
+            
             try
                 experiments(InfoandDevMil{row,  idxC_n_experiment}).PL = str2num(InfoandDevMil{row,  idxC_PL});
             end

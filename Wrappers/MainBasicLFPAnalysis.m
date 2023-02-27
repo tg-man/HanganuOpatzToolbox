@@ -5,7 +5,7 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments([64:67]); % what experiments to keep
+experiments = experiments([73]); % what experiments to keep
 repeatCalc = 1;
 save_data = 1;
 cores = 6;
@@ -36,7 +36,7 @@ slow_freqs = [0.2 5]; % slow frequencies (0.01 is the digital filter of our reco
 fast_freqs = [5 100]; % fast frequencies. High cut at 50 originally
 
 % folders to save various results
-folder4osc = 'Q:\Personal\Tony\Analysis\Results_3Probe_osc_test\'; %Fill in path where to save oscillations
+folder4osc = 'Q:\Personal\Tony\Analysis\Results_3Probe_osc\'; %Fill in path where to save oscillations
 folder4PSD = 'Q:\Personal\Tony\Analysis\Results_3Probe_PSD\'; %Fill in path where to save PSD
 
 
@@ -61,9 +61,9 @@ for exp_idx = 1 : size(experiments, 2)
         LFP(channel, :) = signal(1 : downsampling_factor : end);
     end
     clear signal
-    noisy_channels = experiment.NoisyCh;
-    noisy_channels = noisy_channels(ismember(noisy_channels, ch2load));
-    LFP(noisy_channels, :) = NaN; % Do the same here for noisy channels
+    bad_ch = [experiment.NoisyCh,experiment.OffCh];
+    bad_ch = bad_ch(ismember(bad_ch, ch2load));
+    LFP(bad_ch, :) = NaN; % Do the same here for noisy channels
     
     %%% this is here as an example of how to limit baseline analysis to
     %%% pre opto periods, in case your file has opto stimulations. you can

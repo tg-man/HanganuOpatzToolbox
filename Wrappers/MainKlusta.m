@@ -9,7 +9,7 @@ clear all
 klusta = 1;
 common_average_reference = 1; 
 experiments = get_experiment_redux(klusta);
-experiments = experiments([65]);
+experiments = experiments([73]);
 
 % this part here follows the rationale of having multiple recordings 
 % ("experiment" in the jergon of get_experiment_redux) from the same

@@ -70,7 +70,7 @@ for experiment = experiments(experiments_animal)
         % add something similar to 0 (but not 0, as it disrupts clustering) to the broken channels
         if ~ isempty(broken_channels)
             samples(ismember(channels, broken_channels), :) = ...
-                int16(nanmedian(samples(~ ismember(channels, broken_channels), :)));
+                repmat(int16(nanmedian(samples(~ ismember(channels, broken_channels), :))), size(broken_channels, 2), 1);
         end
     end   
     fwrite(fidout, samples, 'int16');

@@ -4,7 +4,7 @@
 % good signal 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([64:67]); % what experiments to keep
+experiments = experiments([68:69]); % what experiments to keep
 
 % loading and filtering variables
 fs = 32000; % sampling rate from data

@@ -10,16 +10,16 @@
 clear; 
 klusta = 1;
 experiments = get_experiment_redux(klusta);
-experiments = experiments([45:67]);
+experiments = experiments([68:69]);
 lags = [5, 10, 20, 50, 100, 500]; % single lags for which to compute tiling coeff
 repeat_calc = 0;
 save_data = 1;
 stim_period = 'baseline';
-output_folder_STTCglobal = 'Q:\Personal\Tony\Analysis\Results_3Probe_STTCglobal\TH3\'; % where to save
+output_folder_STTCglobal = 'Q:\Personal\Tony\Analysis\Results_3Probe_STTC\PFC\'; % where to save
 % output_folderTilCum = 'YOUR FOLDER HERE'; % where to save
 % output_folderGH = 'YOUR FOLDER HERE'; % where to save
-resultsKlusta = 'Q:\Personal\Tony\Analysis\Results_3Probe_SUAinfo\TH3\'; % folder in which you have SUA files
-output_folder_SM = 'Q:\Personal\Tony\Analysis\Results_3Probe_SpikeMatrix\TH3\'; % where to save spike matrix
+resultsKlusta = 'Q:\Personal\Tony\Analysis\Results_3Probe_SUAinfo\PFC\'; % folder in which you have SUA files
+output_folder_SM = 'Q:\Personal\Tony\Analysis\Results_3Probe_SpikeMatrix\PFC\'; % where to save spike matrix
 
 % Extract unique animals from the experiment list. animals are the "unit"
 % around which the rest is calculated

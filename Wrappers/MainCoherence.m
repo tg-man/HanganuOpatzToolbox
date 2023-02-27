@@ -3,7 +3,7 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux;
-experiments = experiments([64:67]); 
+experiments = experiments([68:69]); 
 repeatCalc = 1;
 save_data = 1;
 % the number of CPU cores to use to load signal. Unless you are doing
