@@ -4,7 +4,7 @@
 % good signal 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([68:69]); % what experiments to keep
+experiments = experiments([70:73]); % what experiments to keep
 
 % loading and filtering variables
 fs = 32000; % sampling rate from data
@@ -36,9 +36,9 @@ for exp_idx = 1 : size(experiments, 2)
         signal = ZeroPhaseFilter(signal, fs, [0.5 high_cut]); %origianlly 0.1
         LFP(channel, :) = signal(1 : downsampling_factor : end);
     end
-    noisy_channels = experiment.NoisyCh;
-    noisy_channels = noisy_channels(ismember(noisy_channels, ch2load));
-    LFP(noisy_channels, :) = NaN; %Do the same here for noisy channels. 
+    bad_ch = [experiment.NoisyCh,experiment.OffCh];
+    bad_ch = bad_ch(ismember(bad_ch, ch2load));
+    LFP(bad_ch, :) = NaN; % Do the same here for noisy channels
     clear signal
     
     % keep only good part of the recording per experiment excel

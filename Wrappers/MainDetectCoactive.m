@@ -5,7 +5,7 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([70:72]); % what experiments to keep
+experiments = experiments([73]); % what experiments to keep
 folder4osc = 'Q:\Personal\Tony\Analysis\Results_3Probe_osc\';
 folder4coactive = 'Q:\Personal\Tony\Analysis\Results_3Probe_Coactive\All3_NoArtifact\';
 save_data = 1; 
