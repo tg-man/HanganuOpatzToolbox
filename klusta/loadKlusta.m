@@ -70,8 +70,8 @@ for DATfile_idx = 1 : numel(DATfiles)
                 Clusters == WaveForms.unitIDs(idxCluster)));                                         % the second feature, on the best channel (see above). for cluster quality assesment
             %SUA(countSUA).RPV = nnz(diff(gwfparams.spikeTimes) < refractory_period);                 
             SUA(countSUA).RPV = nnz(diff(SUA(countSUA).Timestamps) < refractory_period)/nnz(SUA(countSUA).Timestamps)*100; % refractory period violations. for cluster quality assesment
-            SUA(countSUA).MeanWaveFeatures = getSpikeFeatures(SUA(countSUA).Waveform);               % for SUA clustering
-            features(countSUA, :) = SUA(countSUA).MeanWaveFeatures;
+            %SUA(countSUA).MeanWaveFeatures = getSpikeFeatures(SUA(countSUA).Waveform);               % for SUA clustering % this can be commented out. rather uninteresting for neonates
+            %features(countSUA, :) = SUA(countSUA).MeanWaveFeatures;
             SUA(countSUA).file = strip(strip(strip(strip(DATfile, 'right', 't'), ...
                 'right', 'a'), 'right', 'd'), 'right', '.');
         end

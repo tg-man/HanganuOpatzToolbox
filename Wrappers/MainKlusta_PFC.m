@@ -9,7 +9,7 @@ clear all
 klusta = 1;
 common_average_reference = 1; 
 experiments = get_experiment_redux(klusta);
-experiments = experiments([80:93]);
+experiments = experiments([74:79]);
 
 % this part here follows the rationale of having multiple recordings 
 % ("experiment" in the jergon of get_experiment_redux) from the same
@@ -43,22 +43,23 @@ animals = unique(cellfun(@num2str, animals, 'un', 0));
 
 % select the channels that you want to spike sort (as they are named in the
 % neuralynx format)
-channels = 1 : 16;
-TH_mode = 0; % use 1 when sorting TH data; use 0 for other brain areas 
+channels = 17 : 32;
+TH_mode = 0; 
 
 % select the probe that you used for your experiments. probe currently
 % available are '4shank' and '16_50m'
-probetype = '16_50m';
-PRMfolder = 'C:\Klusta\PRM\3Probe\Str\'; % main folder in which you store your PRM files 
+probetype = '4shank';
+PRMfolder = 'C:\Klusta\PRM\3Probe\PFC\'; % main folder in which you store your PRM files 
                                     % (which then are in an animal-specific subfolder)
 
 for idx_animal = 1 : length(animals)
     disp(['writing animal number ', num2str(idx_animal)])
     animal = animals{idx_animal};
     exp_idx = find(strcmp(extractfield(experiments, 'animal_ID'), animal)); 
+    
     broken_channels = experiments(exp_idx).NoisyCh; 
     broken_channels = intersect(channels, broken_channels);
-    DATfolder_animal = strcat('Q:/Personal/Tony/Analysis/Results_3Probe_DAT/Str/', animal); % folder in which your .DAT and .PRB files will be saved 
+    DATfolder_animal = strcat('Q:/Personal/Tony/Analysis/Results_3Probe_DAT/PFC/', animal); % folder in which your .DAT and .PRB files will be saved 
                                                                                       % (better be on Q, unless you have a lot of space 
                                                                                       % on your disk)
                                                                                       % / slash direction is important in this line. Don't change!
@@ -76,8 +77,10 @@ end
 % you to run it in batch mode, without having to go through a python
 % shell.
 
-BATfolder = 'C:\Klusta\BAT files\Str\'; %change path for each brain area
-createBAT(animals, BATfolder, PRMfolder) % CHANGE ONE PATH INSIDE!!!
+BATfolder_PL = 'C:\Klusta\BAT files\PFC\PL\'; %change path for each brain area
+BATfolder_ACC = 'C:\Klusta\BAT files\PFC\ACC\'; %change path for each brain area
+createBAT(animals, BATfolder_PL, PRMfolder) % CHANGE ONE PATH INSIDE!!!
+createBAT(animals, BATfolder_ACC, PRMfolder) % CHANGE ONE PATH INSIDE!!!
 
 
 
