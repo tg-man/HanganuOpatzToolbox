@@ -1,4 +1,4 @@
-function getStimulationPropertiesHenrik(experiments, save_data, repeatCalc, folder2save)
+function getStimProperties(experiments, save_data, repeatCalc, folder2save)
 for n_animal = 1:length(experiments)
     experiment = experiments(n_animal);
     if  repeatCalc == 0 && exist([folder2save, experiment.name, '_StimulationProperties_raw.mat'])
@@ -6,7 +6,7 @@ for n_animal = 1:length(experiments)
     else
         disp(['Calculating stimProperties for: ' experiment.name ', expNumber ' num2str(n_animal)])
         [StimTimestamps] = getStimulationTimeStampsHenrik(experiment, save_data, folder2save);
-        StimTimestamps = StimTimestamps / 10;
+        StimTimestamps = StimTimestamps / 10; % divided here by 10 because the signal is also downsampled by 10 in the next line
         [~, signalD, ~,~] = nlx_load_Opto(experiment, 'Stim1D', [], 10, 0);
         signalD = digital2binary(signalD);
         [~, signalA, samplingrate,~] = nlx_load_Opto(experiment, 'Stim1A', [], 10, 0);
@@ -35,7 +35,7 @@ for n_animal = 1:length(experiments)
         %min duration (If duration is too short <0.5sec, remove it)
         stim_periode_Start        = find(diff(stim_digital_periode)==1);
         stim_periode_End          = find(diff(stim_digital_periode)==-1);
-        stim_periode_dur          = (stim_periode_End - stim_periode_Start)/samplingrate;
+        stim_periode_dur          = (stim_periode_End - stim_periode_Start)/samplingrate; % unnecessary, same as stim_dur
         
 %         for k           = find(stim_periode_dur<1)
 %             stim_digital_periode(stim_periode_Start(k):stim_periode_End  (k)) = 0;
@@ -87,7 +87,7 @@ for n_animal = 1:length(experiments)
                 % Is there more than 1 stimulation in the stimulation period?
                 stim_class = 'squareFreq';
             else
-                pulse_duration = NaN;
+                pulse_duration = stim_periode_dur(j);
                 % calculate max/mean ratio, for constant light = 0.5, for ramp/sinus = 1
                 halfmax_analog = max(signalA(stim_periode_Start(j):stim_periode_End(j)))/2;
                 mean_analog    = mean(signalA(stim_periode_Start(j):stim_periode_End(j)));

@@ -11,6 +11,20 @@ common_average_reference = 1;
 experiments = get_experiment_redux(klusta);
 experiments = experiments([80:93]);
 
+PRMfolder = 'C:\Klusta\PRM\3Probe\'; % main folder in which you store your PRM files 
+                                    % (which then are in an area-specific and animal-specific subfolder, full path constructed in the loop)
+
+DATfolder_animal = 'Q:/Personal/Tony/Analysis/Results_3Probe_DAT/'; % folder in which your .DAT and .PRB files will be saved 
+                                                                    % / slash direction is important in this line. Don't change!
+                                                                    % (better be on Q, unless you have a lot of space 
+                                                                    % on your disk)
+                                    
+probetypes = {'4shank', '16_50m'}; % select the probe that you used for your experiments 
+                                   % probes currently available are '4shank' and '16_50m'
+
+BrainAreas = {'ACC','PL','Str','TH3'}; % list of brain areas to be iterated
+
+
 % this part here follows the rationale of having multiple recordings 
 % ("experiment" in the jergon of get_experiment_redux) from the same
 % animal (i.e. a long opto experiment that was subdivided in
@@ -46,22 +60,13 @@ animals = unique(cellfun(@num2str, animals, 'un', 0));
 channels = 1 : 16;
 TH_mode = 0; % use 1 when sorting TH data; use 0 for other brain areas 
 
-% select the probe that you used for your experiments. probe currently
-% available are '4shank' and '16_50m'
-probetype = '16_50m';
-PRMfolder = 'C:\Klusta\PRM\3Probe\Str\'; % main folder in which you store your PRM files 
-                                    % (which then are in an animal-specific subfolder)
-
 for idx_animal = 1 : length(animals)
     disp(['writing animal number ', num2str(idx_animal)])
     animal = animals{idx_animal};
     exp_idx = find(strcmp(extractfield(experiments, 'animal_ID'), animal)); 
     broken_channels = experiments(exp_idx).NoisyCh; 
     broken_channels = intersect(channels, broken_channels);
-    DATfolder_animal = strcat('Q:/Personal/Tony/Analysis/Results_3Probe_DAT/Str/', animal); % folder in which your .DAT and .PRB files will be saved 
-                                                                                      % (better be on Q, unless you have a lot of space 
-                                                                                      % on your disk)
-                                                                                      % / slash direction is important in this line. Don't change!
+   
     PRB2folder(probetype, DATfolder_animal)
     
     % create DAT from neuralynx files
@@ -76,6 +81,8 @@ end
 % you to run it in batch mode, without having to go through a python
 % shell.
 
+
+% also loop over brain areas here! 
 BATfolder = 'C:\Klusta\BAT files\Str\'; %change path for each brain area
 createBAT(animals, BATfolder, PRMfolder) % CHANGE ONE PATH INSIDE!!!
 

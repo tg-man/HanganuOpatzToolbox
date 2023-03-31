@@ -1,5 +1,5 @@
 %% By Mattia
-function [stimulationTimeStamps] = getStimulationTimeStampsHenrik(experiment, save_data, folder2save)
+function [stimulationTimeStamps] = SUAgetStimulationTimeStamps(experiment, save_data, folder2save)
 
 filename = strcat(experiment.path, filesep, experiment.name, filesep, 'STIM1D.ncs');
 
@@ -14,9 +14,9 @@ f = median(SampleFrequencies);
 clear SampleFrequencies
 
 % rearray and adjust
-Samples = reshape(Samples, 1, size(Samples, 1) * size(Samples, 2)); %reshape sample into a column vector 
+Samples = reshape(Samples, 1, size(Samples, 1) * size(Samples, 2));
 Samples = Samples ./ 32.81; %adjust to microVolt; only for LFP
-Samples = Samples > max(Samples) * 0.5;
+Samples = Samples > max(Samples) * 0.25;
 
 %% find stimulus period
 StimDStart = find(diff(Samples) == 1) + 1;
@@ -31,7 +31,7 @@ StimEnd = StimDEnd; % leave it in timestamps
 stimulationTimeStamps = [StimStart',StimEnd'];
 
 %% Save
-if save_data == 0 || isempty(stimulationTimeStamps)
+if save_data == 0
     return
 else
     save([folder2save, experiment.name, '_SUAstimulatioTimeStamps'],'stimulationTimeStamps');

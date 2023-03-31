@@ -5,13 +5,13 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments([80:93]); % what experiments to keep
+experiments = experiments([85:88]); % what experiments to keep
 save_data = 1;
 
 % change the following folders according to brain areas analyzed 
-folder4PRM = 'C:\Klusta\PRM\3Probe\TH3\';
-folder4DAT = 'Q:\Personal\Tony\Analysis\Results_3Probe_DAT\TH3\';
-folder2save = 'Q:\Personal\Tony\Analysis\Results_3Probe_SUAinfo\TH3\';
+folder4PRM = 'C:\Klusta\PRM\3Probe\ACC\';
+folder4DAT = 'Q:\Personal\Tony\Analysis\Results_3Probe_DAT\ACC\';
+folder2save = 'Q:\Personal\Tony\Analysis\Results_3Probe_SUAinfo\ACC\';
 
 % get the unique animal IDs
 animals = extractfield(experiments, 'animal_ID');

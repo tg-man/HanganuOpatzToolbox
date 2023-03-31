@@ -19,20 +19,25 @@ xlRange = 'A1:DZ1000';
 [~, idxC_Alive_recording] = find(strcmp(InfoandDevMil, 'Alive recording'));
 [~, idxC_Path] = find(strcmp(InfoandDevMil, 'Path'));
 [~, idxC_Age] = find(strcmp(InfoandDevMil, 'Age'));
+[~, idxC_sex] = find(strcmp(InfoandDevMil, 'sex'));
 [~, idxC_IUEconstruct] = find(strcmp(InfoandDevMil, 'construct'));
 [~, idxC_IUEarea] = find(strcmp(InfoandDevMil, 'target'));
 [~, idxC_IUEage] = find(strcmp(InfoandDevMil, 'age (E)'));
-[~, idxC_HPreversal] = find(strcmp(InfoandDevMil, 'HP reversal'));
-[~, idxC_ageGroup] = find(strcmp(InfoandDevMil, 'Age Group'));
+% [~, idxC_HPreversal] = find(strcmp(InfoandDevMil, 'HP reversal'));
+% [~, idxC_ageGroup] = find(strcmp(InfoandDevMil, 'Age Group'));
 [~, idxC_ramp] = find(strcmp(InfoandDevMil, 'ramp'));
+[~, idxC_square] = find(strcmp(InfoandDevMil, 'square'));
 [~, idxC_baseline] = find(strcmp(InfoandDevMil, 'baseline'));
-[~, idxC_PL] = find(strcmp(InfoandDevMil, 'PFC_PL'));
+% [~, idxC_PL] = find(strcmp(InfoandDevMil, 'PFC_PL'));
 [~, idxC_klusta] = find(strcmp(InfoandDevMil, 'Klusta'));
 [~, idxC_noisy] = find(strcmp(InfoandDevMil, 'noisy ch'));
 [~, idxC_RecKeep] = find(strcmp(InfoandDevMil, 'Rec Keep'));
 [~, idxC_Area1] = find(strcmp(InfoandDevMil, 'Area1'));
 [~, idxC_Area2] = find(strcmp(InfoandDevMil, 'Area2'));
 [~, idxC_Area3] = find(strcmp(InfoandDevMil, 'Area3'));
+[~, idxC_target1] = find(strcmp(InfoandDevMil, 'target1'));
+[~, idxC_target2] = find(strcmp(InfoandDevMil, 'target2'));
+[~, idxC_target3] = find(strcmp(InfoandDevMil, 'target3'));
 [~, idxC_USV_path] = find(strcmp(InfoandDevMil, 'USV_path'));
 [~, idxC_Lag_behind_ephys] = find(strcmp(InfoandDevMil, 'Lag_behind_ephys (s)'));
 [~, idxC_USV_naive_comparison] = find(strcmp(InfoandDevMil, 'USV_naive_comparison'));
@@ -51,24 +56,24 @@ for row = 6:1000
             experiments(InfoandDevMil{row,  idxC_n_experiment}).name = InfoandDevMil{row,  idxC_Alive_recording};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).path = InfoandDevMil{row,  idxC_Path};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).age = InfoandDevMil{row,  idxC_Age};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).Sex = InfoandDevMil{row,  idxC_sex};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).IUEconstruct = InfoandDevMil{row,  idxC_IUEconstruct};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).IUEarea = InfoandDevMil{row,  idxC_IUEarea};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).IUEage = InfoandDevMil{row,  idxC_IUEage};
-            experiments(InfoandDevMil{row,  idxC_n_experiment}).AgeGroup = InfoandDevMil{row,  idxC_ageGroup};
-            experiments(InfoandDevMil{row,  idxC_n_experiment}).HPreversal = InfoandDevMil{row,  idxC_HPreversal};
-            experiments(InfoandDevMil{row,  idxC_n_experiment}).ramp = str2num(InfoandDevMil{row,  idxC_ramp});
+%             experiments(InfoandDevMil{row,  idxC_n_experiment}).AgeGroup = InfoandDevMil{row,  idxC_ageGroup};
+%             experiments(InfoandDevMil{row,  idxC_n_experiment}).HPreversal = InfoandDevMil{row,  idxC_HPreversal};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).ramp = InfoandDevMil{row,  idxC_ramp};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).square = InfoandDevMil{row,  idxC_square};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).baseline = InfoandDevMil{row,  idxC_baseline};
-            experiments(InfoandDevMil{row,  idxC_n_experiment}).PL = InfoandDevMil{row,  idxC_PL};
+%             experiments(InfoandDevMil{row,  idxC_n_experiment}).PL = InfoandDevMil{row,  idxC_PL};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).Klusta = InfoandDevMil{row,  idxC_klusta};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).RecKeep = InfoandDevMil{row,  idxC_RecKeep};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).Area1 = InfoandDevMil{row,  idxC_Area1};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).target1 = InfoandDevMil{row,  idxC_target1};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).Area2 = InfoandDevMil{row,  idxC_Area2};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).target2 = InfoandDevMil{row,  idxC_target2};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).Area3 = InfoandDevMil{row,  idxC_Area3};
-            
-            experiments(InfoandDevMil{row,  idxC_n_experiment}).USV_path = InfoandDevMil{row,  idxC_USV_path};
-            experiments(InfoandDevMil{row,  idxC_n_experiment}).Lag_behind_ephys = InfoandDevMil{row,  idxC_Lag_behind_ephys};
-            experiments(InfoandDevMil{row,  idxC_n_experiment}).USV_naive_comparison = InfoandDevMil{row,  idxC_USV_naive_comparison};
-            experiments(InfoandDevMil{row,  idxC_n_experiment}).USV_file = InfoandDevMil{row,  idxC_USV_file};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).target3 = InfoandDevMil{row,  idxC_target3};
             try
                 experiments(InfoandDevMil{row,  idxC_n_experiment}).NoisyCh = str2num(InfoandDevMil{row,  idxC_noisy});
             catch
@@ -79,14 +84,19 @@ for row = 6:1000
                 experiments(InfoandDevMil{row,  idxC_n_experiment}).OffCh = str2num(InfoandDevMil{row,  idxC_OffCh});
             catch 
                 experiments(InfoandDevMil{row,  idxC_n_experiment}).OffCh = InfoandDevMil{row,  idxC_OffCh};
-            end 
+            end             
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).USV_path = InfoandDevMil{row,  idxC_USV_path};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).Lag_behind_ephys = InfoandDevMil{row,  idxC_Lag_behind_ephys};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).USV_naive_comparison = InfoandDevMil{row,  idxC_USV_naive_comparison};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).USV_file = InfoandDevMil{row,  idxC_USV_file};
+
             
-            try
-                experiments(InfoandDevMil{row,  idxC_n_experiment}).PL = str2num(InfoandDevMil{row,  idxC_PL});
-            end
-            try
-                experiments(InfoandDevMil{row,  idxC_n_experiment}).HPreversal = str2num(InfoandDevMil{row,  idxC_HPreversal});
-            end
+%             try
+%                 experiments(InfoandDevMil{row,  idxC_n_experiment}).PL = str2num(InfoandDevMil{row,  idxC_PL});
+%             end
+%             try
+%                 experiments(InfoandDevMil{row,  idxC_n_experiment}).HPreversal = str2num(InfoandDevMil{row,  idxC_HPreversal});
+%             end
         end
     end
 end
