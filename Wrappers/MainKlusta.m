@@ -22,7 +22,7 @@ DATfolder = 'Q:/Personal/Tony/Analysis/Results_3Probe_DAT/'; % folder in which y
 probetypes = {'4shank', '16_50m'}; % select the probe that you used for your experiments 
                                    % probes currently available are '4shank' and '16_50m'
 
-BrainAreas = {'ACC','PL','Str','TH3'}; % Brain area iterable
+BrainAreas = {'ACC','PL','Str','TH3'}; % Brain area iterable: {'ACC','PL','Str','TH3'}
 
 % this part here follows the rationale of having multiple recordings 
 % ("experiment" in the jergon of get_experiment_redux) from the same
@@ -56,36 +56,36 @@ animals = unique(cellfun(@num2str, animals, 'un', 0));
 
 % double for loop to go through 1. brain areas and 2. animals
 for idx_area = 1 : numel(BrainAreas)
-    BrainArea = BrainAreas{idx_area}
+    BrainArea = BrainAreas{idx_area};
     disp(['writing brain area ' BrainArea]) 
     if strcmp(BrainArea, 'ACC') || strcmp(BrainArea, 'PL')
         channels = 17 : 32; % select the channels that you want to spike sort (as they are named in the neuralynx format)
         probetype = probetypes{1};
         TH_mode = 0;
-        experiments = experiments(strcmp(extractfield(experiments, 'Area1'), BrainArea) & extractfield(experiments, 'target1') == 1); 
+        experiments2run = experiments(strcmp(extractfield(experiments, 'Area1'), BrainArea) & extractfield(experiments, 'target1') == 1); 
     elseif strcmp(BrainArea, 'Str')
         channels = 1 : 16; 
         probetype = probetypes{2};
         TH_mode = 0; 
-        experiments = experiments(strcmp(extractfield(experiments, 'Area2'), BrainArea) & extractfield(experiments, 'target2') == 1);
+        experiments2run = experiments(strcmp(extractfield(experiments, 'Area2'), BrainArea) & extractfield(experiments, 'target2') == 1);
     elseif strcmp(BrainArea, 'TH3')
         channels = 33 : 48;
         probetype = probetypes{2};
         TH_mode = 1; % use 1 when sorting TH data; use 0 for other brain areas 
-        experiments = experiments(strcmp(extractfield(experiments, 'Area3'), BrainArea(1:end-1)) & extractfield(experiments, 'target3') == 1);
+        experiments2run = experiments(strcmp(extractfield(experiments, 'Area3'), BrainArea(1:end-1)) & extractfield(experiments, 'target3') == 1);
     end 
     
     for idx_animal = 1 : length(animals)
         disp(['writing animal number ', num2str(idx_animal)])
         animal = animals{idx_animal};
-        exp_idx = find(strcmp(extractfield(experiments, 'animal_ID'), animal),1);
-        broken_channels = experiments(exp_idx).NoisyCh; 
+        exp_idx = find(strcmp(extractfield(experiments2run, 'animal_ID'), animal),1);
+        broken_channels = experiments2run(exp_idx).NoisyCh; 
         broken_channels = intersect(channels, broken_channels);
 
         % create PRB, DAT, and PRM fiels from neuralynx files
         DATfolder_animal = [DATfolder BrainArea '/' animal]; % slash direction is important here! Don't use filesep!
         PRB2folder(probetype, DATfolder_animal)
-        nlx2DAT(animal, experiments, channels, broken_channels, DATfolder_animal, common_average_reference)
+        nlx2DAT(animal, experiments2run, channels, broken_channels, DATfolder_animal, common_average_reference)
         
         PRMfolder_animal = strcat(PRMfolder, BrainArea, filesep, animal);
         PRM2folder(animal, DATfolder_animal, PRMfolder_animal, TH_mode);
@@ -97,7 +97,7 @@ for idx_area = 1 : numel(BrainAreas)
     % shell.
 
     % also loop over brain areas here! 
-    BATfolder = ['C:\Klusta\BAT files\' BrainArea]; %change path for each brain area
+    BATfolder = ['C:\Klusta\BAT files\' BrainArea '\']; %change path for each brain area
     createBAT(animals, BATfolder, [PRMfolder BrainArea]) % CHANGE ONE PATH INSIDE!!!   
 end
 
