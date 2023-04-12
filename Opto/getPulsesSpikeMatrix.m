@@ -10,6 +10,7 @@ if exist([folder2save respArea '\' experiment.name '.mat'], ...
         'file') && repeatCalc == 0
     load([folder2save respArea '\' experiment.name '.mat'])
 else
+    display(['calculating pulse matrix for ', experiment.name])
     % load SUA spike matrix
     load([folder4matrix experiment.name])
     % load stimulation properties

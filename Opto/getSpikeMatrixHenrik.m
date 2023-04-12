@@ -6,7 +6,7 @@ function [spike_matrix, clusters, SUAinfo] = ...
 % file. doesn't cuts periods of silence (> 500 ms of no spikes across all channels)
 
 % input:  animal_name (string, also known as animal_ID)
-%         resultsKlusta (string, folder in which you have sorted SUA file)
+%         resultsKlusta (string, folder in which you have SUA info files)
 %         save_data (1 for yes)
 %         repeatCalc (0 to load already computed stuff)
 %         output_folder (string, where to save the spike matrix)
@@ -24,7 +24,7 @@ else
             if numel(fieldnames(SUAstruct)) > 0
                 clusters = extractfield(SUAstruct, 'ClusterID'); % extract clusters
                 for SUA = 1 : length(SUAstruct) % loop over single units
-                    spike_times = ceil(SUAstruct(SUA).Timestamps / 32); % ceil to avoid having a spike time at 0. round to millisecond
+                    spike_times = ceil(SUAstruct(SUA).Timestamps / 32); % divided by 32 to get miliseconds; ceil to avoid having a spike time at 0. round to millisecond
                     spike_times = spike_times(spike_times > 0);
                     if ~ isnan(spike_times)
                         spike_matrix(SUAstruct(SUA).ClusterID == clusters, spike_times) = 1; % set to 1 if a spike is present in this millisecond
