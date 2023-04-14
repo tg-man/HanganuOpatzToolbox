@@ -20,7 +20,7 @@ for n_animal = 1 : length(experiments)
     animal{idx} = experiment.animal_ID;
     idx = idx +1;
     PulsesSpikes = getPulsesSpikeMatrix(experiment, save_data, repeatCalc, ...
-        folder4matrix, folder4stim, RespArea, folder4pulses);
+        folder4matrix, folder4stim, RespArea, folder4pulses); % just loading it now since this is usually calculated before
     spikes_animal = PulsesSpikes.pulse_spike_matrix;
     if ~isnan(spikes_animal)
         % first concatenate the spike tensor into a matrix

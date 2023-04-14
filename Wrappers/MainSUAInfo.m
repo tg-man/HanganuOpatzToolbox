@@ -5,12 +5,11 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments([94:98]); % what experiments to keep
+experiments = experiments([80:84]); % what experiments to keep
 save_data = 1;
 
-BrainAreas = {'PL','Str','TH3'}; % Brain area iterable: {'ACC','PL','Str','TH3'}
+BrainAreas = {'ACC','PL','Str','TH3'}; % Brain area iterable: {'ACC','PL','Str','TH3'}
 
-% change the following folders according to brain areas analyzed 
 folder4PRM = 'C:\Klusta\PRM\3Probe\'; % need NOT to be animal specific
 folder4DAT = 'Q:\Personal\Tony\Analysis\Results_3Probe_DAT\';
 folder2save = 'Q:\Personal\Tony\Analysis\Results_3Probe_SUAinfo\';

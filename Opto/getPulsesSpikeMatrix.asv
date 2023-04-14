@@ -50,9 +50,6 @@ else
         end
         % extract duration of pulses and correct pulse duration to the set input values 
         PulseDur = cat(1, PulsesInfo{:, 5}); 
-        
-        % add here to select pulse length based on stim area 
-        
         for trial_idx = 1 : size(PulseDur, 1)
             PulseDur(trial_idx) = pulse_length(round(PulseDur(trial_idx)./ pulse_length) == 1);
         end 

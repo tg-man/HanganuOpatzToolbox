@@ -1,6 +1,9 @@
 function [spikes_tot, animal] = plotRampFiringRateHenrik(experiments, RespArea, folder4matrix, folder4stim, folder4ramps)
 %% By Mattia
 
+% This function only cares about if a stim is given BUT NOT WHERE a stim is
+% given. So this should be selected beforehand
+
 map4plot = viridis(100);
 Gwindow = gausswin(1001, 10); % gaussian window of 1000ms with stdev of 100ms
 Gwindow = Gwindow / sum(Gwindow); % normalize the gaussian kernel
@@ -16,6 +19,8 @@ stim = 3001 : 6000; % in ms, ramp format
 post_stim = 6001 : 9000; % in ms, ramp format
 idx = 1;
 
+% this loop goes through all experiments and calculate the standard OMI and
+% test for significance 
 for n_animal = 1 : length(experiments)
     experiment = experiments(n_animal);
     animal{idx} = experiment.animal_ID;
@@ -43,7 +48,7 @@ for n_animal = 1 : length(experiments)
         firing_units(:, 3) = log10(mean(spikes_units(:, post_stim), 2));
         spikes_tot = cat(1, spikes_tot, spikes_units);
         firing_tot = cat(1, firing_tot, firing_units);
-        pre = squeeze(sum(spikes_animal(:, :, pre_stim), 3));
+        pre = squeeze(sum(spikes_animal(:, :, pre_stim), 3)); % summing up all the spikes in pre_stim period
         during = squeeze(sum(spikes_animal(:, :, stim), 3));
         post = squeeze(sum(spikes_animal(:, :, post_stim), 3));
         OMI_animal = nanmean((during - pre) ./ (during + pre)); % compute modulation index
@@ -64,7 +69,7 @@ for n_animal = 1 : length(experiments)
 end
 
 % sort of raster map like github mouseland
-spikes_reduced = squeeze(mean(reshape(spikes_tot, size(spikes_tot, 1), 100, []), 2)); % reduce to 100-ms window
+spikes_reduced = squeeze(mean(reshape(spikes_tot, size(spikes_tot, 1), 100, []), 2)); % lin alg trick to downsample to save time: chop up, reshape into three dimensions, squeeze the new dimension
 % sort spike trains by similarity but only use "central" part to stress opto differences
 zscored_units = zscore(spikes_reduced, [], 2); % zscore
 idx_sorted = sort_spike_trains(zscored_units);
@@ -74,7 +79,7 @@ plot([size(spikes_reduced, 2) / 9 * 3 size(spikes_reduced, 2) / 9 * 3], ...
     get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for opto
 plot([size(spikes_reduced, 2) / 9 * 6 size(spikes_reduced, 2) / 9 * 6], ...
     get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for opto
-ylabel('Single units'); xlabel('Time (s)')
+ylabel('Single units'); xlabel('Time (x100ms)')
 set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
 
 % volcano plot; size is equal to number of spikes and colored upon
@@ -106,7 +111,7 @@ colormap(flip(RdBu)); caxis([-0.1 1.1])
 hold on
 plot([0 0], get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for no modulation
 xlim([-1.1 1.1]); ylim([-0.1 ceil(max(- log10(pvalue_post)))])
-ylabel('- Log10 (pvalue)'); xlabel('Modulation Index'); alpha(0.5)
+ylabel('- Log10 (pvalue)'); xlabel('Post Modulation Index'); alpha(0.5)
 set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
 
 modulation = [nnz(OMI < 0 & pvalue < 0.01) ...

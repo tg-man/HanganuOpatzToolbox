@@ -6,6 +6,7 @@ experiments = get_experiment_redux;
 experiments = experiments([80:98]);
 save_data = 1;
 repeatCalc = 1; 
+pulses = {[0.005, 0.015, 0.050], [0.015, 0.050]}; 
 folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_3Probe_SUAinfo\';
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_3Probe_SpikeMatrix\';
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_3Probe_StimProp\';
@@ -19,7 +20,7 @@ BrainAreas = {'ACC','PL','Str','TH3'};%{'ACC','PL','Str','TH3'};
 
 % first get the stimulation properties from ONLY OPTO experiments 
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
-getStimProperties(experiments, save_data, repeatCalc, folder4stim)
+%getStimProperties(experiments, save_data, repeatCalc, folder4stim)
 
 % loop through each area and each animal to get one spike matrix per
 % recording (NOT per animal) 
@@ -34,7 +35,7 @@ for area_idx = 1 : numel(BrainAreas)
     elseif strcmp(BrainArea, 'Str')
         experiments2run = experiments(strcmp(extractfield(experiments, 'Area2'), BrainArea) & extractfield(experiments, 'target2') == 1);
     elseif strcmp(BrainArea, 'TH3')
-        experiments2run = experiments(strcmp(extractfield(experiments, 'Area3'), BrainArea(1:end-1)) & extractfield(experiments, 'target3') == 1);
+        experiments2run = experiments(strcmp(extractfield(experiments, 'Area3'), BrainArea(1:end-1)) & extractfield(experiments, 'target3') == 1); 
     end
     
     % going through each experiment now 
@@ -43,15 +44,13 @@ for area_idx = 1 : numel(BrainAreas)
         disp(['writing exp #' num2str(exp_idx) ' out of ' num2str(numel(experiments2run))]) 
         
         resultsKlusta = [folder4SUAinfo BrainArea '\'];
-        output_folder = [folder4SM BrainArea '\'];
+        SM_output = [folder4SM BrainArea '\'];
         
-        getSpikeMatrixHenrik(experiment, resultsKlusta, save_data, repeatCalc, output_folder); % here it doesn't calculate the baseline experiments!
+        getSpikeMatrixHenrik(experiment, resultsKlusta, save_data, repeatCalc, SM_output); % here it doesn't calculate the baseline experiments!
        
-        getPulsesSpikeMatrix(experiment, save_data, repeatCalc, ...
-                output_folder, folder4stim, BrainArea, folder4pulses);
+        getPulsesSpikeMatrix(experiment, save_data, repeatCalc, pulse_length, SM_output, folder4stim, BrainArea, folder4pulses);
         
-        getRampsSpikeMatrix(experiment, save_data, BrainArea, ...
-                output_folder, folder4stim, folder4ramps);                      
+        %getRampsSpikeMatrix(experiment, save_data, BrainArea, output_folder, folder4stim, folder4ramps);                      
     end 
 end 
 
