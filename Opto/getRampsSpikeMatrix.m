@@ -1,4 +1,4 @@
-function SUAdata = getRampsSpikeMatrix(experiment, save_data, RespArea, ...
+function SUAdata_ramp = getRampsSpikeMatrix(experiment, save_data, RespArea, ...
     folder4matrix, folder4stim, folder4ramps)
 
 if exist([folder4ramps, RespArea, '/', experiment.name, '.mat'])
@@ -32,21 +32,29 @@ else
         end
         pre = sum(sum(ramp_spike_matrix(:, :, 1 : 2995), 3)); % light artifact
         during = sum(sum(ramp_spike_matrix(:, :, 3005 : 5995), 3)); % light artifact
+        post = sum(sum(ramp_spike_matrix(:, :, 6005: 9000), 3)); % light artifact 
         pre_single_ramp = sum(ramp_spike_matrix(:, :, 1 : 2995), 3); % light artifact
         during_single_ramp = sum(ramp_spike_matrix(:, :, 3005 : 5995), 3); % light artifact
+        post_single_ramp = sum(ramp_spike_matrix(:, :, 6005: 9000), 3); % light artifact 
         pvalue = zeros(1, length(pre));
+        pvalue_post = zeros(1, length(pre)); 
         for unit = 1 : length(pre)
-            pvalue(unit) = signrank(pre_single_ramp(:, unit), ...
-                during_single_ramp(:, unit));
+            pvalue(unit) = signrank(pre_single_ramp(:, unit), during_single_ramp(:, unit));
+            pvalue_post(unit) = signrank(pre_single_ramp(:, unit), post_single_ramp(:,unit)); 
         end
         OMI = (during - pre) ./ (during + pre);
-        SUAdata.ramp_spike_matrix = ramp_spike_matrix;
-        SUAdata.OMI = OMI;
-        SUAdata.pvalue = pvalue;
+        OMI_post = (post - pre) ./ (post + pre); 
+        SUAdata_ramp.ramp_spike_matrix = ramp_spike_matrix;
+        SUAdata_ramp.OMI = OMI;
+        SUAdata_ramp.OMI_post = OMI_post; 
+        SUAdata_ramp.pvalue = pvalue;
+        SUAdata_ramp.pvalue_post = pvalue_post; 
     else
-        SUAdata.ramp_spike_matrix = [];
-        SUAdata.OMI = [];
-        SUAdata.pvalue = [];
+        SUAdata_ramp.ramp_spike_matrix = [];
+        SUAdata_ramp.OMI = [];
+        SUAdata_ramp.OMI_post = []; 
+        SUAdata_ramp.pvalue = [];
+        SUAdata_ramp.pvalue_post = []; 
     end
     if save_data == 0
         disp('DATA NOT SAVED!');
@@ -54,7 +62,7 @@ else
         if ~exist([folder4ramps, RespArea], 'dir')
             mkdir([folder4ramps, RespArea])
         end
-        save([folder4ramps RespArea '/' experiment.name], 'SUAdata')        
+        save([folder4ramps RespArea '/' experiment.name], 'SUAdata_ramp')        
     end
 end
 end
