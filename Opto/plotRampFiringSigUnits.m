@@ -1,4 +1,4 @@
-function [spikes_tot, animal] = plotRampFiringRateHenrik(experiments, RespArea, StimArea, folder4matrix, folder4stim, folder4ramps)
+function [spikes_tot, animal] = plotRampFiringSigUnits(experiments, RespArea, StimArea, folder4matrix, folder4stim, folder4ramps)
 %% By Mattia
 
 % This function only cares about if a stim is given BUT NOT WHERE a stim is
@@ -16,7 +16,7 @@ pvalue = [];
 pvalue_post = [];
 pre_stim = 1 : 3000; % in ms, ramp format
 stim = 4000 : 7000; % in ms, ramp format
-post_stim = 7001 : 10000; % in ms, ramp format
+post_stim = 7001 : 9000; % in ms, ramp format
 idx = 1;
 
 % this loop goes through all experiments and calculate the standard OMI and
@@ -69,70 +69,28 @@ for n_animal = 1 : length(experiments)
 end
 
 % sort of raster map like github mouseland
-spikes_reduced = squeeze(mean(reshape(spikes_tot, size(spikes_tot, 1), 100, []), 2)); % lin alg trick to downsample to save time: chop up, reshape into three dimensions, squeeze the new dimension
+spikes_sig = spikes_tot(pvalue < 0.01, :); % take only significant units 
+spikes_reduced = squeeze(mean(reshape(spikes_sig, size(spikes_sig, 1), 100, []), 2)); % lin alg trick to downsample to save time: chop up, reshape into three dimensions, squeeze the new dimension
 % sort spike trains by similarity but only use "central" part to stress opto differences
 zscored_units = zscore(spikes_reduced, [], 2); % zscore
 idx_sorted = sort_spike_trains(zscored_units);
 figure; imagesc(flipud(zscored_units(idx_sorted, :)), [-1 3]); colormap(map4plot) % plot
 hold on
-plot([size(spikes_reduced, 2) / 10 * 3 size(spikes_reduced, 2) / 10 * 3], ...
+plot([size(spikes_reduced, 2) / 9 * 3 size(spikes_reduced, 2) / 9 * 3], ...
     get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for opto
-plot([size(spikes_reduced, 2) / 10 * 6 size(spikes_reduced, 2) / 10 * 6], ...
+plot([size(spikes_reduced, 2) / 9 * 6 size(spikes_reduced, 2) / 9 * 6], ...
     get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for opto
 ylabel('Single units'); xlabel('Time (x100ms)')
 set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
-title([RespArea ' units to ' StimArea ' stim'])
+title([RespArea ' sig units to ' StimArea ' stim'])
 
-% volcano plot; size is equal to number of spikes and colored upon
-% significant or not
-RdBu = cbrewer('div', 'RdBu', 100);
-num_spikes = sum(spikes_tot, 2); % for size only
-num_spikes(num_spikes == 0) = 0.1; % scatter can't handle 0 as an input for size
-max_spikes = max(num_spikes);
-scaling_factor = 200 / max_spikes;
-figure; hold on
-scatter(OMI, - log10(pvalue), num_spikes * scaling_factor, pvalue < 0.01, 'filled');
-colormap(flip(RdBu)); caxis([-0.1 1.1])
-hold on
-plot([0 0], get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for no modulation
-xlim([-1.1 1.1]); ylim([-0.1 ceil(max(- log10(pvalue)))])
-ylabel('- Log10 (pvalue)'); xlabel('Modulation Index'); alpha(0.5)
-set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
-title([RespArea ' units to ' StimArea ' stim'])
-
-% volcano plot; size is equal to number of spikes and colored upon
-% significant or not
-RdBu = cbrewer('div', 'RdBu', 100);
-num_spikes = sum(spikes_tot, 2); % for size only
-num_spikes(num_spikes == 0) = 0.1; % scatter can't handle 0 as an input for size
-max_spikes = max(num_spikes);
-scaling_factor = 200 / max_spikes;
-figure; hold on
-scatter(OMIpost, - log10(pvalue_post), num_spikes * scaling_factor, pvalue_post < 0.01, 'filled');
-colormap(flip(RdBu)); caxis([-0.1 1.1])
-hold on
-plot([0 0], get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for no modulation
-xlim([-1.1 1.1]); ylim([-0.1 ceil(max(- log10(pvalue_post)))])
-ylabel('- Log10 (pvalue)'); xlabel('Post Modulation Index'); alpha(0.5)
-set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
-title([RespArea ' units post ' StimArea ' stim'])
-
-modulation = [nnz(OMI < 0 & pvalue < 0.01) ...
-    nnz(pvalue > 0.01) nnz(OMI > 0 & pvalue < 0.01)];
-modulation = modulation ./ length(OMI);
+% line plot of average firing rate of sig unites 
 figure;
-bar([modulation; nan(1, length(modulation))], 'stacked')
-set(gca,'xtick',1); xlim([0.25 1.75]);
-ylabel('Proportion'); xlabel(''); xticks(''); xticklabels('')
-title('Proportion of (un)modulated units')
-set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
-
-figure;
-boundedline(linspace(0, 10, size(zscored_units, 2)), mean(zscored_units), std(zscored_units) ./ sqrt(size(zscored_units, 1)))
+boundedline(linspace(0, 9, size(zscored_units, 2)), mean(zscored_units), std(zscored_units) ./ sqrt(size(zscored_units, 1)))
 hold on
 plot([3 3], get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for opto
 plot([6 6], get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for opto
-ylabel('z-scored firing rate (A.U.)'); xlabel('Time (s)'); xlim([0 10])
+ylabel('z-scored firing rate (A.U.)'); xlabel('Time (s)'); xlim([0 9])
 title(['SUA firing rate in ' RespArea ' to ' StimArea ' Stim'])
 set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
 

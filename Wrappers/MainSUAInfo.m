@@ -5,10 +5,11 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments([80:84]); % what experiments to keep
+experiments = experiments([99:127]); % what experiments to keep
 save_data = 1;
+cores = 4; 
 
-BrainAreas = {'ACC','PL','Str','TH3'}; % Brain area iterable: {'ACC','PL','Str','TH3'}
+BrainAreas = {'ACC','Str','TH3'}; % Brain area iterable: {'ACC','PL','Str','TH3'}
 
 folder4PRM = 'C:\Klusta\PRM\3Probe\'; % need NOT to be animal specific
 folder4DAT = 'Q:\Personal\Tony\Analysis\Results_3Probe_DAT\';
@@ -35,7 +36,7 @@ for idx_area = 1 : numel(BrainAreas)
     animals = animals(~cellfun('isempty', animals));
     animals = unique(cellfun(@num2str, animals, 'un', 0));
         
-    for idx_animal = 1 : length(animals)
+    parfor (idx_animal = 1 : length(animals), cores)
         
         animal = animals{idx_animal};
         % select animal specific folders

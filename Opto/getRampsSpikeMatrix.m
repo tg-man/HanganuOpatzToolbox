@@ -1,6 +1,8 @@
 function SUAdata_ramp = getRampsSpikeMatrix(experiment, save_data, RespArea, ...
     folder4matrix, folder4stim, folder4ramps)
 
+% with 1s shift, see 
+
 if exist([folder4ramps, RespArea, '/', experiment.name, '.mat'])
     load([folder4ramps, RespArea, '/', experiment.name, '.mat'])
 else
@@ -16,26 +18,26 @@ else
         stim_ends = cat(1, StimulationProperties_raw{ramps,2});
         % convert to ms
         stim_ends = round(stim_ends / 3.2);
-        ramp_spike_matrix = zeros(nnz(ramps), size(spike_matrix, 1), 9000); % n_ramps x n_units x time
+        ramp_spike_matrix = zeros(nnz(ramps), size(spike_matrix, 1), 10000); % n_ramps x n_units x time
         % populate the ramp spike matrix one stimulation at a time
         for stim_idx = 1 : nnz(ramps)
             stim_end = stim_ends(stim_idx);
-            if stim_end + 3000 > size(spike_matrix, 2)
-                stim_end = size(spike_matrix, 2) - 3000;
+            if stim_end + 4000 > size(spike_matrix, 2)
+                stim_end = size(spike_matrix, 2) - 4000;
             end
             if stim_end - 5999 < 0
                 ramp_spike_matrix(stim_idx, :, :) = NaN;
                 disp('you started the recording after the stimulations!')
             else
-                ramp_spike_matrix(stim_idx, :, :) = spike_matrix(:, stim_end - 5999 : stim_end + 3000);
+                ramp_spike_matrix(stim_idx, :, :) = spike_matrix(:, stim_end - 5999 : stim_end + 4000);
             end
         end
         pre = sum(sum(ramp_spike_matrix(:, :, 1 : 2995), 3)); % light artifact
-        during = sum(sum(ramp_spike_matrix(:, :, 3005 : 5995), 3)); % light artifact
-        post = sum(sum(ramp_spike_matrix(:, :, 6005: 9000), 3)); % light artifact 
+        during = sum(sum(ramp_spike_matrix(:, :, 4005 : 6995), 3)); % light artifact
+        post = sum(sum(ramp_spike_matrix(:, :, 7005: 9995), 3)); % light artifact 
         pre_single_ramp = sum(ramp_spike_matrix(:, :, 1 : 2995), 3); % light artifact
-        during_single_ramp = sum(ramp_spike_matrix(:, :, 3005 : 5995), 3); % light artifact
-        post_single_ramp = sum(ramp_spike_matrix(:, :, 6005: 9000), 3); % light artifact 
+        during_single_ramp = sum(ramp_spike_matrix(:, :, 4005 : 6995), 3); % light artifact
+        post_single_ramp = sum(ramp_spike_matrix(:, :, 7005: 9995), 3); % light artifact 
         pvalue = zeros(1, length(pre));
         pvalue_post = zeros(1, length(pre)); 
         for unit = 1 : length(pre)

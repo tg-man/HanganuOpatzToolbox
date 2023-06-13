@@ -6,10 +6,10 @@ clear
 
 % load experiments and generic stuff
 experiments = get_experiment_redux; 
-experiments = experiments([45:63]); % what experiments to keep
+experiments = experiments([1:73]); % what experiments to keep
 
 % folders to grab various results
-folder4osc = 'Q:\Personal\Tony\Analysis\Results_3Probe_osc_test\';
+folder4osc = 'Q:\Personal\Tony\Analysis\Results_3Probe_osc\';
 
 % initialize variables
 time_in_osc = NaN(size(experiments, 2), 2);

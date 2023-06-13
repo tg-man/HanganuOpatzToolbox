@@ -3,24 +3,24 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([80:98]);
+experiments = experiments([80:127]);
 save_data = 1;
-repeatCalc = 1; 
+repeatCalc = 0; 
 pulses = {[0.005, 0.015, 0.050], [0.015, 0.050]}; 
 folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_3Probe_SUAinfo\';
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_3Probe_SpikeMatrix\';
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_3Probe_StimProp\';
 folder4pulses = 'Q:\Personal\Tony\Analysis\Results_3Probe_OptoMatricesPulse\';
-folder4ramps = 'Q:\Personal\Tony\Analysis\Results_3Probe_OptoMatricesRamp\';
+folder4ramps = 'Q:\Personal\Tony\Analysis\Results_3Probe_OptoMatricesRamp_shift\';
 
 % brain areas
-BrainAreas = {'ACC','PL','Str','TH3'};%{'ACC','PL','Str','TH3'};
+BrainAreas = {'ACC','Str','TH3'};%{'ACC','PL','Str','TH3'};
 
 %% save all the spike matrices (generic, for pulses and for ramps)
 
 % first get the stimulation properties from ONLY OPTO experiments 
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
-%getStimProperties(experiments, save_data, repeatCalc, folder4stim)
+getStimProperties(experiments, save_data, repeatCalc, folder4stim)
 
 % loop through each area and each animal to get one spike matrix per
 % recording (NOT per animal) 
@@ -53,9 +53,10 @@ for area_idx = 1 : numel(BrainAreas)
         resultsKlusta = [folder4SUAinfo BrainArea '\'];
         SM_output = [folder4SM BrainArea '\'];
         
-        getSpikeMatrixHenrik(experiment, resultsKlusta, save_data, repeatCalc, SM_output); % here it doesn't calculate the baseline experiments!
+        getSpikeMatrixHenrik(experiment, resultsKlusta, save_data, repeatCalc, SM_output); 
+        % here it doesn't calculate the baseline experiments because no baseline experiment was put in!
        
-        getPulsesSpikeMatrix(experiment, save_data, repeatCalc, pulse_length, SM_output, folder4stim, BrainArea, folder4pulses);
+%         getPulsesSpikeMatrix(experiment, save_data, repeatCalc, pulse_length, SM_output, folder4stim, BrainArea, folder4pulses);
         
         getRampsSpikeMatrix(experiment, save_data, BrainArea, SM_output, folder4stim, folder4ramps);                      
     end 

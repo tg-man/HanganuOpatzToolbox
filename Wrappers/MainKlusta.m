@@ -9,7 +9,9 @@ clear all
 klusta = 1;
 common_average_reference = 1; 
 experiments = get_experiment_redux(klusta);
-experiments = experiments([94:98]);
+experiments = experiments([128:131]);
+% experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto')); 
+cores = 4; 
 
 PRMfolder = 'C:\Klusta\PRM\3Probe\'; % main folder in which you store your PRM files 
                                     % (which then are in an area-specific and animal-specific subfolder, full path constructed in the loop)
@@ -22,7 +24,7 @@ DATfolder = 'Q:/Personal/Tony/Analysis/Results_3Probe_DAT/'; % folder in which y
 probetypes = {'4shank', '16_50m'}; % select the probe that you used for your experiments 
                                    % probes currently available are '4shank' and '16_50m'
 
-BrainAreas = {'ACC','PL','Str','TH3'}; % Brain area iterable: {'ACC','PL','Str','TH3'}
+BrainAreas = {'ACC','Str','TH3'}; % Brain area iterable: {'ACC','PL','Str','TH3'}
 
 % this part here follows the rationale of having multiple recordings 
 % ("experiment" in the jergon of get_experiment_redux) from the same
@@ -31,10 +33,7 @@ BrainAreas = {'ACC','PL','Str','TH3'}; % Brain area iterable: {'ACC','PL','Str',
 % all together so that they can be spike-sorted all at the same time.
 % If this is not the case for you, you can rearrange it to run over single
 % recordings ("experiments") instead. 
- 
-animals = extractfield(experiments, 'animal_ID');
-animals = animals(~cellfun('isempty', animals));
-animals = unique(cellfun(@num2str, animals, 'un', 0));
+
 
 %% create PRB, PRM and DAT files
 
@@ -75,7 +74,13 @@ for idx_area = 1 : numel(BrainAreas)
         experiments2run = experiments(strcmp(extractfield(experiments, 'Area3'), BrainArea(1:end-1)) & extractfield(experiments, 'target3') == 1);
     end 
     
-    for idx_animal = 1 : length(animals)
+    % get a list of unique animals numbers 
+    animals = extractfield(experiments2run, 'animal_ID');
+    animals = animals(~cellfun('isempty', animals));
+    animals = unique(cellfun(@num2str, animals, 'un', 0));
+    
+    % looping over animals to generate files 
+    parfor (idx_animal = 1 : length(animals), cores)
         disp(['writing animal number ', num2str(idx_animal)])
         animal = animals{idx_animal};
         exp_idx = find(strcmp(extractfield(experiments2run, 'animal_ID'), animal),1);
@@ -98,6 +103,7 @@ for idx_area = 1 : numel(BrainAreas)
 
     % also loop over brain areas here! 
     BATfolder = ['C:\Klusta\BAT files\' BrainArea '\']; %change path for each brain area
+    disp(['generating BAT files for ' BrainArea]); 
     createBAT(animals, BATfolder, [PRMfolder BrainArea]) % CHANGE ONE PATH INSIDE!!!   
 end
 

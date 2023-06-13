@@ -1,6 +1,6 @@
 function CoherenceStuff = ...
     getCoherence(LFP1, LFP2, fs, win_length, overlap, nfft, ...
-    folder2save, animal_name, area1, area2, repeatCalc, save_data)
+    folder2save, experiment, repeatCalc, save_data)
 
 % calculates Coherency and Coherence as in Nolte et al., 2004
 % by Mattia, 01/21, adapted from a script of Joachim and Sebastian
@@ -22,8 +22,8 @@ function CoherenceStuff = ...
 %               - coherency shuffled: coherency on shuffled data
 
 
-if repeatCalc == 0 && exist(strcat(folder2save, animal_name, '.mat'), 'file')
-    load(strcat(folder2save, animal_name))
+if repeatCalc == 0 && exist(strcat(folder2save, experiment.name, '.mat'), 'file')
+    load(strcat(folder2save, experiment.name))
 else
     % compute number of windows
     nWindows = floor(length(LFP1) / (fs * win_length));
@@ -54,7 +54,7 @@ else
         if ~ exist(folder2save, 'dir')
             mkdir(folder2save)
         end
-        save(strcat(strcat(folder2save, animal_name,'_',area1,'_',area2)), 'CoherenceStuff')
+        save(strcat(strcat(folder2save, experiment.name)), 'CoherenceStuff')
     end
 end
 end
