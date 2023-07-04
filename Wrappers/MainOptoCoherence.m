@@ -2,12 +2,12 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([80:127]);
+experiments = experiments([80:145]);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
 experiments = experiments(strcmp(extractfield(experiments, 'ramp'), 'ACCsup'));
 ramp_length = 3; % in seconds
 save_data = 1;
-repeatCalc = 1; 
+repeatCalc = 0; 
 coh4accstr = 'Q:\Personal\Tony\Analysis\Results_3Probe_CohOpto\ACCStr\'; 
 coh4accth = 'Q:\Personal\Tony\Analysis\Results_3Probe_CohOpto\ACCTH\';
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_3Probe_StimProp\';
@@ -30,6 +30,7 @@ params.nfft = 2^13;;
 
 %% computing section 
 
+getStimProperties(experiments, save_data, repeatCalc, folder4stim)
 % loop throught experiments
 for exp_idx = 1 : numel(experiments)
     experiment = experiments(exp_idx);
@@ -43,6 +44,7 @@ for exp_idx = 1 : numel(experiments)
         LFP(channel, :) = signal(1 : downsampling_factor : end); % set to 1000 Hz so that everything is in milisecons 
     end 
     bad_ch = [experiment.NoisyCh,experiment.OffCh];
+    bad_ch = bad_ch(ismember(bad_ch, 1:48));
     LFP(bad_ch, :) = NaN;
     
     LFP_acc = nanmedian(LFP(17:32,:)); 
@@ -73,6 +75,17 @@ disp('Done computing!')
 
 %% plotting section (Acc Str) 
 
+clear
+experiments = get_experiment_redux;
+experiments = experiments([80:145]);
+experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
+experiments = experiments(strcmp(extractfield(experiments, 'ramp'), 'ACCsup'));
+coh4accstr = 'Q:\Personal\Tony\Analysis\Results_3Probe_CohOpto\ACCStr\'; 
+coh4accth = 'Q:\Personal\Tony\Analysis\Results_3Probe_CohOpto\ACCTH\';
+exp = (extractfield(experiments, 'IUEconstruct') == 59);
+ctrl = (extractfield(experiments, 'IUEconstruct') == 87);
+% colormap
+cmap = cbrewer('qual', 'Set1', 9);
 
 for exp_idx = 1 : size(experiments, 2) 
     experiment = experiments(exp_idx); 
@@ -81,26 +94,51 @@ for exp_idx = 1 : size(experiments, 2)
     load([coh4accstr experiment.name]); 
     
     % extract data
-    coh4plot(exp_idx,:,1) = nanmedian(StimRampCoh.Coherency_pre, 2); % pre data    
-    coh4plot(exp_idx,:,2) = nanmedian(StimRampCoh.Coherency_stim, 2); % stim data 
-    coh4plot(exp_idx,:,3) = nanmean(StimRampCoh.CohyShuff_stim, 2); % shuffled data
+    coh4plot(exp_idx,:,1) = nanmedian(StimRampCoh.Coherency_pre, 2); % pre data
+    coh4plot(exp_idx,:,2) = nanmedian(StimRampCoh.Coherency_stim, 2); % stim data
+    relcoh(exp_idx,:) = getMI(coh4plot(exp_idx,:,2), coh4plot(exp_idx,:,1), 0); 
+    
 end 
 
 freqs = StimRampCoh.freqs; 
 figure; 
-boundedline(freqs, nanmedian(coh4plot(:,:,1)), nanstd(coh4plot(:,:,1))./sqrt(exp_idx), 'cmap', cmap(90, :)); hold on; 
-boundedline(freqs, nanmedian(coh4plot(:,:,2)), nanstd(coh4plot(:,:,2))./sqrt(exp_idx), 'cmap', cmap(25, :));
-boundedline(freqs, nanmedian(coh4plot(:,:,3)), nanstd(coh4plot(:,:,3))./sqrt(exp_idx), ':k');
+boundedline(freqs, nanmedian(relcoh(exp,:)), nanstd(relcoh(exp,:))./sqrt(sum(exp)), 'cmap', cmap(1,:)); hold on; 
+boundedline(freqs, nanmedian(relcoh(ctrl,:)), nanstd(relcoh(ctrl,:))./sqrt(sum(ctrl)), 'cmap', cmap(3,:)); hold on; 
+set(gca,'TickDir','out', 'FontSize',12, 'FontName', 'Arial'); 
+xlabel('Frequency (Hz)'); ylabel('MI');
+title('Str to ACC stim', 'FontSize', 18, 'FontWeight', 'bold', 'FontName', 'Arial'); 
+yline(0); xlim([2 49]); ylim([-0.3 0.3]);
+legend('', 'exp', '', 'ctrl', '');
+
+
+freqs = StimRampCoh.freqs; 
+figure; 
+boundedline(freqs, nanmedian(coh4plot(:,:,1)), nanstd(coh4plot(:,:,1))./sqrt(exp_idx), 'cmap', cmap(9, :)); hold on; 
+boundedline(freqs, nanmedian(coh4plot(exp,:,2)), nanstd(coh4plot(:,:,2))./sqrt(exp_idx), 'cmap', cmap(1, :));
+boundedline(freqs, nanmedian(coh4plot(ctrl,:,2)), nanstd(coh4plot(:,:,2))./sqrt(exp_idx), 'cmap', cmap(3, :));
 xlim([2 49]); ylim([0.1 0.35])
 set(gca,'TickDir','out', 'FontSize',12, 'FontName', 'Arial'); 
 xlabel('Frequency (Hz)'); ylabel('Imag Coh');
 title('Str to ACC stim', 'FontSize', 18, 'FontWeight', 'bold', 'FontName', 'Arial'); 
-legend('','pre','','stim','','shuffled');
+legend('','pre','','stim', '', 'ctrl');
 
 
 %% plotting section (Acc th) 
 
+
+clear
+experiments = get_experiment_redux;
+experiments = experiments([80:145]);
+experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
 experiments = experiments(extractfield(experiments, 'target3') == 1);
+experiments = experiments(strcmp(extractfield(experiments, 'ramp'), 'ACCsup'));
+coh4accstr = 'Q:\Personal\Tony\Analysis\Results_3Probe_CohOpto\ACCStr\'; 
+coh4accth = 'Q:\Personal\Tony\Analysis\Results_3Probe_CohOpto\ACCTH\';
+exp = (extractfield(experiments, 'IUEconstruct') == 59);
+ctrl = (extractfield(experiments, 'IUEconstruct') == 87); 
+% colormap
+cmap = cbrewer('qual', 'Set1', 9);
+
 
 for exp_idx = 1 : size(experiments, 2) 
     experiment = experiments(exp_idx); 
@@ -111,19 +149,30 @@ for exp_idx = 1 : size(experiments, 2)
     % extract data
     coh4plot(exp_idx,:,1) = nanmedian(StimRampCoh.Coherency_pre, 2); % pre data    
     coh4plot(exp_idx,:,2) = nanmedian(StimRampCoh.Coherency_stim, 2); % stim data 
-    coh4plot(exp_idx,:,3) = nanmean(StimRampCoh.CohyShuff_pre, 2); % shuffled data
+    relcoh(exp_idx,:) = getMI(coh4plot(exp_idx,:,2), coh4plot(exp_idx,:,1), 0); 
 end 
 
 freqs = StimRampCoh.freqs; 
 figure; 
-boundedline(freqs, nanmedian(coh4plot(:,:,1)), nanstd(coh4plot(:,:,1))./sqrt(exp_idx), 'cmap', cmap(90, :)); hold on; 
-boundedline(freqs, nanmedian(coh4plot(:,:,2)), nanstd(coh4plot(:,:,2))./sqrt(exp_idx), 'cmap', cmap(25, :));
-boundedline(freqs, nanmedian(coh4plot(:,:,3)), nanstd(coh4plot(:,:,3))./sqrt(exp_idx), ':k');
-xlim([2 49]); ylim([0.1 0.35])
+boundedline(freqs, nanmedian(relcoh(exp,:)), nanstd(relcoh(exp,:))./sqrt(sum(exp)), 'cmap', cmap(1,:)); hold on; 
+boundedline(freqs, nanmedian(relcoh(ctrl,:)), nanstd(relcoh(ctrl,:))./sqrt(sum(ctrl)), 'cmap', cmap(3,:)); hold on; 
+set(gca,'TickDir','out', 'FontSize',12, 'FontName', 'Arial'); 
+xlabel('Frequency (Hz)'); ylabel('MI');
+title('TH to ACC stim', 'FontSize', 18, 'FontWeight', 'bold', 'FontName', 'Arial'); 
+yline(0); xlim([2 49]); ylim([-0.3 0.3]);
+legend('', 'exp', '', 'ctrl', '');
+
+
+freqs = StimRampCoh.freqs; 
+figure; 
+boundedline(freqs, nanmedian(coh4plot(:,:,1)), nanstd(coh4plot(:,:,1))./sqrt(exp_idx), 'cmap', cmap(9, :)); hold on; 
+boundedline(freqs, nanmedian(coh4plot(exp,:,2)), nanstd(coh4plot(:,:,2))./sqrt(exp_idx), 'cmap', cmap(1, :));
+boundedline(freqs, nanmedian(coh4plot(ctrl,:,2)), nanstd(coh4plot(:,:,2))./sqrt(exp_idx), 'cmap', cmap(3, :));
+xlim([2 49]); ylim([0.1 0.5])
 set(gca,'TickDir','out', 'FontSize',12, 'FontName', 'Arial'); 
 xlabel('Frequency (Hz)'); ylabel('Imag Coh');
 title('TH to ACC stim', 'FontSize', 18, 'FontWeight', 'bold', 'FontName', 'Arial'); 
-legend('','pre','','stim','','shuffled');
+legend('','pre','','stim','','ctrl');
 
 
 

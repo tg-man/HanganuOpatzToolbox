@@ -136,4 +136,17 @@ ylabel('z-scored firing rate (A.U.)'); xlabel('Time (s)'); xlim([0 10])
 title(['SUA firing rate in ' RespArea ' to ' StimArea ' Stim'])
 set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
 
+figure;
+boundedline(linspace(0, 10, size(spikes_reduced, 2)), mean(spikes_reduced), std(spikes_reduced) ./ sqrt(size(spikes_reduced, 1))); 
+hold on
+plot([3 3], get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for opto
+plot([6 6], get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for opto
+ylabel('average FR (Hz)'); xlabel('Time (s)'); xlim([0 10])
+title(['SUA FR in ' RespArea ' to ' StimArea ' Stim'])
+set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
+set(gca, 'YScale', 'log'); 
+
+
+
+
 end

@@ -83,10 +83,6 @@ for area_idx = 1: numel(plotAreas)
     set(gca,'FontSize',12); set(gca, 'FontName', 'Arial')
     xlim([1 49]); ylim([0.1 100]); 
     set(gca, 'YScale', 'log')
-    
-    % add some code here and put the output in different structure fields 
-    
-    
     clear RelSpectrum Spectrumpre SpectrumStim
 end 
 end

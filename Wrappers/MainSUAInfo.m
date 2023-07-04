@@ -5,15 +5,15 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments([99:127]); % what experiments to keep
+experiments = experiments([1:44]); % what experiments to keep
 save_data = 1;
 cores = 4; 
 
-BrainAreas = {'ACC','Str','TH3'}; % Brain area iterable: {'ACC','PL','Str','TH3'}
+BrainAreas = {'PFC','Str'}; % Brain area iterable: {'ACC','PL','Str','TH3'}
 
-folder4PRM = 'C:\Klusta\PRM\3Probe\'; % need NOT to be animal specific
-folder4DAT = 'Q:\Personal\Tony\Analysis\Results_3Probe_DAT\';
-folder2save = 'Q:\Personal\Tony\Analysis\Results_3Probe_SUAinfo\';
+folder4PRM = 'C:\Klusta\PRM\'; % need NOT to be animal specific
+folder4DAT = 'Q:\Personal\Tony\Analysis\Results_2Probe_DAT\';
+folder2save = 'Q:\Personal\Tony\Analysis\Results_2Probe_SUAinfo\';
 
 for idx_area = 1 : numel(BrainAreas)
     
@@ -21,7 +21,7 @@ for idx_area = 1 : numel(BrainAreas)
     disp(['writing brain area ' BrainArea])
     
     % select experiments with correct targetting for this brain area
-    if strcmp(BrainArea, 'ACC') || strcmp(BrainArea, 'PL')
+    if strcmp(BrainArea, 'ACC') || strcmp(BrainArea, 'PL') || strcmp(BrainArea, 'PFC')
         experiments2run = experiments(strcmp(extractfield(experiments, 'Area1'), BrainArea) & extractfield(experiments, 'target1') == 1); 
     elseif strcmp(BrainArea, 'Str')
         experiments2run = experiments(strcmp(extractfield(experiments, 'Area2'), BrainArea) & extractfield(experiments, 'target2') == 1);
@@ -47,5 +47,7 @@ for idx_area = 1 : numel(BrainAreas)
         loadKlusta(animal, folder4PRM_area, folder4DAT_animal, save_data, folder2save_area);
     end
 end
+
+
 
 

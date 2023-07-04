@@ -1,7 +1,9 @@
+
 clear
 experiments = get_experiment_redux;
-experiments = experiments([80:127]);
+experiments = experiments([80:157]);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
+experiments = experiments(extractfield(experiments, 'IUEconstruct') == 59);
 save_data = 1;
 repeatCalc = 0;
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_3Probe_stim\';
@@ -10,10 +12,10 @@ folder4pulses = 'Q:\Personal\Tony\Analysis\Results_3Probe_OptoMatricesPulse\';
 folder4ramps = 'Q:\Personal\Tony\Analysis\Results_3Probe_OptoMatricesRamp_shift\';
 BrainAreas = {'ACC','Str','TH3'};%{'ACC','PL','Str','TH3'};
 pulses = {[0.005, 0.015, 0.050], [0.015, 0.050]}; 
-StimAreas = {'ACCsup', 'Str', 'TH'};
+StimAreas = {'ACCsup'}; %{'ACCsup', 'Str', 'TH'}; 
+experiments = experiments(strcmp(extractfield(experiments, 'ramp'), 'ACCsup')| strcmp(extractfield(experiments, 'square'), 'ACCsup'));
 
 %% compute/plot firing rate stuff 
-
 
 for area_idx = 1 : numel(BrainAreas) % iterate through each brain area 
     % select experiments with correct targetting for this brain area
@@ -42,7 +44,7 @@ for area_idx = 1 : numel(BrainAreas) % iterate through each brain area
         if ~size(exp2run,2) == 0        
             plotRampFiringRateHenrik(exp2run, BrainArea, StimArea, [folder4matrix BrainArea '\'], folder4stim, folder4ramps);
 %             plotRampFiringSigUnits(exp2run, BrainArea, StimArea, [folder4matrix BrainArea '\'], folder4stim, folder4ramps);
-%             plotPulsesFiringRateHenrik(exp2run, BrainArea, StimArea, pulse_length, [folder4matrix BrainArea '\'], folder4stim, folder4pulses);
+%             plotPulsesFiringRate(exp2run, BrainArea, StimArea, pulse_length, [folder4matrix BrainArea '\'], folder4stim, folder4pulses);
         else 
             disp(['there is no ' BrainArea ' recording with ' StimArea ' Stim!'])
         end 

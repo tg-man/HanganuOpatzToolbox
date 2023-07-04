@@ -15,6 +15,7 @@ xlRange = 'A1:DZ1000';
 
 [~, idxC_n_experiment] = find(strcmp(InfoandDevMil, 'n_experiment'));
 [~, idxC_animalID] = find(strcmp(InfoandDevMil, 'animal_ID'));
+[~, idxC_Sites] = find(strcmp(InfoandDevMil, 'Sites'));
 [~, idxC_Exp_type] = find(strcmp(InfoandDevMil, 'Exp_type'));
 [~, idxC_Alive_recording] = find(strcmp(InfoandDevMil, 'Alive recording'));
 [~, idxC_Path] = find(strcmp(InfoandDevMil, 'Path'));
@@ -53,6 +54,7 @@ for row = 6:1000
             end
             experiments(InfoandDevMil{row,  idxC_n_experiment}).animal_ID = InfoandDevMil{row,  idxC_animalID};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).Exp_type = InfoandDevMil{row,  idxC_Exp_type};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).sites = InfoandDevMil{row,  idxC_Sites};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).name = InfoandDevMil{row,  idxC_Alive_recording};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).path = InfoandDevMil{row,  idxC_Path};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).age = InfoandDevMil{row,  idxC_Age};

@@ -61,7 +61,6 @@ for exp_idx = 1 : size(experiments, 2)
         signal = ZeroPhaseFilter(signal, fs, [0.5 high_cut]); % origianlly 0.1
         LFP(channel, :) = signal(1 : downsampling_factor : end);
     end
-    clear signal
     bad_ch = [experiment.NoisyCh,experiment.OffCh];
     bad_ch = bad_ch(ismember(bad_ch, ch2load));
     LFP(bad_ch, :) = NaN; % Do the same here for noisy channels

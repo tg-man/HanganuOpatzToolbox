@@ -9,6 +9,8 @@ function PPC = computePPC(phases)
 % OUTPUT
 %   PPC :                 - PPC
 
+
+phases = phases(~isnan(phases)); % added line here! 
 SpikephasesMatrix = repmat(phases, length(phases), 1);
 DotProd = cos(SpikephasesMatrix - SpikephasesMatrix');
 DotProd(logical(eye(size(DotProd)))) = 0; 

@@ -2,8 +2,9 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([80:127]);
+experiments = experiments([80:157]);
 experiments = experiments(strcmp(extractfield(experiments, 'ramp'), 'ACCsup'));
+experiments = experiments(extractfield(experiments, 'IUEconstruct') == 59);
 folderPowRamps = 'Q:\Personal\Tony\Analysis\Results_3Probe_RampPower_3s\'; 
 ch_acc = 17:32; 
 ch_str = 1:16; 
@@ -48,23 +49,45 @@ end
 
 
 figure; 
-SDRpre_accstr_norm = (SDRpre_accstr(:,1) - SDRpre_accstr(:,2))./(SDRpre_accstr(:,1) + SDRpre_accstr(:,2))
-SDRstim_accstr_norm = (SDRstim_accstr(:,1) - SDRstim_accstr(:,2))./(SDRstim_accstr(:,1) + SDRstim_accstr(:,2))
+SDRpre_accstr_norm = (SDRpre_accstr(:,1) - SDRpre_accstr(:,2))./(SDRpre_accstr(:,1) + SDRpre_accstr(:,2));
+SDRstim_accstr_norm = (SDRstim_accstr(:,1) - SDRstim_accstr(:,2))./(SDRstim_accstr(:,1) + SDRstim_accstr(:,2));
 SDR_accstr_norm = [SDRpre_accstr_norm, SDRstim_accstr_norm]; 
 violinplot(SDR_accstr_norm); 
 ylabel('normalized SDR'); xticklabels({'pre','stim'});
 set(gca, 'FontSize', 16, 'Fontname', 'Arial'); 
 title('SDR: ACC -> Str', 'FontWeight', 'Bold')
-plot([1.3,1.7], [SDR_accstr_norm(:,1),SDR_accstr_norm(:,2)], 'k')
+plot([1.2,1.8], [SDR_accstr_norm(:,1),SDR_accstr_norm(:,2)], 'k')
 
 
 figure; 
-SDRpre_accth_norm = (SDRpre_accth(:,1) - SDRpre_accth(:,2))./(SDRpre_accth(:,1) + SDRpre_accth(:,2))
-SDRstim_accth_norm = (SDRstim_accth(:,1) - SDRstim_accth(:,2))./(SDRstim_accth(:,1) + SDRstim_accth(:,2))
+SDRpre_accth_norm = (SDRpre_accth(:,1) - SDRpre_accth(:,2))./(SDRpre_accth(:,1) + SDRpre_accth(:,2));
+SDRstim_accth_norm = (SDRstim_accth(:,1) - SDRstim_accth(:,2))./(SDRstim_accth(:,1) + SDRstim_accth(:,2));
 SDR_accth_norm = [SDRpre_accth_norm, SDRstim_accth_norm]; 
 violinplot(SDR_accth_norm); 
 ylabel('normalized SDR'); xticklabels({'pre','stim'});
 set(gca, 'FontSize', 16, 'Fontname', 'Arial'); 
 title('SDR: ACC -> TH', 'FontWeight', 'Bold')
-plot([1.3,1.7], [SDR_accth_norm(:,1),SDR_accth_norm(:,2)], 'k')
+plot([1.2,1.8], [SDR_accth_norm(:,1),SDR_accth_norm(:,2)], 'k')
+
+% Code to generate struct for Mattia 
+% 
+% for exp_idx = 1:size(experiments, 2) 
+%     OptoSDRstr(exp_idx).animal_ID = experiments(exp_idx).animal_ID 
+%     OptoSDRstr(exp_idx).SDRpre = SDRpre_accstr_norm(exp_idx) 
+%     OptoSDRstr(exp_idx).SDRstim = SDRstim_accstr_norm(exp_idx)
+%     OptoSDRstr(exp_idx).pair = 'PFC to Str'; 
+% end 
+% 
+% for exp_idx = 1:size(experiments, 2) 
+%     OptoSDRth(exp_idx).animal_ID = experiments(exp_idx).animal_ID 
+%     OptoSDRth(exp_idx).SDRpre = SDRpre_accth_norm(exp_idx) 
+%     OptoSDRth(exp_idx).SDRstim = SDRstim_accth_norm(exp_idx)
+%     OptoSDRth(exp_idx).pair = 'PFC to TH'; 
+% end 
+%  
+% 
+% OptoSDR = horzcat(OptoSDRstr, OptoSDRth)
+% field = 'mycell';
+% value = {{'a','b','c'}};
+% s = struct(field,value)
 

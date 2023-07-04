@@ -44,6 +44,9 @@ else
         SUAinfo = NaN;
     end
     if save_data == 1
+        if ~exist(output_folder)
+            mkdir(output_folder)
+        end 
         save(strcat(output_folder, experiment.name), 'spike_matrix', 'clusters')
     end
 end
