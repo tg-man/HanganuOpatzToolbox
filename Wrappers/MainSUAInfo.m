@@ -5,15 +5,17 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments([1:44]); % what experiments to keep
+experiments = experiments([189 190]); % what experiments to keep
+% experiments = experiments(strcmp(extractfield(experiments, 'Area1'), 'PL'));
+
 save_data = 1;
 cores = 4; 
 
-BrainAreas = {'PFC','Str'}; % Brain area iterable: {'ACC','PL','Str','TH3'}
+BrainAreas = {'Str'}; % Brain area iterab le: {'ACC','PL','Str','TH3'}
 
-folder4PRM = 'C:\Klusta\PRM\'; % need NOT to be animal specific
-folder4DAT = 'Q:\Personal\Tony\Analysis\Results_2Probe_DAT\';
-folder2save = 'Q:\Personal\Tony\Analysis\Results_2Probe_SUAinfo\';
+folder4PRM = 'C:\Klusta\PRM\3Probe\'; % need NOT to be animal specific
+folder4DAT = 'Q:\Personal\Tony\Analysis\Results_3Probe_DAT\';
+folder2save = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\';
 
 for idx_area = 1 : numel(BrainAreas)
     
@@ -21,15 +23,15 @@ for idx_area = 1 : numel(BrainAreas)
     disp(['writing brain area ' BrainArea])
     
     % select experiments with correct targetting for this brain area
-    if strcmp(BrainArea, 'ACC') || strcmp(BrainArea, 'PL') || strcmp(BrainArea, 'PFC')
-        experiments2run = experiments(strcmp(extractfield(experiments, 'Area1'), BrainArea) & extractfield(experiments, 'target1') == 1); 
+    if strcmp(BrainArea, 'ACC') || strcmp(BrainArea, 'PL')
+        experiments2run = experiments(strcmp(extractfield(experiments, 'Area1'), BrainArea) & extractfield(experiments, 'target1') == 1);
     elseif strcmp(BrainArea, 'Str')
         experiments2run = experiments(strcmp(extractfield(experiments, 'Area2'), BrainArea) & extractfield(experiments, 'target2') == 1);
-    elseif strcmp(BrainArea, 'TH3')
-        experiments2run = experiments(strcmp(extractfield(experiments, 'Area3'), BrainArea(1:end-1)) & extractfield(experiments, 'target3') == 1);
+    elseif strcmp(BrainArea, 'TH')
+        experiments2run = experiments(strcmp(extractfield(experiments, 'Area3'), BrainArea) & extractfield(experiments, 'target3') == 1);
     end
-    folder4PRM_area = [folder4PRM BrainArea '\']; 
-    folder2save_area = [folder2save BrainArea '\'];   
+    folder4PRM_area = [folder4PRM BrainArea '\'];
+    folder2save_area = [folder2save BrainArea '\'];
     
     % get the unique animal IDs from those experiments 
     animals = extractfield(experiments2run, 'animal_ID');
@@ -47,7 +49,3 @@ for idx_area = 1 : numel(BrainAreas)
         loadKlusta(animal, folder4PRM_area, folder4DAT_animal, save_data, folder2save_area);
     end
 end
-
-
-
-

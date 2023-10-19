@@ -7,10 +7,10 @@ ExtractMode = 2; % for extracting nlx data
 fs = 32000; % sampling rate
 % define period in ms; time stamps can change depending on signal loading.
 % Refer to line #45
-pre = 1000 : 4000;
-first_half = 5000 : 6500;
-second_half = 5000 : 8000;
-post = 8500 : 11500;
+pre = 1000 : 3999;
+first_half = 4000 : 5500;
+second_half = 4000 : 7000;
+post = 7500 : 10500;
 % parameters for pWelch
 windowSize = 1;
 overlap = 0.4;

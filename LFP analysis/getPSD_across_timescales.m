@@ -1,5 +1,5 @@
 function [PSD, PSD_slow, PSD_fast, freqs, freqs_slow, freqs_fast, time_slow, time_fast] = ...
-    getPSD_across_timescales(LFP, fs, freq2analyze, slow_freqs, fast_freqs, folder2save, animal_name, area, save_data)
+    getPSD_across_timescales(LFP, fs, freq2analyze, slow_freqs, fast_freqs, folder2save, animal_name, save_data)
 % from Mattia 06.20
 % compute power spectra:
 % 1. down to very low frequencies using multitapers of different length, 
@@ -103,7 +103,7 @@ if save_data == 1
     if ~ exist(folder2save, 'dir')
         mkdir(folder2save)
     end
-    save(strcat(strcat(folder2save, animal_name, '_', area)), 'PSDstruct')
+    save(strcat(strcat(folder2save, animal_name)), 'PSDstruct')
 end
 
 end

@@ -248,28 +248,24 @@ for exp_idx = 1 : size(experiments, 2)
     clear PSDstruct 
 
     % load Str
+    if strcmp(experiment.sites, '2site') && experiment.target2 == 1
+        load([folder4PSD2 experiment.Area2 '\' experiment.animal_ID]);
+    elseif strcmp(experiment.sites, '3site') && experiment.target2 == 1
+        load([folder4PSD3 experiment.Area2 '\' experiment.animal_ID]); 
+    end
     if experiment.target2 == 1 
-        load([folder4PSD experiment.Area2 '\' experiment.animal_ID]); 
         Power_Str(exp_idx, :) = nanmedian(PSDstruct.PSD);
         PowerSlow_Str(exp_idx, :) = nanmedian(nanmedian(PSDstruct.PSD_slow), 3);
         PowerFast_Str(exp_idx, :) = nanmedian(nanmedian(PSDstruct.PSD_fast), 3);
-    else 
-        Power_Str(exp_idx, :) = NaN;
-        PowerSlow_Str(exp_idx, :) = NaN;
-        PowerFast_Str(exp_idx, :) = NaN;
     end
     clear PSDstruct
    
     % load TH
     if strcmp(experiment.sites, '3site') && experiment.target3 == 1
-        load([folder4PSD experiment.Area3 '\' experiment.animal_ID]); 
+        load([folder4PSD3 experiment.Area3 '\' experiment.animal_ID]); 
         Power_TH(exp_idx, :) = nanmedian(PSDstruct.PSD);
         PowerSlow_TH(exp_idx, :) = nanmedian(nanmedian(PSDstruct.PSD_slow), 3);
         PowerFast_TH(exp_idx, :) = nanmedian(nanmedian(PSDstruct.PSD_fast), 3);
-    else 
-        Power_TH(exp_idx, :) = NaN;
-        PowerSlow_TH(exp_idx, :) = NaN;
-        PowerFast_TH(exp_idx, :) = NaN;
     end
     clear PSDstruct
 end 

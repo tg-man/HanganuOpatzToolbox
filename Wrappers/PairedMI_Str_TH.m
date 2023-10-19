@@ -1,10 +1,12 @@
 clear
 experiments = get_experiment_redux;
-experiments = experiments([80:157]);
+experiments = experiments([73:233]);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
+experiments = experiments(strcmp(extractfield(experiments, 'sites'), '3site'));
 StimArea = 'ACCsup'; 
 experiments = experiments(strcmp(extractfield(experiments, 'ramp'), StimArea)| strcmp(extractfield(experiments, 'square'), StimArea));
-experiments = experiments(extractfield(experiments, 'IUEconstruct') == 87);
+% experiments = experiments(extractfield(experiments, 'IUEconstruct') == 87);
+experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
 
 save_data = 1;
 repeatCalc = 0;
@@ -12,7 +14,7 @@ folder4stim = 'Q:\Personal\Tony\Analysis\Results_3Probe_stim\';
 folder4matrix = 'Q:\Personal\Tony\Analysis\Results_3Probe_SpikeMatrix\';
 folder4pulses = 'Q:\Personal\Tony\Analysis\Results_3Probe_OptoMatricesPulse\';
 folder4ramps = 'Q:\Personal\Tony\Analysis\Results_3Probe_OptoMatricesRamp_shift\';
-BrainAreas = {'Str','TH3'}; %{'ACC','PL','Str','TH3'};
+BrainAreas = {'Str','TH'}; %{'ACC','PL','Str','TH3'};
 
 map4plot = viridis(100);
 Gwindow = gausswin(1001, 10); % gaussian window of 1000ms with stdev of 100ms
@@ -32,8 +34,8 @@ animal_th = [];
 age_th = []; 
 
 pre_stim = 1 : 3000; % in ms, ramp format
-stim = 4000 : 7000; % in ms, ramp format
-post_stim = 7001 : 9000; % in ms, ramp format
+stim = 3001 : 6000; % in ms, ramp format
+post_stim = 7001 : 10000; % in ms, ramp format
 idx = 1;
 
 for animal_idx = 1 : length(experiments) 
@@ -45,7 +47,7 @@ for animal_idx = 1 : length(experiments)
         RespArea = BrainAreas{area_idx}; 
         
         if (area_idx == 1 && experiment.target2 == 1) || (area_idx ==2 && experiment.target3 == 1)
-            SUAdata = getRampsSpikeMatrix(experiment, save_data, RespArea, [folder4matrix RespArea '\'], folder4stim, folder4ramps);
+            SUAdata = getRampsSpikeMatrix(experiment, save_data, repeatCalc, RespArea, [folder4matrix RespArea '\'], folder4stim, folder4ramps);
             spikes_animal = SUAdata.ramp_spike_matrix;
             
             if numel(spikes_animal) > 0
@@ -87,11 +89,16 @@ for animal_idx = 1 : length(experiments)
 end 
 
 
-figure;
-scatter(1+rand(size(OMI_str))*0.2, OMI_str, 'filled', 'MarkerFaceAlpha', 0.5); hold on; 
-scatter(2+rand(size(OMI_th))*0.2, OMI_th, 'filled', 'MarkerFaceAlpha', 0.5); 
-xlim([0 3]); yline(0);
-legend('str', 'th')
+% 
+% OMI_str = OMI_str(~(OMI_str == 1 | OMI_str == -1))
+% OMI_th = OMI_th(~(OMI_th == 1 | OMI_th == -1))
+
+figure; set(gcf, 'position', [100 100 500 420])
+violins = violinplot([OMI_str, OMI_th], [repmat({'Str'},1, length(OMI_str)), repmat({'TH'}, 1, length(OMI_th))], 'ViolinAlpha', 0.7, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]) 
+% scatter(1+rand(size(OMI_str))*0.2, OMI_str, 'filled', 'MarkerFaceAlpha', 0.5); hold on; 
+% scatter(2+rand(size(OMI_th))*0.2, OMI_th, 'filled', 'MarkerFaceAlpha', 0.5); 
+xlim([0.5 2.5]); yline(0, ':');
+ylabel('SUA MI'); xticklabels({'Str','TH'})
 title('modulation index')
 
 p_mod = ranksum(OMI_str, OMI_th)

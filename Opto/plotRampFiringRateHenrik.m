@@ -15,8 +15,8 @@ OMIpost = [];
 pvalue = [];
 pvalue_post = [];
 pre_stim = 1 : 3000; % in ms, ramp format
-stim = 4000 : 7000; % in ms, ramp format
-post_stim = 7001 : 10000; % in ms, ramp format
+stim = 3001 : 6000; % in ms, ramp format
+post_stim = 6001 : 9000; % in ms, ramp format
 idx = 1;
 
 % this loop goes through all experiments and calculate the standard OMI and
@@ -25,7 +25,7 @@ for n_animal = 1 : length(experiments)
     experiment = experiments(n_animal);
     animal{idx} = experiment.animal_ID;
     idx = idx +1;
-    SUAdata = getRampsSpikeMatrix(experiment, save_data, RespArea, ...
+    SUAdata = getRampsSpikeMatrix(experiment, save_data, 0, RespArea, ...
         folder4matrix, folder4stim, folder4ramps);
     spikes_animal = SUAdata.ramp_spike_matrix;
     % first concatenate the spike tensor into a matrix
@@ -73,7 +73,7 @@ spikes_reduced = squeeze(mean(reshape(spikes_tot, size(spikes_tot, 1), 100, []),
 % sort spike trains by similarity but only use "central" part to stress opto differences
 zscored_units = zscore(spikes_reduced, [], 2); % zscore
 idx_sorted = sort_spike_trains(zscored_units);
-figure; imagesc(flipud(zscored_units(idx_sorted, :)), [-1 3]); colormap(map4plot) % plot
+figure; imagesc(flipud(zscored_units(idx_sorted, :)), [-1 3]); colormap(map4plot); % plot
 hold on
 plot([size(spikes_reduced, 2) / 10 * 3 size(spikes_reduced, 2) / 10 * 3], ...
     get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for opto
@@ -139,9 +139,10 @@ set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Aria
 figure;
 boundedline(linspace(0, 10, size(spikes_reduced, 2)), mean(spikes_reduced), std(spikes_reduced) ./ sqrt(size(spikes_reduced, 1))); 
 hold on
-plot([3 3], get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for opto
-plot([6 6], get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for opto
-ylabel('average FR (Hz)'); xlabel('Time (s)'); xlim([0 10])
+xline(3, 'k', 'linewidth', 1) % reference line for opto
+xline(6, 'k', 'linewidth', 1) % reference line for opto
+ylabel('average FR (Hz)'); xlabel('Time (s)'); xlim([0 10]); 
+%ylim([0 0.0006])
 title(['SUA FR in ' RespArea ' to ' StimArea ' Stim'])
 set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
 set(gca, 'YScale', 'log'); 

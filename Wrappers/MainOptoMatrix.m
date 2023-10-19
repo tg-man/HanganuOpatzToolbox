@@ -3,19 +3,21 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([80:157]);
+experiments = experiments([189 190]);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
+% experiments = experiments(strcmp(extractfield(experiments, 'sites'), '2site'));
+% experiments = experiments(strcmp(extractfield(experiments, 'Area1'), 'PL'));
 save_data = 1;
-repeatCalc = 1; 
+repeatCalc = 1;
 pulses = {[0.005, 0.015, 0.050], [0.015, 0.050]}; 
-folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_3Probe_SUAinfo\';
-folder4SM = 'Q:\Personal\Tony\Analysis\Results_3Probe_SpikeMatrix\';
-folder4stim = 'Q:\Personal\Tony\Analysis\Results_3Probe_StimProp\';
-folder4pulses = 'Q:\Personal\Tony\Analysis\Results_3Probe_OptoMatricesPulse\';
-folder4ramps = 'Q:\Personal\Tony\Analysis\Results_3Probe_OptoMatricesRamp_shift\';
+folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\';
+folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\';
+folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\';
+folder4pulses = 'Q:\Personal\Tony\Analysis\Results_OptoMatricesPulse\';
+folder4ramps = 'Q:\Personal\Tony\Analysis\Results_OptoMatricesRamp_shift\';
 
 % brain areas
-BrainAreas = {'ACC','Str','TH3'};%{'ACC','PL','Str','TH3'};
+BrainAreas = {'Str'}; %{'ACC','PL','Str','TH'};
 
 %% save all the spike matrices (generic, for pulses and for ramps)
 
@@ -34,8 +36,8 @@ for area_idx = 1 : numel(BrainAreas)
         experiments2run = experiments(strcmp(extractfield(experiments, 'Area1'), BrainArea) & extractfield(experiments, 'target1') == 1); 
     elseif strcmp(BrainArea, 'Str')
         experiments2run = experiments(strcmp(extractfield(experiments, 'Area2'), BrainArea) & extractfield(experiments, 'target2') == 1);
-    elseif strcmp(BrainArea, 'TH3')
-        experiments2run = experiments(strcmp(extractfield(experiments, 'Area3'), BrainArea(1:end-1)) & extractfield(experiments, 'target3') == 1); 
+    elseif strcmp(BrainArea, 'TH')
+        experiments2run = experiments(strcmp(extractfield(experiments, 'Area3'), BrainArea) & extractfield(experiments, 'target3') == 1); 
     end
     
     % going through each experiment now 
@@ -57,48 +59,8 @@ for area_idx = 1 : numel(BrainAreas)
         getSpikeMatrixHenrik(experiment, resultsKlusta, save_data, repeatCalc, SM_output); 
 
         getPulsesSpikeMatrix(experiment, save_data, repeatCalc, pulse_length, SM_output, folder4stim, BrainArea, folder4pulses);
-        getRampsSpikeMatrix(experiment, save_data, BrainArea, SM_output, folder4stim, folder4ramps);                      
+        getRampsSpikeMatrix(experiment, save_data, repeatCalc, BrainArea, SM_output, folder4stim, folder4ramps);                      
     end 
 end 
 
-%% small section for baseline spike matrices 
-
-clear
-experiments = get_experiment_redux;
-experiments = experiments([80:157]);
-experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only'));
-save_data = 1;
-repeatCalc = 1; 
-folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_3Probe_SUAinfo\';
-folder4SM = 'Q:\Personal\Tony\Analysis\Results_3Probe_SpikeMatrix\';
-
-% brain areas
-BrainAreas = {'PFC','Str','TH3'};%{'ACC','PL','Str','TH3'};
-
-for area_idx = 1 : numel(BrainAreas)     
-    
-    BrainArea = BrainAreas{area_idx}; %define brain area for this loop
-    disp(['writing brain area ' BrainArea])
-    
-    % select experiments with correct targetting for this brain area
-    if strcmp(BrainArea, 'ACC') || strcmp(BrainArea, 'PL')
-        experiments2run = experiments(strcmp(extractfield(experiments, 'Area1'), BrainArea) & extractfield(experiments, 'target1') == 1); 
-    elseif strcmp(BrainArea, 'Str')
-        experiments2run = experiments(strcmp(extractfield(experiments, 'Area2'), BrainArea) & extractfield(experiments, 'target2') == 1);
-    elseif strcmp(BrainArea, 'TH3')
-        experiments2run = experiments(strcmp(extractfield(experiments, 'Area3'), BrainArea(1:end-1)) & extractfield(experiments, 'target3') == 1); 
-    end
-    
-    % going through each experiment now 
-    for exp_idx = 1 : numel(experiments2run) 
-        experiment = experiments2run(exp_idx);
-        disp(['writing exp #' num2str(exp_idx) ' out of ' num2str(numel(experiments2run))]) 
-        
-        resultsKlusta = [folder4SUAinfo BrainArea '\'];
-        SM_output = [folder4SM BrainArea '\']; 
-
-        % here it doesn't calculate the baseline experiments because no baseline experiment was put in!
-        getSpikeMatrixHenrik(experiment, resultsKlusta, save_data, repeatCalc, SM_output);                    
-    end 
-end 
 

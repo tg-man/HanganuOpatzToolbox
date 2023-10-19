@@ -1,9 +1,9 @@
-function SUAdata_ramp = getRampsSpikeMatrix(experiment, save_data, RespArea, ...
+function SUAdata_ramp = getRampsSpikeMatrix(experiment, save_data, repeatCalc, RespArea, ...
     folder4matrix, folder4stim, folder4ramps)
 
 % with 1s shift, see 
 
-if exist([folder4ramps, RespArea, '/', experiment.name, '.mat'])
+if exist([folder4ramps, RespArea, '/', experiment.name, '.mat'])&& repeatCalc == 0
     load([folder4ramps, RespArea, '/', experiment.name, '.mat'])
 else
     display(['calculating ramp matrix for ', experiment.name])

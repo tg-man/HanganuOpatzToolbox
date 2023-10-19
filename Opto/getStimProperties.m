@@ -5,6 +5,9 @@ for n_animal = 1:length(experiments)
         disp(['Already calculated stimProperties for: ' experiment.name ', expNumber ' num2str(n_animal)])
     else
         disp(['Calculating stimProperties for: ' experiment.name ', expNumber ' num2str(n_animal)])
+        if ~exist(folder2save, 'dir')
+            mkdir(folder2save)
+        end 
         [StimTimestamps] = getStimulationTimeStampsHenrik(experiment, save_data, folder2save);
         StimTimestamps = StimTimestamps / 10; % divided here by 10 because the signal is also downsampled by 10 in the next line
         [~, signalD, ~,~] = nlx_load_Opto(experiment, 'Stim1D', [], 10, 0);

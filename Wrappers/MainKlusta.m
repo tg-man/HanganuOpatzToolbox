@@ -7,9 +7,9 @@
 
 clear all
 klusta = 1;
-common_average_reference = 1; 
+common_average_reference = 1;
 experiments = get_experiment_redux(klusta);
-experiments = experiments([146:157]);
+experiments = experiments([228:233]);
 % experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto')); 
 cores = 4; 
 
@@ -20,11 +20,11 @@ DATfolder = 'Q:/Personal/Tony/Analysis/Results_3Probe_DAT/'; % folder in which y
                                                                     % / slash direction is important in this line. Don't change!
                                                                     % (better be on Q, unless you have a lot of space 
                                                                     % on your disk)
-                                    
+                             
 probetypes = {'4shank', '16_50m'}; % select the probe that you used for your experiments 
                                    % probes currently available are '4shank' and '16_50m'
 
-BrainAreas = {'ACC','Str','TH3'}; % Brain area iterable: {'ACC','PL','Str','TH3'}
+BrainAreas = {'ACC','Str', 'TH'}; % Brain area iterable: {'ACC','PL','Str','TH'}
 
 % this part here follows the rationale of having multiple recordings 
 % ("experiment" in the jergon of get_experiment_redux) from the same
@@ -67,11 +67,11 @@ for idx_area = 1 : numel(BrainAreas)
         probetype = probetypes{2};
         TH_mode = 0; 
         experiments2run = experiments(strcmp(extractfield(experiments, 'Area2'), BrainArea) & extractfield(experiments, 'target2') == 1);
-    elseif strcmp(BrainArea, 'TH3')
+    elseif strcmp(BrainArea, 'TH')
         channels = 33 : 48;
         probetype = probetypes{2};
         TH_mode = 1; % use 1 when sorting TH data; use 0 for other brain areas 
-        experiments2run = experiments(strcmp(extractfield(experiments, 'Area3'), BrainArea(1:end-1)) & extractfield(experiments, 'target3') == 1);
+        experiments2run = experiments(strcmp(extractfield(experiments, 'Area3'), BrainArea) & extractfield(experiments, 'target3') == 1);
     end 
     
     % get a list of unique animals numbers 
@@ -80,7 +80,7 @@ for idx_area = 1 : numel(BrainAreas)
     animals = unique(cellfun(@num2str, animals, 'un', 0));
     
     % looping over animals to generate files 
-    parfor (idx_animal = 1 : length(animals), cores)
+    parfor (idx_animal = 1 : length(animals), cores) 
         disp(['writing animal number ', num2str(idx_animal)])
         animal = animals{idx_animal};
         exp_idx = find(strcmp(extractfield(experiments2run, 'animal_ID'), animal),1);

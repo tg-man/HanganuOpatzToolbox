@@ -1,6 +1,6 @@
 
 %% load experiment info and set a few variables for analysis
-%% Base-script written by Dr. Mattia Chini 2020., furhter modified by Henrik Østby 2020-2021
+%% Base-script written by Dr. Mattia Chini 2020., furhter modified by Henrik Ã˜stby 2020-2021
 
 clear
 % load experiments and generic stuff

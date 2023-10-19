@@ -2,10 +2,11 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([80:157]);
-experiments = experiments(strcmp(extractfield(experiments, 'ramp'), 'ACCsup'));
-experiments = experiments(extractfield(experiments, 'IUEconstruct') == 59);
-folderPowRamps = 'Q:\Personal\Tony\Analysis\Results_3Probe_RampPower_3s\'; 
+experiments = experiments([73:233]);
+experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCsup'));
+experiments = experiments(extractfield(experiments, 'IUEconstruct') == 87);
+% experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
+folderPowRamps = 'Q:\Personal\Tony\Analysis\Results_3Probe_RampPower\'; 
 ch_acc = 17:32; 
 ch_str = 1:16; 
 ch_th = 33:48; 
@@ -17,14 +18,23 @@ for exp_idx = 1:numel(experiments)
     % initialize PSD variables and load data channel by channel 
     power_pre = []; 
     power_stim = []; 
-    for ch = 1:48 
-        load([folderPowRamps experiment.name '\' num2str(ch)])
-        power_pre = [power_pre; median(StimPowerRamps.Pre_sup,1)];
-        power_stim = [power_stim; median(StimPowerRamps.Half2_sup,1)];
-    end
     
+    if strcmp(experiment.sites, '3site') 
+        for ch = 1:48 
+            load([folderPowRamps experiment.name '\' num2str(ch)])
+            power_pre = [power_pre; median(StimPowerRamps.Pre_sup,1)];
+            power_stim = [power_stim; median(StimPowerRamps.Half2_sup,1)];
+        end
+    elseif strcmp(experiment.sites, '2site')
+        for ch = 1:32
+            load([folderPowRamps experiment.name '\' num2str(ch)])
+            power_pre = [power_pre; median(StimPowerRamps.Pre_sup,1)];
+            power_stim = [power_stim; median(StimPowerRamps.Half2_sup,1)];
+        end
+    end 
+
     % take out bad channels 
-    bad_ch = [experiment.NoisyCh,experiment.OffCh];
+    bad_ch = rmmissing([experiment.NoisyCh,experiment.OffCh]);
     power_pre(bad_ch,:) = NaN; 
     power_stim(bad_ch,:) = NaN; 
     
@@ -44,8 +54,8 @@ for exp_idx = 1:numel(experiments)
     else 
         SDRpre_accth(exp_idx, :) = NaN; 
         SDRstim_accth(exp_idx, :) = NaN; 
-    end     
-end 
+    end 
+end
 
 
 figure; 

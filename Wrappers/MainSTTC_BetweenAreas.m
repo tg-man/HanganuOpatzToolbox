@@ -3,13 +3,11 @@
 
 clear; 
 klusta = 1;
-experiments = get_experiment_redux(klusta);
+experiments = get_experiment_redux();
 experiments = experiments([45:67]);
 lags = [5, 10, 20, 50, 100, 500]; % single lags for which to compute tiling coeff, in miliseconds 
 
-folder4SM1 = 'Q:\Personal\Tony\Analysis\Results_3Probe_SpikeMatrix\PFC\'; % path to spike matrices of brain area 1, finished with a slash / 
-folder4SM2 = 'Q:\Personal\Tony\Analysis\Results_3Probe_SpikeMatrix\Str\'; % path to spike matrices of brain area 2
-folder4SM3 = 'Q:\Personal\Tony\Analysis\Results_3Probe_SpikeMatrix\TH3\'; % path to spike matrices of brain area 3
+folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\';
 
 output_folder_a = 'Q:\Personal\Tony\Analysis\Results_3Probe_STTC\PFC_Str\'; 
 output_folder_b = 'Q:\Personal\Tony\Analysis\Results_3Probe_STTC\Str_TH3\'; 

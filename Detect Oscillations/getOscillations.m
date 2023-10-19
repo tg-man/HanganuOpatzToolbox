@@ -1,5 +1,5 @@
 function [oscillations] = getOscillations(experiment, signal, fs, freq_band, rel_thresholds, ...
-    abs_thresholds, threshold_artifact, durations, save_data, repeatCalc, results_folder, channel, area, verbose)
+    abs_thresholds, threshold_artifact, durations, save_data, repeatCalc, results_folder, channel, verbose)
 %    by Mattia based on buszaki code:
 %    https://github.com/buzsakilab/buzcode/blob/master/detectors/detectEvents/bz_FindRipples.m
 %    similar to getRipples but includes also an absolute threshold to make
@@ -214,7 +214,10 @@ else
 %     %end of extra code 
     
     if save_data == 1
-        save(strcat(strcat(results_folder, experiment.animal_ID, '_', area)), 'oscillations')
+        if ~exist(results_folder, 'dir')
+            mkdir(results_folder)
+        end 
+        save(strcat(strcat(results_folder, experiment.animal_ID)), 'oscillations')
     else
         if verbose > 0
             disp('Data not saved!')
