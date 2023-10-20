@@ -13,25 +13,26 @@ clear
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
 experiments = experiments();
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only')); 
+cores = 4; 
 
-BrainArea = 'ACC'; % ACC, Str, TH 
+BrainArea = 'TH'; % ACC, Str, TH 
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
 
 folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\'; 
 
 lags = [5, 10, 20, 50, 100, 500]; % single lags for which to compute tiling coeff
-repeat_calc = 0;
+repeat_calc = 1;
 save_data = 1;
 folder4STTC = 'Q:\Personal\Tony\Analysis\Results_STTC\';
 
-for exp_idx = 1 : size(experiments, 2)
+parfor (exp_idx = 1 : size(experiments, 2), cores)
     experiment = experiments(exp_idx); 
     
     area_idx = find([strcmp(BrainArea, experiment.Area1) strcmp(BrainArea, experiment.Area2) strcmp(BrainArea, experiment.Area3)]); 
 
     if ~isempty(area_idx) && experiment.(['target' num2str(area_idx)]) == 1 
         disp(['running exp ' num2str(exp_idx) ' / ' num2str(size(experiments, 2))])
-        load([folder4SM BrainArea filesep experiment.name]); 
+        spike_matrix = load([folder4SM BrainArea filesep experiment.name]).spike_matrix; 
         getSTTC_global(experiment.animal_ID, spike_matrix, lags, repeat_calc, save_data, [folder4STTC BrainArea '\']);
         getSTTCdist(experiment, BrainArea, folder4SUAinfo, repeat_calc, save_data, [folder4STTC 'Distance\']);
     end 
@@ -61,12 +62,4 @@ end
 %     disp(['animal ', animal_name])
 %     getSTTC_global(animal_name, spike_matrix, lags, repeat_calc, save_data, output_folder_STTCglobal);
 % end
-
-
-
-
-
-
-
-
 
