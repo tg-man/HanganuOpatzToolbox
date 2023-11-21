@@ -32,12 +32,12 @@ else
                 ramp_spike_matrix(stim_idx, :, :) = spike_matrix(:, stim_end - 5999 : stim_end + 4000);
             end
         end
-        pre = sum(sum(ramp_spike_matrix(:, :, 1 : 2995), 3)); % light artifact
-        during = sum(sum(ramp_spike_matrix(:, :, 4005 : 6995), 3)); % light artifact
-        post = sum(sum(ramp_spike_matrix(:, :, 7005: 9995), 3)); % light artifact 
-        pre_single_ramp = sum(ramp_spike_matrix(:, :, 1 : 2995), 3); % light artifact
-        during_single_ramp = sum(ramp_spike_matrix(:, :, 4005 : 6995), 3); % light artifact
-        post_single_ramp = sum(ramp_spike_matrix(:, :, 7005: 9995), 3); % light artifact 
+        pre = sum(sum(ramp_spike_matrix(:, :, 1 : 2999), 3)); 
+        during = sum(sum(ramp_spike_matrix(:, :, 3000 : 6000), 3)); 
+        post = sum(sum(ramp_spike_matrix(:, :, 6001: 9000), 3)); 
+        pre_single_ramp = sum(ramp_spike_matrix(:, :, 1 : 2999), 3); 
+        during_single_ramp = sum(ramp_spike_matrix(:, :, 3000 : 6000), 3);
+        post_single_ramp = sum(ramp_spike_matrix(:, :, 6001: 9000), 3);
         pvalue = zeros(1, length(pre));
         pvalue_post = zeros(1, length(pre)); 
         for unit = 1 : length(pre)

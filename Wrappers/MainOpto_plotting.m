@@ -10,8 +10,8 @@ experiments = experiments([73:232]);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
 % experiments = experiments(strcmp(extractfield(experiments, 'electrode1'), 'W241'));
 % experiments = experiments((extractfield(experiments, 'IUEconstruct')) == 59);
-% experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
-experiments = experiments((extractfield(experiments, 'IUEconstruct')) == 87);
+experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
+% experiments = experiments((extractfield(experiments, 'IUEconstruct')) == 87);
 experiments = experiments(strcmp(extractfield(experiments, 'square'), StimArea));
 % experiments = experiments(strcmp(extractfield(experiments, 'Area1'), 'PL'));
 % experiments = experiments([experiments.age]' == 9 | [experiments.age]' == 10);
@@ -20,7 +20,7 @@ repeatCalc = 0;
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\';
 folder4matrix = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\';
 folder4pulses = 'Q:\Personal\Tony\Analysis\Results_OptoMatricesPulse\';
-folder4ramps = 'Q:\Personal\Tony\Analysis\Results_OptoMatricesRamp_shift\';
+folder4ramps = 'Q:\Personal\Tony\Analysis\Results_OptoMatricesRamp\';
 pulse_length = [0.005, 0.015, 0.050]; 
 
 % experiments = experiments(strcmp(extractfield(experiments, 'electrode1'), 'W238'));
@@ -46,10 +46,10 @@ else
     disp(['there is no ' BrainArea ' recording with ' StimArea ' ramp stim!'])
 end 
 
-% if ~size(experiments,2) == 0      
+if ~size(experiments,2) == 0      
     plotPulsesFiringRate(experiments, BrainArea, StimArea, pulse_length, [folder4matrix BrainArea '\'], folder4stim, folder4pulses);
-% else 
-%     disp(['there is no ' BrainArea ' recording with ' StimArea ' pulse stim!'])
-% end 
+else 
+    disp(['there is no ' BrainArea ' recording with ' StimArea ' pulse stim!'])
+end 
 
 

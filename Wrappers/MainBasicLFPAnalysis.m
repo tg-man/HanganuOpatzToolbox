@@ -5,7 +5,7 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments();
+experiments = experiments([233:239]);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only')); 
 repeatCalc = 0;
 save_data = 1;
@@ -13,7 +13,7 @@ cores = 6;
 % the number of CPU cores to use to load signal. Unless you are doing
 % nothing else on your computer, do not use all of them. Otherwise you will
 % end with no processing power for anything else
-experiments = experiments(107)
+
 
 % loading and filtering variables
 fs = 32000; % sampling rate from data
@@ -54,7 +54,7 @@ for exp_idx = 1 : size(experiments, 2)
     
     % load signal and filter for LFP
     disp(['Loading signal for animal number ' num2str(exp_idx)])
-    parfor (channel = ch2load, cores)
+    parfor (channel = ch2load, cores) 
         file_to_load = [experiment.path, experiment.name, '\CSC', num2str(channel), '.ncs'];
         [~, signal, ~] = load_nlx_Modes(file_to_load, ExtractMode, []);
         signal = ZeroPhaseFilter(signal, fs, [0.5 high_cut]); % origianlly 0.1

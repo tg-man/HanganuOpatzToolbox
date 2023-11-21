@@ -10,8 +10,8 @@ cores = 6;
 
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
 BrainArea1 = 'ACC';
-layer = 'sup'; % sup or deep
-BrainArea2 = 'Str'; % Str or TH
+layer = 'deep'; % sup or deep
+BrainArea2 = 'TH'; % Str or TH
 if strcmp(BrainArea2, 'TH') 
     experiments = experiments(strcmp(extractfield(experiments, 'Area3'), 'TH')); 
 end 

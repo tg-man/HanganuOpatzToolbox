@@ -9,14 +9,14 @@ clear all
 klusta = 1;
 common_average_reference = 1;
 experiments = get_experiment_redux(klusta);
-experiments = experiments([228:233]);
+experiments = experiments([233:239]);
 % experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto')); 
 cores = 4; 
 
-PRMfolder = 'C:\Klusta\PRM\3Probe\'; % main folder in which you store your PRM files 
+PRMfolder = 'C:\Klusta\PRM\'; % main folder in which you store your PRM files 
                                     % (which then are in an area-specific and animal-specific subfolder, full path constructed in the loop)
 
-DATfolder = 'Q:/Personal/Tony/Analysis/Results_3Probe_DAT/'; % folder in which your .DAT and .PRB files will be saved 
+DATfolder = 'Q:/Personal/Tony/Analysis/Results_DAT/'; % folder in which your .DAT and .PRB files will be saved 
                                                                     % / slash direction is important in this line. Don't change!
                                                                     % (better be on Q, unless you have a lot of space 
                                                                     % on your disk)

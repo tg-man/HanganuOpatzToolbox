@@ -85,9 +85,9 @@ ylim([-10 25]); xlim([0 500]);
 subplot(313);
 boundedline(1:500, nanmedian(ERP_th(mice59, :)), nanstd(ERP_th(mice59, :)) ./ sqrt(sum(mice59)), 'r')
 ylim([-10 25]); xlim([0 500]);
-subplot(311); title('ACC'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (microV)'); 
-subplot(312); title('Str'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (microV)'); 
-subplot(313); title('TH'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); xlabel('time (ms)'); ylabel('ERP (microV)'); 
+subplot(311); title('ACC'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (\muV)'); 
+subplot(312); title('Str'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (\muV)'); 
+subplot(313); title('TH'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); xlabel('time (ms)'); ylabel('ERP (\muV)'); 
 sgtitle('Plasmid 59', 'FontName', 'Arial', 'FontSize', 14, 'FontWeight', 'Bold');
 set(gcf,"Position", [80, 80, 400, 450]); 
 saveas(gcf, fullfile(folder4pulseERP, '59'));
@@ -103,9 +103,9 @@ ylim([-10 25]); xlim([0 500]);
 subplot(313);
 boundedline(1:500, nanmedian(ERP_th(mice00, :)), nanstd(ERP_th(mice00, :)) ./ sqrt(sum(mice00)), 'b')
 ylim([-10 25]); xlim([0 500]);
-subplot(311); title('ACC'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (microV)'); 
-subplot(312); title('Str'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (microV)'); 
-subplot(313); title('TH'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); xlabel('time (ms)'); ylabel('ERP (microV)'); 
+subplot(311); title('ACC'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (\muV)'); 
+subplot(312); title('Str'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (\muV)'); 
+subplot(313); title('TH'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); xlabel('time (ms)'); ylabel('ERP (\muV)'); 
 sgtitle('no IUE', 'FontName', 'Arial', 'FontSize', 14, 'FontWeight', 'Bold');
 set(gcf,"Position", [85, 85, 400, 450]); 
 saveas(gcf, fullfile(folder4pulseERP, 'no IUE'));

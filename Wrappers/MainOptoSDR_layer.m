@@ -4,15 +4,15 @@ clear
 experiments = get_experiment_redux;
 experiments = experiments([73:232]);
 experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCsup'));  
-% experiments = experiments(extractfield(experiments, 'IUEconstruct') == 59);
-experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));  
-folderPowRamps = 'Q:\Personal\Tony\Analysis\Results_3Probe_RampPower\';  
-ch_acc = 17:32;  
+experiments = experiments(extractfield(experiments, 'IUEconstruct') == 59);
+% experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));  
+folderPowRamps = 'Q:\Personal\Tony\Analysis\Results_RampPower\';  
+ch_acc = 29:32;  
 ch_str = 1:16; 
 ch_th = 33:48; 
 
 % loop through experiments
-for exp_idx = 1:numel(experiments)
+for exp_idx = 1 : numel(experiments)
     experiment = experiments(exp_idx); 
     disp(['running exp ' num2str(exp_idx) ' / ' num2str(numel(experiments))])
     % initialize PSD variables and load data channel by channel 
@@ -85,27 +85,3 @@ ylabel('normalized SDR'); xticklabels({'pre','stim'});
 set(gca, 'FontSize', 16, 'Fontname', 'Arial'); 
 title('SDR: ACC -> TH', 'FontWeight', 'Bold')
 plot([1.2,1.8], [SDR_accth_norm(:,1),SDR_accth_norm(:,2)], 'k')
-
-% Code to generate struct for Mattia 
-% 
-% for exp_idx = 1:size(experiments, 2) 
-%     OptoSDRstr(exp_idx).animal_ID = experiments(exp_idx).animal_ID 
-%     OptoSDRstr(exp_idx).SDRpre = SDRpre_accstr_norm(exp_idx) 
-%     OptoSDRstr(exp_idx).SDRstim = SDRstim_accstr_norm(exp_idx)
-%     OptoSDRstr(exp_idx).pair = 'PFC to Str'; 
-% end 
-% 
-% for exp_idx = 1:size(experiments, 2) 
-%     OptoSDRth(exp_idx).animal_ID = experiments(exp_idx).animal_ID 
-%     OptoSDRth(exp_idx).SDRpre = SDRpre_accth_norm(exp_idx) 
-%     OptoSDRth(exp_idx).SDRstim = SDRstim_accth_norm(exp_idx)
-%     OptoSDRth(exp_idx).pair = 'PFC to TH'; 
-% end 
-%  
-% 
-% OptoSDR = horzcat(OptoSDRstr, OptoSDRth)
-% field = 'mycell';
-% value = {{'a','b','c'}};
-% s = struct(field,value)
-
-ttest(SDR_accstr_norm(:,1), SDR_accstr_norm(:,2))

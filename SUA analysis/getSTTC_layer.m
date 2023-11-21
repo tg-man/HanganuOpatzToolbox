@@ -6,6 +6,7 @@ function  Tcoeff = getSTTC_layer(experiment, folder4SM, BrainArea1, BrainArea2, 
 %     - experiment: from your excel 
 %     - folder4SM: where the baseline spike matrices live. Assuming you have a folder with subfolder for differernt brain area, only specify the general folder 
 %     - BrainArea1: string, samw as that from the excel. Also applies to BrainArea 2 
+%     - folder4SUAinfo: ACC area specific folder 
 %     - layer: which layer from BrainArea1 to use for computation. 'sup' or 'deep'
 %     - lags: vector of time lag in seconds 
 %     - repeat_calc: 1 or 0 for true or false 

@@ -4,13 +4,11 @@
 clear
 experiments = get_experiment_redux;
 experiments = experiments();
-experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only'));
+experiments = experiments(strcmp(extractfield(experiments, 'animal_ID'), '30061-1'));
 save_data = 1;
 repeatCalc = 1; 
 folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\';
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\';
-
-experiments = experiments([109:121]);
 
 % brain areas
 BrainAreas = {'ACC','Str','TH'};%{'ACC','PL','Str','TH3'};
