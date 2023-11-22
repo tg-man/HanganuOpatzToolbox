@@ -5,16 +5,16 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments([189 190]); % what experiments to keep
+experiments = experiments([233:239]); % what experiments to keep
 % experiments = experiments(strcmp(extractfield(experiments, 'Area1'), 'PL'));
 
 save_data = 1;
 cores = 4; 
 
-BrainAreas = {'Str'}; % Brain area iterab le: {'ACC','PL','Str','TH3'}
+BrainAreas = {'TH'};  % Brain area iterab le: {'ACC','PL','Str','TH3'}
 
-folder4PRM = 'C:\Klusta\PRM\3Probe\'; % need NOT to be animal specific
-folder4DAT = 'Q:\Personal\Tony\Analysis\Results_3Probe_DAT\';
+folder4PRM = 'C:\Klusta\PRM\'; % need NOT to be animal specific
+folder4DAT = 'Q:\Personal\Tony\Analysis\Results_DAT\';
 folder2save = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\';
 
 for idx_area = 1 : numel(BrainAreas)
