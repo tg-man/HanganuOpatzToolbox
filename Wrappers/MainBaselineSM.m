@@ -3,8 +3,7 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments();
-experiments = experiments(strcmp(extractfield(experiments, 'animal_ID'), '30061-1'));
+experiments = experiments([233:239]);
 save_data = 1;
 repeatCalc = 1; 
 folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\';
