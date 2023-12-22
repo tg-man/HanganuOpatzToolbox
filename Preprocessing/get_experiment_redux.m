@@ -70,7 +70,11 @@ for row = 6:1000
             experiments(InfoandDevMil{row,  idxC_n_experiment}).baseline = InfoandDevMil{row,  idxC_baseline};
 %             experiments(InfoandDevMil{row,  idxC_n_experiment}).PL = InfoandDevMil{row,  idxC_PL};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).Klusta = InfoandDevMil{row,  idxC_klusta};
-            experiments(InfoandDevMil{row,  idxC_n_experiment}).RecKeep = InfoandDevMil{row,  idxC_RecKeep};
+            try 
+                experiments(InfoandDevMil{row,  idxC_n_experiment}).RecKeep = str2num(InfoandDevMil{row,  idxC_RecKeep});
+            catch 
+                experiments(InfoandDevMil{row,  idxC_n_experiment}).RecKeep = InfoandDevMil{row,  idxC_RecKeep};
+            end 
             experiments(InfoandDevMil{row,  idxC_n_experiment}).Area1 = InfoandDevMil{row,  idxC_Area1};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).electrode1 = InfoandDevMil{row,  idxC_Electrode1};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).target1 = InfoandDevMil{row,  idxC_target1};

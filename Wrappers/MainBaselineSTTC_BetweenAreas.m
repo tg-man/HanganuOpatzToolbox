@@ -4,13 +4,13 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments();
+experiments = experiments([48 50 55]);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only')); 
 cores = 6; 
 
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
 BrainArea1 = 'ACC'; 
-BrainArea2 = 'Str'; % Or TH here 
+BrainArea2 = 'TH'; % Or TH here 
 if strcmp(BrainArea2, 'TH') 
     experiments = experiments(strcmp(extractfield(experiments, 'Area3'), 'TH')); 
 end 

@@ -14,7 +14,7 @@ function  Tcoeff = getSTTC_ba(experiment, folder4SM, BrainArea1, BrainArea2, lag
 % convert lags to seconds
 lags = lags / 1000;
 
-if exist([folder4STTC BrainArea1 BrainArea2 '\' experiment.name]) && repeat_calc == 0 
+if exist([folder4STTC BrainArea1 BrainArea2 '\' experiment.name '.mat'], 'file') && repeat_calc == 0 
     load([folder4STTC BrainArea1 BrainArea2 '\' experiment.name]); 
 else 
     % load spike matrices 
@@ -55,5 +55,5 @@ else
     else 
         disp('data not saved!'); 
     end 
-
+end 
 end % function end 

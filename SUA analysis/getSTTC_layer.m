@@ -16,7 +16,7 @@ function  Tcoeff = getSTTC_layer(experiment, folder4SM, BrainArea1, BrainArea2, 
 % convert lags to seconds
 lags = lags / 1000;
 
-if exist([folder4STTC BrainArea1 layer BrainArea2 '\' experiment.name]) && repeat_calc == 0 
+if exist([folder4STTC BrainArea1 layer BrainArea2 '\' experiment.name '.mat'], 'file') && repeat_calc == 0 
     load([folder4STTC BrainArea1 layer BrainArea2 '\' experiment.name]); 
 else 
     % load spike matrices 

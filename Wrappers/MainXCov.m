@@ -3,15 +3,15 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments();
+experiments = experiments([55]);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only')); 
 
 folder4xcov = 'Q:\Personal\Tony\Analysis\Results_Xcov\'; 
 folder4sm = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
-folder4suainfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\'; 
+
 
 area0 = 'ACC'; 
-area = {'Str'}; 
+area = {'TH'}; 
 
 % Xcov params 
 bin_size = 1; 

@@ -5,7 +5,7 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments([233:239]);
+experiments = experiments(243:249);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only')); 
 repeatCalc = 0;
 save_data = 1;
@@ -76,10 +76,8 @@ for exp_idx = 1 : size(experiments, 2)
     %%LFP = LFP(:, 1 : FirstStim);
     
     % keep only good part of the recording
-    if ~ nnz(isnan(experiment.RecKeep))
-        experiment.RecKeep = str2num(experiment.RecKeep);
-        LFP = LFP(:, experiment.RecKeep(1) * fs_LFP : ...
-            experiment.RecKeep(2) * fs_LFP);
+    if ~isempty(experiment.RecKeep)
+        LFP = LFP(:, experiment.RecKeep(1) * fs_LFP : experiment.RecKeep(2) * fs_LFP);
     end
     
     % take median of all channels

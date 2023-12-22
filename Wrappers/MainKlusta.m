@@ -9,7 +9,7 @@ clear all
 klusta = 1;
 common_average_reference = 1;
 experiments = get_experiment_redux(klusta);
-experiments = experiments([233:239]);
+experiments = experiments([242:249]);
 % experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto')); 
 cores = 4; 
 
@@ -24,7 +24,7 @@ DATfolder = 'Q:/Personal/Tony/Analysis/Results_DAT/'; % folder in which your .DA
 probetypes = {'4shank', '16_50m'}; % select the probe that you used for your experiments 
                                    % probes currently available are '4shank' and '16_50m'
 
-BrainAreas = {'ACC','Str', 'TH'}; % Brain area iterable: {'ACC','PL','Str','TH'}
+BrainAreas = {'ACC','Str','TH'}; % Brain area iterable: {'ACC','PL','Str','TH'}
 
 % this part here follows the rationale of having multiple recordings 
 % ("experiment" in the jergon of get_experiment_redux) from the same

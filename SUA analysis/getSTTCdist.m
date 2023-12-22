@@ -39,7 +39,7 @@ else
             end 
         end 
 
-    elseif strcmp(BrainArea, 'Str') || strcmp(BrainArea, 'TH')
+    elseif strcmp(BrainArea, 'Str') 
         probe = (1:16)'; % 16_50m 
 
         % calculate distance, in the same order as getSTTC_global in a double for loop 
@@ -55,6 +55,26 @@ else
                 Dist = [Dist; dist12]; 
             end 
         end 
+    
+    elseif strcmp(BrainArea, 'TH')
+        probe = (1:16)'; % 16_50m 
+        % extra code for TH to filter out noisy channels 
+        channels = channels(~ismember(channels, [experiment.OffCh experiment.NoisyCh] - 32)); 
+        num_units = size(channels, 1); 
+        
+        % calculate distance, in the same order as getSTTC_global in a double for loop 
+        for unit1 = 1 : num_units 
+            for unit2 = unit1 + 1 : num_units
+
+                % find channel positions of current cell pair 
+                p1 = find(probe == channels(unit1)); 
+                p2 = find(probe == channels(unit2)); 
+
+                % calculate distance 
+                dist12 = abs(50*(p1 - p2));
+                Dist = [Dist; dist12]; 
+            end 
+        end
     end 
 
     if save_data == 1 

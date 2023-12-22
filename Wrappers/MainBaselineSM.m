@@ -3,14 +3,14 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([233:239]);
+experiments = experiments(242:249);
 save_data = 1;
 repeatCalc = 1; 
 folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\';
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\';
 
 % brain areas
-BrainAreas = {'ACC','Str','TH'};%{'ACC','PL','Str','TH3'};
+BrainAreas = {'TH'}; % {'ACC','PL','Str','TH'}
 
 for area_idx = 1 : numel(BrainAreas)     
     
@@ -34,7 +34,11 @@ for area_idx = 1 : numel(BrainAreas)
         resultsKlusta = [folder4SUAinfo BrainArea '\'];
         SM_output = [folder4SM BrainArea '\']; 
 
-        getSpikeMatrixHenrik(experiment, resultsKlusta, save_data, repeatCalc, SM_output);                    
+        if strcmp(BrainArea, 'TH') 
+            getSpikeMatrixTH(experiment, resultsKlusta, save_data, repeatCalc, SM_output);   
+        else 
+            getSpikeMatrixHenrik(experiment, resultsKlusta, save_data, repeatCalc, SM_output);                    
+        end 
     end 
 end 
 

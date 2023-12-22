@@ -1,5 +1,5 @@
 function [spike_matrix, clusters, SUAinfo] = ...
-    getSpikeMatrixHenrik(experiment, resultsKlusta, save_data, repeatCalc, output_folder)
+    getSpikeMatrixTH(experiment, resultsKlusta, save_data, repeatCalc, output_folder)
 % by Mattia 07.20
 
 % computes sparse spike_matrix starting from the output of sorted Klusta
@@ -38,6 +38,9 @@ else
     end
     if exist('spike_matrix', 'var')
         spike_matrix = sparse(spike_matrix);
+        % this is really the only different line from getSpikeMatrixHenrik
+        spike_matrix = spike_matrix(~ismember([SUAstruct.channel], [experiment.OffCh experiment.NoisyCh] - 32), :); 
+        clusters = clusters(~ismember([SUAstruct.channel], [experiment.OffCh experiment.NoisyCh] - 32)); 
     else
         spike_matrix = NaN;
         clusters = NaN;
