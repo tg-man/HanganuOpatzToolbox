@@ -3,12 +3,12 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([240:249]);
+experiments = experiments([261:266]);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
 % experiments = experiments(strcmp(extractfield(experiments, 'sites'), '2site'));
 % experiments = experiments(strcmp(extractfield(experiments, 'Area1'), 'PL'));
 save_data = 1;
-repeatCalc = 1;
+repeatCalc = 0;
 pulses = {[0.005, 0.015, 0.050], [0.015, 0.050]}; 
 folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\';
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\';
@@ -56,7 +56,11 @@ for area_idx = 1 : numel(BrainAreas)
         SM_output = [folder4SM BrainArea '\'];
         
         % here it doesn't calculate the baseline experiments because no baseline experiment was put in!
-        getSpikeMatrixHenrik(experiment, resultsKlusta, save_data, repeatCalc, SM_output); 
+        if strcmp(BrainArea, 'TH') 
+            getSpikeMatrixTH(experiment, resultsKlusta, save_data, repeatCalc, SM_output);   
+        else 
+            getSpikeMatrixHenrik(experiment, resultsKlusta, save_data, repeatCalc, SM_output);                    
+        end 
 
         getPulsesSpikeMatrix(experiment, save_data, repeatCalc, pulse_length, SM_output, folder4stim, BrainArea, folder4pulses);
         getRampsSpikeMatrix(experiment, save_data, repeatCalc, BrainArea, SM_output, folder4stim, folder4ramps);                      

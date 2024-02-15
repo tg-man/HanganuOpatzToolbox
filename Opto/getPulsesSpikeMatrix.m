@@ -4,7 +4,7 @@ function SUAdata_pulses = getPulsesSpikeMatrix(experiment, save_data, repeatCalc
 % by Mattia 10/22 further adapted by Tony Apr.2023
 
 % create a spike matrix (actually a tensor) for pulses stimulations
-% this script creates a matrix of 250ms centered around the pulse start and 
+% this script creates a matrix of 1500ms centered around the pulse start and 
 % consideres a window (equal length to the pulse stim) for pre, stim, and post periods 
 % in which to count spikes to determine if the unit is responding or not. 
 % Pre period ends 3ms before the pulse start. This value is adopted from
@@ -42,7 +42,7 @@ else
         pulses_spike_matrix = zeros(numel(PulseStart), size(spike_matrix, 1), 1500);
         % allocate spike matrix pulse-by-pulse sweep
         for stim_idx = 1 : numel(PulseStart)
-            stim_period = round(PulseStart(stim_idx) - 499 : PulseStart(stim_idx) + 1000); % timestamps in ms for 250ms around the pulse start 
+            stim_period = round(PulseStart(stim_idx) - 499 : PulseStart(stim_idx) + 1000); % timestamps in ms for 1500ms around the pulse start 
             if max(stim_period) > size(spike_matrix, 2)
                 pulses_spike_matrix(stim_idx, :, :) = 0;
                 disp(['pulse ' num2str(stim_idx) ' filled with 0 because there are no spikes in the spike matrix'])

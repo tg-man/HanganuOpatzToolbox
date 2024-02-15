@@ -23,7 +23,7 @@ for n_animal = 1 : length(experiments)
     % add a pulse2plot variable and do the selection here with conditional
     % statement 
     if isfield(PulsesSpikes, 'pulse_spike_matrix50')
-        spikes_animal = PulsesSpikes.pulse_spike_matrix5;
+        spikes_animal = PulsesSpikes.pulse_spike_matrix50;
         if ~isnan(spikes_animal) 
             if size(spikes_animal, 2) > 1 
                 spikes_units = squeeze(mean(spikes_animal)); 

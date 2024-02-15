@@ -7,7 +7,7 @@ saveas(gcf, fullfile('Q:\Personal\Tony\Presentations\20231030_MeetingWithIleana\
 set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out');
 set(gca, 'LineWidth', 2.8); 
 title([]); 
-title('ACCdeep \rightarrow TH', 'FontSize', 20, 'FontWeight','normal', 'FontName', 'Arial'); 
+title('MD', 'FontSize', 20, 'FontWeight','normal', 'FontName', 'Arial'); 
 
 lines = findobj(gcf,'Type','Line');
 for i = 1:numel(lines)
@@ -24,3 +24,16 @@ xticklabels([0 3 6])
 ylim([-0.9 -0.05])
 
 xlabel('Time (s)')
+
+ylim([-0.3 0.6])
+
+xticklabels({['Dorsomedial' ...
+    ' striatum'], ['Mediodorsal ' ...
+    'thalamus']})
+
+title('Anterior cingulate superfical layers \rightarrow dorsomedial striatum', 'FontWeight', 'bold')
+set(gca, 'FontName', 'Arial', 'FontSize', 24, 'TickDir', 'out');
+
+title('Dorsomedial striatum')
+xlim([-50 125])
+xticks([0 50])

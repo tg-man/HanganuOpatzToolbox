@@ -40,10 +40,10 @@ xlRange = 'A1:DZ1000';
 [~, idxC_target2] = find(strcmp(InfoandDevMil, 'target2'));
 [~, idxC_target3] = find(strcmp(InfoandDevMil, 'target3'));
 [~, idxC_Electrode1] = find(strcmp(InfoandDevMil, 'Electrode1'));
+[~, idxC_DiI] = find(strcmp(InfoandDevMil, 'DiI'));
 [~, idxC_USV_path] = find(strcmp(InfoandDevMil, 'USV_path'));
-[~, idxC_Lag_behind_ephys] = find(strcmp(InfoandDevMil, 'Lag_behind_ephys (s)'));
-[~, idxC_USV_naive_comparison] = find(strcmp(InfoandDevMil, 'USV_naive_comparison'));
-[~, idxC_USV_file] = find(strcmp(InfoandDevMil, 'USV_file'));
+[~, idxC_USV] = find(strcmp(InfoandDevMil, 'USV'));
+% [~, idxC_Lag_behind_ephys] = find(strcmp(InfoandDevMil, 'Lag_behind_ephys (s)'));
 [~, idxC_OffCh] = find(strcmp(InfoandDevMil, 'off target ch'));
 
 count=0;
@@ -77,6 +77,7 @@ for row = 6:1000
             end 
             experiments(InfoandDevMil{row,  idxC_n_experiment}).Area1 = InfoandDevMil{row,  idxC_Area1};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).electrode1 = InfoandDevMil{row,  idxC_Electrode1};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).DiI = InfoandDevMil{row,  idxC_DiI};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).target1 = InfoandDevMil{row,  idxC_target1};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).Area2 = InfoandDevMil{row,  idxC_Area2};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).target2 = InfoandDevMil{row,  idxC_target2};
@@ -94,9 +95,8 @@ for row = 6:1000
                 experiments(InfoandDevMil{row,  idxC_n_experiment}).OffCh = InfoandDevMil{row,  idxC_OffCh};
             end             
             experiments(InfoandDevMil{row,  idxC_n_experiment}).USV_path = InfoandDevMil{row,  idxC_USV_path};
-            experiments(InfoandDevMil{row,  idxC_n_experiment}).Lag_behind_ephys = InfoandDevMil{row,  idxC_Lag_behind_ephys};
-            experiments(InfoandDevMil{row,  idxC_n_experiment}).USV_naive_comparison = InfoandDevMil{row,  idxC_USV_naive_comparison};
-            experiments(InfoandDevMil{row,  idxC_n_experiment}).USV_file = InfoandDevMil{row,  idxC_USV_file};
+%             experiments(InfoandDevMil{row,  idxC_n_experiment}).Lag_behind_ephys = InfoandDevMil{row,  idxC_Lag_behind_ephys};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).USV = InfoandDevMil{row,  idxC_USV};
 
             
 %             try

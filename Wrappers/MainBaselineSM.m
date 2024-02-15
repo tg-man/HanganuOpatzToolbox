@@ -3,16 +3,16 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments(242:249);
+experiments = experiments([261:266]);  
 save_data = 1;
 repeatCalc = 1; 
 folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\';
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\';
 
 % brain areas
-BrainAreas = {'TH'}; % {'ACC','PL','Str','TH'}
+BrainAreas = {'ACC','Str','TH'}; % {'ACC','PL','Str','TH'}
 
-for area_idx = 1 : numel(BrainAreas)     
+for area_idx = 1 : numel(BrainAreas)
     
     BrainArea = BrainAreas{area_idx}; %define brain area for this loop
     disp(['writing brain area ' BrainArea])

@@ -73,7 +73,7 @@ spikes_reduced = squeeze(mean(reshape(spikes_tot, size(spikes_tot, 1), 100, []),
 % sort spike trains by similarity but only use "central" part to stress opto differences
 zscored_units = zscore(spikes_reduced, [], 2); % zscore
 idx_sorted = sort_spike_trains(zscored_units);
-figure; imagesc(flipud(zscored_units(idx_sorted, :)), [-1 3]); colormap(map4plot); % plot
+figure; imagesc(flipud(zscored_units(idx_sorted, :))); colormap(map4plot); % plot
 hold on
 plot([size(spikes_reduced, 2) / 10 * 3 size(spikes_reduced, 2) / 10 * 3], ...
     get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for opto

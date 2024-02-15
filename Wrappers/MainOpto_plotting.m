@@ -3,19 +3,20 @@ clear
 
 StimArea = 'ACCsup'; %{'ACCsup', 'PLsup', 'Str', 'TH'}; 
 BrainArea = 'ACC';%{'ACC','PL','Str','TH'};
-layer = 'deep'; 
+% layer = 'deep'; 
 
 experiments = get_experiment_redux;
-experiments = experiments([244:249]);
+experiments = experiments([73:266]);
 % experiments = experiments(strcmp(extractfield(experiments, 'sites'), '3site'));
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
 % experiments = experiments(strcmp(extractfield(experiments, 'electrode1'), 'W241'));
 % experiments = experiments((extractfield(experiments, 'IUEconstruct')) == 59);
-% experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
+experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
 % experiments = experiments((extractfield(experiments, 'IUEconstruct')) == 87);
 experiments = experiments(strcmp(extractfield(experiments, 'square'), StimArea));
 % experiments = experiments(strcmp(extractfield(experiments, 'Area1'), 'PL'));
 % experiments = experiments([experiments.age]' == 9 | [experiments.age]' == 10);
+% experiments = experiments([experiments.DiI] == 0)
 save_data = 1;
 repeatCalc = 0;
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\';
@@ -26,9 +27,10 @@ folder4suainfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\ACC\';
 pulse_length = [0.005, 0.015, 0.050]; 
 
 
-
 %% compute/plot firing rate stuff 
     
+% plotRampFiringComp(experiments, 'Str', 'TH', StimArea, folder4ramps)
+
 disp(['plotting recording area ' BrainArea])
 if strcmp(BrainArea, 'ACC') || strcmp(BrainArea, 'PL')
     experiments = experiments(strcmp(extractfield(experiments, 'Area1'), BrainArea) & extractfield(experiments, 'target1') == 1); 
