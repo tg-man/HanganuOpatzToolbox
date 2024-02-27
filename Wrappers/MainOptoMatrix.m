@@ -3,7 +3,7 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([261:266]);
+experiments = experiments(267:281);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
 % experiments = experiments(strcmp(extractfield(experiments, 'sites'), '2site'));
 % experiments = experiments(strcmp(extractfield(experiments, 'Area1'), 'PL'));

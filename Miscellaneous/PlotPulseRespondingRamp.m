@@ -23,18 +23,14 @@ map4plot = viridis(100);
 Gwindow = gausswin(51, 5); % gaussian window 
 Gwindow = Gwindow / sum(Gwindow); % normalize the gaussian kernel
 spikes_tot = [];
-idx = 1;
 
 for n_animal = 1 : length(experiments)
     experiment = experiments(n_animal);
-
-    animal{idx} = experiment.animal_ID;
-    idx = idx +1;
     
     load([folder4pulses BrainArea '\' experiment.name])
 
     if isfield(SUAdata_pulses, ['pulse_spike_matrix' num2str(pulse2plot*1000)])
-        spikes_animal = SUAdata_pulses.pulse_spike_matrix50;
+        spikes_animal = SUAdata_pulses.(['pulse_spike_matrix' num2str(pulse2plot*1000)]);
         if ~isnan(spikes_animal) 
             if size(spikes_animal, 2) > 1 
                 spikes_units = squeeze(mean(spikes_animal)); 
