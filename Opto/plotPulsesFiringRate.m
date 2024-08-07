@@ -54,7 +54,8 @@ idx_sorted = sort_peak_time(zscored_units, 10);
 figure; imagesc(linspace(-500, 1000, size(zscored_units, 2)), ...
     1 : size(zscored_units, 1), ...    
     flipud(zscored_units(idx_sorted, :))); colormap(map4plot) % plot
-xline(0);xline(50); xlim([-300 300])
+xline(0); xline(pulse2plot*1000); % laser reference 
+xlim([-300 300])
 ylabel('Single units'); xlabel('Time (ms)')
 title([RespArea ' to ' StimArea ' stim '])
 set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
@@ -72,26 +73,34 @@ xline(0, 'k', 'linewidth', 1) % reference line for no modulation
 xlim([-1.1 1.1]); ylim([-0.1 ceil(max(- log10(pvalue)))])
 ylabel('- Log10 (pvalue)'); xlabel('Modulation Index'); alpha(0.5)
 title([RespArea ' to ' StimArea ' stim '])
-set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial')
+set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 2)
 
 % vector plot 
 figure;
 boundedline(linspace(-500, 1000, size(spikes_ds, 2)), mean(spikes_ds), std(spikes_ds) ./ sqrt(size(spikes_ds, 1)))
 hold on
-xline(0) % reference line for opto
-xline(50); 
+xline(0, ':k', 'LineWidth', 1.5) % reference line for opto
+xline(pulse2plot*1000, ':k', 'LineWidth', 1.5); 
 ylabel('Aveage FR (Hz)'); xlabel('Time (ms)'); xlim([-250 250])
 title(['SUA FR in ' RespArea ' to ' StimArea ' Stim'])
-set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14, 'FontName', 'Arial'); 
+set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 2); 
 set(gca, 'YScale', 'log'); 
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 2;
+end
 
 % vector plot 
 figure; hold on
 boundedline(linspace(-500, 1000, size(zscored_units, 2)), mean(zscored_units), std(zscored_units) ./ sqrt(size(zscored_units, 1)))
-xline(0) % reference line for opto
-xline(50); 
+xline(0, ':k', 'LineWidth', 1.5) % reference line for opto
+xline(pulse2plot*1000, ':k', 'LineWidth', 1.5); 
 ylabel('Z-scored Firing (AU)'); xlabel('Time (ms)'); xlim([-250 250])
 title(['SUA FR in ' RespArea ' to ' StimArea ' Stim'])
-set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14, 'FontName', 'Arial'); 
+set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 2); 
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 2;
+end
 
 end 

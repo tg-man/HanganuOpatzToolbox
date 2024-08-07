@@ -2,16 +2,19 @@
 
 clear
 
-StimArea = 'ACCsup'; %{'ACCsup', 'PLsup', 'Str', 'TH'}; 
+StimArea = 'ACCdeep'; %{'ACCsup', 'PLsup', 'Str', 'TH'}; 
 
 experiments = get_experiment_redux;
-experiments = experiments([73:232]);
+experiments = experiments();
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
-experiments = experiments((extractfield(experiments, 'IUEconstruct')) == 59);
+% experiments = experiments((extractfield(experiments, 'IUEconstruct')) == 59);
 % experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
 experiments = experiments(strcmp(extractfield(experiments, 'square'), StimArea));
 % experiments = experiments(strcmp(extractfield(experiments, 'Area1'), 'PL'));
 % experiments = experiments([experiments.age]' == 9 | [experiments.age]' == 10);
+
+experiments = experiments([experiments.DiI] == 0); 
+experiments = experiments([experiments.IUEage] > 19); 
 
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\';
 folder4matrix = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\';

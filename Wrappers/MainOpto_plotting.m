@@ -1,22 +1,28 @@
 
 clear
 
-StimArea = 'ACCsup'; %{'ACCsup', 'PLsup', 'Str', 'TH'}; 
+StimArea = 'ACCdeep'; %{'ACCsup', 'PLsup', 'Str', 'TH'}; 
 BrainArea = 'ACC';%{'ACC','PL','Str','TH'};
-% layer = 'deep'; 
+layer = 'sup'; 
 
 experiments = get_experiment_redux;
-experiments = experiments([73:266]);
+experiments = experiments([300 301 324:380]);
 % experiments = experiments(strcmp(extractfield(experiments, 'sites'), '3site'));
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
 % experiments = experiments(strcmp(extractfield(experiments, 'electrode1'), 'W241'));
+
 % experiments = experiments((extractfield(experiments, 'IUEconstruct')) == 59);
 % experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
-experiments = experiments((extractfield(experiments, 'IUEconstruct')) == 87);
+% experiments = experiments((extractfield(experiments, 'IUEconstruct')) == 87);
+
+experiments = experiments([experiments.DiI] == 0); 
+% experiments = experiments([experiments.DiI] == 1); 
+
 experiments = experiments(strcmp(extractfield(experiments, 'square'), StimArea));
 % experiments = experiments(strcmp(extractfield(experiments, 'Area1'), 'PL'));
 % experiments = experiments([experiments.age]' == 9 | [experiments.age]' == 10);
-% experiments = experiments([experiments.DiI] == 0)
+
+experiments = experiments([experiments.IUEage] > 19); 
 
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\';
 folder4matrix = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\';
@@ -25,7 +31,6 @@ folder4ramps = 'Q:\Personal\Tony\Analysis\Results_OptoMatricesRamp\';
 folder4suainfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\ACC\'; 
 pulse_length = [0.005, 0.015, 0.050]; 
 pulse2plot = 0.05; 
-
 
 %% compute/plot firing rate stuff 
     
@@ -45,7 +50,7 @@ if ~size(experiments,2) == 0
     plotRampFiringRateHenrik(experiments, BrainArea, StimArea, [folder4matrix BrainArea '\'], folder4stim, folder4ramps);
 %     plotRampFiringPie(experiments, BrainArea, StimArea, folder4ramps); 
 %     plotRampFiringSigUnits(experiments, BrainArea, StimArea, [folder4matrix BrainArea '\'], folder4stim, folder4ramps);
-%     plotRampFiringLayer(experiments, BrainArea, StimArea, folder4suainfo, layer, [folder4matrix BrainArea '\'], folder4stim, folder4ramps);
+    plotRampFiringLayer(experiments, BrainArea, StimArea, folder4suainfo, layer, [folder4matrix BrainArea '\'], folder4stim, folder4ramps);
 else 
     disp(['there is no ' BrainArea ' recording with ' StimArea ' ramp stim!'])
 end 

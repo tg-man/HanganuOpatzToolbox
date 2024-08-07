@@ -11,17 +11,17 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments(242:249);
+experiments = experiments(250:281);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only')); 
 cores = 4; 
 
-BrainArea = 'Str'; % ACC, Str, TH 
+BrainArea = 'TH'; % ACC, Str, TH 
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
 
 folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\'; 
 
 lags = [5, 10, 20, 50, 100, 500]; % single lags for which to compute tiling coeff
-repeat_calc = 1;
+repeat_calc = 0;
 save_data = 1;
 folder4STTC = 'Q:\Personal\Tony\Analysis\Results_STTC\';
 
@@ -38,6 +38,7 @@ parfor (exp_idx = 1 : size(experiments, 2), cores)
     end 
 end 
 
+datetime 
 
 % Extract unique animals from the experiment list. animals are the "unit"
 % around which the rest is calculated

@@ -11,7 +11,7 @@ folder4xcov = 'Q:\Personal\Tony\Analysis\Results_Xcov\';
 
 area0 = 'ACC';
 layer0 = 'sup'; 
-area1 = 'TH'; 
+area1 = 'Str'; 
 
 age = []; 
 xcov_tot = []; 

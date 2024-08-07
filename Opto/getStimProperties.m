@@ -13,6 +13,7 @@ for n_animal = 1:length(experiments)
         [~, signalD, ~,~] = nlx_load_Opto(experiment, 'Stim1D', [], 10, 0);
         signalD = digital2binary(signalD);
         [~, signalA, samplingrate,~] = nlx_load_Opto(experiment, 'Stim1A', [], 10, 0);
+        % signalA = signalA;
         
         stim_digital_single     = signalD;
         stim_digital_periode    = signalD;

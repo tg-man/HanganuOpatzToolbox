@@ -221,10 +221,10 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
 yline(0, ':k', 'LineWidth', 1.5); 
-title('ACC \rightarrow Str', 'FontSize', 20, 'FontWeight','normal', 'FontName', 'Arial')
+title('ACC \rightarrow DMS', 'FontSize', 20, 'FontWeight','normal', 'FontName', 'Arial')
 xlabel('Age (P)'); ylabel('Normalized SDR')
-xlim([0.5 8.8]); ylim([-0.9 0.7]);
-set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out', 'LineWidth', 2.8);
+xlim([0.5 8.8]); ylim([-1 1]);
+set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out', 'LineWidth', 2);
 
 figure; 
 violins = violinplot(accsupstr, age, 'ViolinAlpha', 0.85); 
@@ -234,10 +234,10 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
 yline(0, ':k', 'LineWidth', 1.5); 
-title('ACCsup \rightarrow Str', 'FontSize', 20, 'FontWeight','normal', 'FontName', 'Arial')
+title('ACCsup \rightarrow DMS', 'FontSize', 20, 'FontWeight','normal', 'FontName', 'Arial')
 xlabel('Age (P)'); ylabel('Normalized SDR')
-xlim([0.5 8.8]); ylim([-0.9 0.7]);
-set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out', 'LineWidth', 2.8);
+xlim([0.5 8.8]); ylim([-1 1]);
+set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out', 'LineWidth', 2);
 
 figure; 
 violins = violinplot(accdeepstr, age, 'ViolinAlpha', 0.85); 
@@ -247,10 +247,10 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
 yline(0, ':k', 'LineWidth', 1.5); 
-title('ACCdeep \rightarrow Str', 'FontSize', 20, 'FontWeight','normal', 'FontName', 'Arial')
+title('ACCdeep \rightarrow DMS', 'FontSize', 20, 'FontWeight','normal', 'FontName', 'Arial')
 xlabel('Age (P)'); ylabel('Normalized SDR')
-xlim([0.5 8.8]); ylim([-0.9 0.7]);
-set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out', 'LineWidth', 2.8);
+xlim([0.5 8.8]); ylim([-1 1]);
+set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out', 'LineWidth', 2);
 
 
 
@@ -262,10 +262,10 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
 yline(0, ':k', 'LineWidth', 1.5); 
-title('ACC \rightarrow TH', 'FontSize', 20, 'FontWeight','normal', 'FontName', 'Arial')
+title('ACC \rightarrow MD', 'FontSize', 20, 'FontWeight','normal', 'FontName', 'Arial')
 xlabel('Age (P)'); ylabel('Normalized SDR')
-xlim([0.5 8.8]); ylim([-0.9 0.7]);
-set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out', 'LineWidth', 2.8);
+xlim([0.5 8.8]); ylim([-1 1]);
+set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out', 'LineWidth', 2);
 
 figure; 
 violins = violinplot(accsupth, age, 'ViolinAlpha', 0.85); 
@@ -275,10 +275,10 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
 yline(0, ':k', 'LineWidth', 1.5); 
-title('ACCsup \rightarrow TH', 'FontSize', 20, 'FontWeight','normal', 'FontName', 'Arial')
+title('ACCsup \rightarrow MD', 'FontSize', 20, 'FontWeight','normal', 'FontName', 'Arial')
 xlabel('Age (P)'); ylabel('Normalized SDR')
-xlim([0.5 8.8]); ylim([-0.9 0.7]);
-set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out', 'LineWidth', 2.8);
+xlim([0.5 8.8]); ylim([-1 1]);
+set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out', 'LineWidth', 2);
 
 figure; 
 violins = violinplot(accdeepth, age, 'ViolinAlpha', 0.85); 
@@ -288,7 +288,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
 yline(0, ':k', 'LineWidth', 1.5); 
-title('ACCdeep \rightarrow TH', 'FontSize', 20, 'FontWeight','normal', 'FontName', 'Arial')
+title('ACCdeep \rightarrow MD', 'FontSize', 20, 'FontWeight','normal', 'FontName', 'Arial')
 xlabel('Age (P)'); ylabel('Normalized SDR')
-xlim([0.5 8.8]); ylim([-0.9 0.7]);
-set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out', 'LineWidth', 2.8);
+xlim([0.5 8.8]); ylim([-1 1]);
+set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out', 'LineWidth', 2);

@@ -20,6 +20,7 @@ xlRange = 'A1:DZ1000';
 [~, idxC_Alive_recording] = find(strcmp(InfoandDevMil, 'Alive recording'));
 [~, idxC_Path] = find(strcmp(InfoandDevMil, 'Path'));
 [~, idxC_Age] = find(strcmp(InfoandDevMil, 'Age'));
+[~, idxC_weight] = find(strcmp(InfoandDevMil, 'Weight'));
 [~, idxC_sex] = find(strcmp(InfoandDevMil, 'sex'));
 [~, idxC_IUEconstruct] = find(strcmp(InfoandDevMil, 'construct'));
 [~, idxC_IUEarea] = find(strcmp(InfoandDevMil, 'target'));
@@ -59,8 +60,13 @@ for row = 6:1000
             experiments(InfoandDevMil{row,  idxC_n_experiment}).name = InfoandDevMil{row,  idxC_Alive_recording};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).path = InfoandDevMil{row,  idxC_Path};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).age = InfoandDevMil{row,  idxC_Age};
-            experiments(InfoandDevMil{row,  idxC_n_experiment}).Sex = InfoandDevMil{row,  idxC_sex};
-            experiments(InfoandDevMil{row,  idxC_n_experiment}).IUEconstruct = InfoandDevMil{row,  idxC_IUEconstruct};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).weight = InfoandDevMil{row,  idxC_weight};
+            experiments(InfoandDevMil{row,  idxC_n_experiment}).sex = InfoandDevMil{row,  idxC_sex};
+            try 
+                experiments(InfoandDevMil{row,  idxC_n_experiment}).IUEconstruct = str2num(InfoandDevMil{row,  idxC_IUEconstruct});
+            catch 
+                experiments(InfoandDevMil{row,  idxC_n_experiment}).IUEconstruct = InfoandDevMil{row,  idxC_IUEconstruct};
+            end 
             experiments(InfoandDevMil{row,  idxC_n_experiment}).IUEarea = InfoandDevMil{row,  idxC_IUEarea};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).IUEage = InfoandDevMil{row,  idxC_IUEage};
 %             experiments(InfoandDevMil{row,  idxC_n_experiment}).AgeGroup = InfoandDevMil{row,  idxC_ageGroup};

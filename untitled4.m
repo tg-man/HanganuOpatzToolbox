@@ -1,39 +1,40 @@
 
+% dynamically naming variables 
+N = 10; % number of variables
+for k=1:N
+    temp_var = strcat( 'variable_',num2str(k) );
+    eval(sprintf('%s = %g',temp_var, k*2))
+end
 
-saveas(gcf, fullfile('Q:\Personal\Tony\Presentations\20231030_MeetingWithIleana\', 'fr_acc.fig'));
-saveas(gcf, fullfile('Q:\Personal\Tony\Presentations\20231030_MeetingWithIleana\', 'fr_acc.svg'));
-
-
-set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out');
-set(gca, 'LineWidth', 2.8); 
-title([]); 
-title('MD', 'FontSize', 20, 'FontWeight','normal', 'FontName', 'Arial'); 
-
+% edit line thickness 
 lines = findobj(gcf,'Type','Line');
 for i = 1:numel(lines)
   lines(i).LineWidth = 2.8;
 end
 
+% text symbols 
 ylabel('ERP (\muV)')
-set(gca, 'XTick', [50 250 450])
-xticklabels([-200 0 200]); 
-xlim([0.4 2.6])
+title('ACCdeep \rightarrow TH')
 
-xticks([3 6 9])
-xticklabels([0 3 6])
-ylim([-0.9 -0.05])
+% set path to factory setting
+restoredefaultpath
+% Add that folder plus all subfolders to the path.
+addpath(genpath(folder));
 
-xlabel('Time (s)')
+set(gca, 'FontName', 'Arial', 'FontSize', 16, 'TickDir', 'out', 'LineWidth', 2);
+xticklabels({'Ruther', 'NeuroNexus'})
+ylabel('Mean firing rate (Hz)') 
+ylabel('Mean number of units/channel')
+ylabel('Cross-day units (%)'); ylim([0.05 0.98]); yticks([0.1 0.3 0.5 0.7 0.9]) 
+yticklabels({'10', '30', '50', '70', '90'})
 
-ylim([-0.3 0.6])
+ylim([0 2.2]) 
 
-xticklabels({['Dorsomedial' ...
-    ' striatum'], ['Mediodorsal ' ...
-    'thalamus']})
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).Color = 'k';
+end
 
-title('Anterior cingulate superfical layers \rightarrow dorsomedial striatum', 'FontWeight', 'bold')
-set(gca, 'FontName', 'Arial', 'FontSize', 24, 'TickDir', 'out');
+% Notes for cellfun
+% cellfun(@(inputs) function(inputs), cellarray of inputs)
 
-title('Dorsomedial striatum')
-xlim([-50 125])
-xticks([0 50])

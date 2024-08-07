@@ -1,18 +1,19 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([73:232]);
+experiments = experiments([73:281]);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
 % experiments = experiments(strcmp(extractfield(experiments, 'sites'), '2site'));
-experiments = experiments(extractfield(experiments, 'IUEconstruct') == 87);
+experiments = experiments(extractfield(experiments, 'IUEconstruct') == 59);
 % experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
 save_data = 1;
 repeatCalc = 0;
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\';
 folderPowRamps = 'Q:\Personal\Tony\Analysis\Results_RampPower\'; % getRampPower params needs to be adjusted accordingly! 
-BrainAreas ={'ACC','Str','TH'}; %{'ACC','PL','Str','TH'};
+BrainAreas ={'ACC'}; %{'ACC','PL','Str','TH'};
 stimArea = 'ACCsup';
 experiments = experiments(strcmp(extractfield(experiments, 'square'), stimArea)); 
+% experiments = experiments(strcmp(extractfield(experiments, 'sites'), '3site')); 
 CSCs = 1:48; 
 cores = 4; 
 

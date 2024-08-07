@@ -25,7 +25,7 @@ for n_animal = 1 : length(experiments)
     experiment = experiments(n_animal);
     animal{idx} = experiment.animal_ID;
     idx = idx +1;
-    SUAdata = getRampsSpikeMatrix(experiment, save_data, RespArea, ...
+    SUAdata = getRampsSpikeMatrix(experiment, save_data, 0, RespArea, ...
         folder4matrix, folder4stim, folder4ramps);
     spikes_animal = SUAdata.ramp_spike_matrix;
     % first concatenate the spike tensor into a matrix

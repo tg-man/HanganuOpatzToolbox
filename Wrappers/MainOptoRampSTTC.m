@@ -2,16 +2,17 @@
 
 clear; 
 experiments = get_experiment_redux;
-experiments = experiments([73:232]);
+experiments = experiments(73:326);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
-experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCsup'));
+experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCdeep'));
 % experiments = experiments(extractfield(experiments, 'IUEconstruct') == 59 );
 
-lags = [5, 10, 20, 50, 100, 500]; 
+lags = [5, 10, 20, 50, 100, 500, 1000]; 
 
 folder4OM = 'Q:\Personal\Tony\Analysis\Results_OptoMatricesRamp\'; 
 BrainArea1 = 'ACC'; 
 BrainArea2 = 'TH'; % Or TH here 
+
 if strcmp(BrainArea2, 'TH') 
     experiments = experiments(strcmp(extractfield(experiments, 'Area3'), 'TH')); 
 end 
@@ -19,6 +20,8 @@ end
 repeat_calc = 1;
 save_data = 1;
 folder4OSTTC = 'Q:\Personal\Tony\Analysis\Results_RampSTTC\';
+
+%% 
 
 for exp_idx = 1 : size(experiments, 2)
     experiment  = experiments(exp_idx); 

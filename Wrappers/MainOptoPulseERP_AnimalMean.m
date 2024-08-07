@@ -2,10 +2,12 @@
 
 clear; 
 experiments = get_experiment_redux;
-experiments = experiments([73:232]);
+experiments = experiments([202:380]);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
-experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCsup'));
+experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCdeep'));
 % experiments = experiments(extractfield(experiments, 'IUEconstruct') == 59 );
+experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
+experiments = experiments([experiments.DiI] == 0); 
 pulse_length = 50; % in ms 
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\'; 
 folder4pulseERP = 'Q:\Personal\Tony\Analysis\Results_PulseERP\'; 
@@ -17,6 +19,8 @@ high_cut = fs_LFP / 2; % nyquist frequency: the number of data points per second
 stim_adjust = 1000 / fs_LFP; % to adjust stim timestamps to the same fs as LFP 
 ExtractMode = 1; % extract from neuralynx into matlab
 cores = 6;  
+
+%% 
 
 for exp_idx = 1 : size(experiments, 2) 
     experiment = experiments(exp_idx); 
@@ -63,7 +67,7 @@ for exp_idx = 1 : size(experiments, 2)
     clear LFP pulseLFP 
     
     % substract baseline
-    pulseLFP_acc = pulseLFP_acc- nanmedian(pulseLFP_acc(:,1:end/2,:),2);
+    pulseLFP_acc = pulseLFP_acc - nanmedian(pulseLFP_acc(:,1:end/2,:),2);
     pulseLFP_str = pulseLFP_str - nanmedian(pulseLFP_str(:,1:end/2,:),2);
     pulseLFP_th = pulseLFP_th - nanmedian(pulseLFP_th(:,1:end/2,:),2);
 
@@ -74,83 +78,108 @@ for exp_idx = 1 : size(experiments, 2)
  
 end
 
-figure; hold on; 
-mice59 = [extractfield(experiments, 'IUEconstruct') == 59]; 
-subplot(311);
-boundedline(1:500, nanmedian(ERP_acc(mice59, :)), nanstd(ERP_acc(mice59, :)) ./ sqrt(sum(mice59)), 'r'); 
-xlim([0 500]); ylim([-121 17]);
-subplot(312);
-boundedline(1:500, nanmedian(ERP_str(mice59, :)), nanstd(ERP_str(mice59, :)) ./ sqrt(sum(mice59)), 'r')
-ylim([-10 25]); xlim([0 500]); 
-subplot(313);
-boundedline(1:500, nanmedian(ERP_th(mice59, :)), nanstd(ERP_th(mice59, :)) ./ sqrt(sum(mice59)), 'r')
-ylim([-10 25]); xlim([0 500]);
-subplot(311); title('ACC'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (\muV)'); 
-subplot(312); title('Str'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (\muV)'); 
-subplot(313); title('TH'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); xlabel('time (ms)'); ylabel('ERP (\muV)'); 
-sgtitle('Plasmid 59', 'FontName', 'Arial', 'FontSize', 14, 'FontWeight', 'Bold');
-set(gcf,"Position", [80, 80, 400, 450]); 
-saveas(gcf, fullfile(folder4pulseERP, '59'));
+figure; 
+boundedline(-249:250, nanmedian(ERP_acc), nanstd(ERP_acc) ./ sqrt(exp_idx), 'k'); 
+title('ACC'); xline(0, ':', 'LineWidth', 1.5); xline(pulse_length, ':', 'LineWidth', 1.5); 
+ylabel('ERP (\muV)'); xlabel('time (ms)'); 
+set(gca, 'FontName', 'Arial', 'FontSize', 14); 
+xlim([-249 250])
 
-figure; hold on; 
-mice00 = [isnan(extractfield(experiments, 'IUEconstruct'))]; 
-subplot(311);
-boundedline(1:500, nanmedian(ERP_acc(mice00, :)), nanstd(ERP_acc(mice00, :)) ./ sqrt(sum(mice00)), 'b'); 
-xlim([0 500]); ylim([-121 17]);
-subplot(312);
-boundedline(1:500, nanmedian(ERP_str(mice00, :)), nanstd(ERP_str(mice00, :)) ./ sqrt(sum(mice00)), 'b')
-ylim([-10 25]); xlim([0 500]); 
-subplot(313);
-boundedline(1:500, nanmedian(ERP_th(mice00, :)), nanstd(ERP_th(mice00, :)) ./ sqrt(sum(mice00)), 'b')
-ylim([-10 25]); xlim([0 500]);
-subplot(311); title('ACC'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (\muV)'); 
-subplot(312); title('Str'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (\muV)'); 
-subplot(313); title('TH'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); xlabel('time (ms)'); ylabel('ERP (\muV)'); 
-sgtitle('no IUE', 'FontName', 'Arial', 'FontSize', 14, 'FontWeight', 'Bold');
-set(gcf,"Position", [85, 85, 400, 450]); 
-saveas(gcf, fullfile(folder4pulseERP, 'no IUE'));
+figure; 
+boundedline(-249:250, nanmedian(ERP_str), nanstd(ERP_str) ./ sqrt(exp_idx), 'k'); 
+title('DMS'); xline(0, ':', 'LineWidth', 1.5); xline(pulse_length, ':', 'LineWidth', 1.5); 
+ylabel('ERP (\muV)'); xlabel('time (ms)'); 
+set(gca, 'FontName', 'Arial', 'FontSize', 14); 
+xlim([-249 250])
 
-figure; hold on; 
-mice87 = [extractfield(experiments, 'IUEconstruct') == 87]; 
-subplot(311);
-boundedline(1:500, nanmedian(ERP_acc(mice87, :)), nanstd(ERP_acc(mice87, :)) ./ sqrt(sum(mice87)), 'g'); 
-xlim([0 500]); ylim([-121 17]);
-subplot(312);
-boundedline(1:500, nanmedian(ERP_str(mice87, :)), nanstd(ERP_str(mice87, :)) ./ sqrt(sum(mice87)), 'g')
-ylim([-10 25]); xlim([0 500]); 
-subplot(313);
-boundedline(1:500, nanmedian(ERP_th(mice87, :)), nanstd(ERP_th(mice87, :)) ./ sqrt(sum(mice87)), 'g')
-ylim([-10 25]); xlim([0 500]);
-subplot(311); title('ACC'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (microV)'); 
-subplot(312); title('Str'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (microV)'); 
-subplot(313); title('TH'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); xlabel('time (ms)'); ylabel('ERP (microV)'); 
-sgtitle('Plasmid 87', 'FontName', 'Arial', 'FontSize', 14, 'FontWeight', 'Bold');
-set(gcf,"Position", [80, 80, 400, 450]); 
-saveas(gcf, fullfile(folder4pulseERP, '87'));
+figure; 
+boundedline(-249:250, nanmedian(ERP_th), nanstd(ERP_th) ./ sqrt(exp_idx), 'k'); 
+title('MD'); xline(0, ':', 'LineWidth', 1.5); xline(pulse_length, ':', 'LineWidth', 1.5); 
+ylabel('ERP (\muV)'); xlabel('time (ms)'); 
+set(gca, 'FontName', 'Arial', 'FontSize', 14); 
+xlim([-249 250])
 
-% plotting
-if experiment.IUEconstruct == 59
-    color = 'r'; 
-elseif experiment.IUEconstruct == 87
-    color = 'g'; 
-elseif isnan(experiment.IUEconstruct)
-    color = 'b'; 
-end 
 
-f = figure; hold on;
-subplot(311);
-h = plot(nanmedian(pulseLFP_acc, 2)); h.Color = color; 
-subplot(312);
-h = plot(nanmedian(pulseLFP_str, 2)); h.Color = color; 
-subplot(313);
-h = plot(nanmedian(pulseLFP_th, 2)); h.Color = color; 
+% figure; hold on; 
+% mice59 = [extractfield(experiments, 'IUEconstruct') == 59]; 
+% subplot(311);
+% boundedline(1:500, nanmedian(ERP_acc(mice59, :)), nanstd(ERP_acc(mice59, :)) ./ sqrt(sum(mice59)), 'r'); 
+% xlim([0 500]); ylim([-121 17]);
+% subplot(312);
+% boundedline(1:500, nanmedian(ERP_str(mice59, :)), nanstd(ERP_str(mice59, :)) ./ sqrt(sum(mice59)), 'r')
+% ylim([-10 25]); xlim([0 500]); 
+% subplot(313);
+% boundedline(1:500, nanmedian(ERP_th(mice59, :)), nanstd(ERP_th(mice59, :)) ./ sqrt(sum(mice59)), 'r')
+% ylim([-10 25]); xlim([0 500]);
+% subplot(311); title('ACC'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (\muV)'); 
+% subplot(312); title('Str'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (\muV)'); 
+% subplot(313); title('TH'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); xlabel('time (ms)'); ylabel('ERP (\muV)'); 
+% sgtitle('Plasmid 59', 'FontName', 'Arial', 'FontSize', 14, 'FontWeight', 'Bold');
+% set(gcf,"Position", [80, 80, 400, 450]); 
+% saveas(gcf, fullfile(folder4pulseERP, '59'));
+% 
+% figure; hold on; 
+% mice00 = [isnan(extractfield(experiments, 'IUEconstruct'))]; 
+% subplot(311);
+% boundedline(1:500, nanmedian(ERP_acc(mice00, :)), nanstd(ERP_acc(mice00, :)) ./ sqrt(sum(mice00)), 'b'); 
+% xlim([0 500]); ylim([-121 17]);
+% subplot(312);
+% boundedline(1:500, nanmedian(ERP_str(mice00, :)), nanstd(ERP_str(mice00, :)) ./ sqrt(sum(mice00)), 'b')
+% ylim([-10 25]); xlim([0 500]); 
+% subplot(313);
+% boundedline(1:500, nanmedian(ERP_th(mice00, :)), nanstd(ERP_th(mice00, :)) ./ sqrt(sum(mice00)), 'b')
+% ylim([-10 25]); xlim([0 500]);
+% subplot(311); title('ACC'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (\muV)'); 
+% subplot(312); title('Str'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (\muV)'); 
+% subplot(313); title('TH'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); xlabel('time (ms)'); ylabel('ERP (\muV)'); 
+% sgtitle('no IUE', 'FontName', 'Arial', 'FontSize', 14, 'FontWeight', 'Bold');
+% set(gcf,"Position", [85, 85, 400, 450]); 
+% saveas(gcf, fullfile(folder4pulseERP, 'no IUE'));
+% 
+% figure; hold on; 
+% mice87 = [extractfield(experiments, 'IUEconstruct') == 87]; 
+% subplot(311);
+% boundedline(1:500, nanmedian(ERP_acc(mice87, :)), nanstd(ERP_acc(mice87, :)) ./ sqrt(sum(mice87)), 'g'); 
+% xlim([0 500]); ylim([-121 17]);
+% subplot(312);
+% boundedline(1:500, nanmedian(ERP_str(mice87, :)), nanstd(ERP_str(mice87, :)) ./ sqrt(sum(mice87)), 'g')
+% ylim([-10 25]); xlim([0 500]); 
+% subplot(313);
+% boundedline(1:500, nanmedian(ERP_th(mice87, :)), nanstd(ERP_th(mice87, :)) ./ sqrt(sum(mice87)), 'g')
+% ylim([-10 25]); xlim([0 500]);
+% subplot(311); title('ACC'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (microV)'); 
+% subplot(312); title('Str'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (microV)'); 
+% subplot(313); title('TH'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); xlabel('time (ms)'); ylabel('ERP (microV)'); 
+% sgtitle('Plasmid 87', 'FontName', 'Arial', 'FontSize', 14, 'FontWeight', 'Bold');
+% set(gcf,"Position", [80, 80, 400, 450]); 
+% saveas(gcf, fullfile(folder4pulseERP, '87'));
+% 
+% % plotting
+% if experiment.IUEconstruct == 59
+%     color = 'r'; 
+% elseif experiment.IUEconstruct == 87
+%     color = 'g'; 
+% elseif isnan(experiment.IUEconstruct)
+%     color = 'b'; 
+% end 
+% 
+% f = figure; hold on;
+% subplot(311);
+% h = plot(nanmedian(pulseLFP_acc, 2)); h.Color = color; 
+% subplot(312);
+% h = plot(nanmedian(pulseLFP_str, 2)); h.Color = color; 
+% subplot(313);
+% h = plot(nanmedian(pulseLFP_th, 2)); h.Color = color; 
+% 
+% f.Position = [80+exp_idx*5 80+exp_idx*5 400 450]; 
+% subplot(311); ylim([-400 100]); xlim([0 500]); 
+% title('ACC'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (microV)'); 
+% subplot(312); ylim([-180 100]); xlim([0 500]); 
+% title('Str'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (microV)'); 
+% subplot(313); ylim([-180 100]); xlim([0 500]); 
+% title('TH'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); xlabel('time (ms)'); ylabel('ERP (microV)'); 
+% sgtitle(experiment.animal_ID);
+% saveas(gcf, fullfile(folder4pulseERP, experiment.name));
+ 
 
-f.Position = [80+exp_idx*5 80+exp_idx*5 400 450]; 
-subplot(311); ylim([-400 100]); xlim([0 500]); 
-title('ACC'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (microV)'); 
-subplot(312); ylim([-180 100]); xlim([0 500]); 
-title('Str'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); ylabel('ERP (microV)'); 
-subplot(313); ylim([-180 100]); xlim([0 500]); 
-title('TH'); xline(fs_LFP/4, ':'); xline(fs_LFP/4 + pulse_length, ':'); xlabel('time (ms)'); ylabel('ERP (microV)'); 
-sgtitle(experiment.animal_ID);
-saveas(gcf, fullfile(folder4pulseERP, experiment.name));
+

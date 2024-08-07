@@ -3,23 +3,25 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments([55]);
+experiments = experiments();
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only')); 
 
 folder4xcov = 'Q:\Personal\Tony\Analysis\Results_Xcov\'; 
 folder4sm = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
 
-
 area0 = 'ACC'; 
-area = {'TH'}; 
+area = {'Str', 'TH'}; 
 
 % Xcov params 
-bin_size = 1; 
+bin_size = 1;
 bin_size_corr = 20; 
-maxLag = 512; 
+maxLag = 512;
 
-repeatCalc = 1;
+repeatCalc = 0;
 save_data = 1;
+
+
+%% actual computation here 
 
 for ai = 1 : numel(area) 
     area1 = area{ai}; 
@@ -51,7 +53,6 @@ for ai = 1 : numel(area)
                     end 
                     save([folder4xcov area0 area1 '\' experiment.name], "norm_xcov")
                 end 
-
             end 
         end 
     end 

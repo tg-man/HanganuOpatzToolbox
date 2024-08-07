@@ -67,25 +67,32 @@ for area_idx = 1: numel(plotAreas)
     % plot the relative (MI) spectrum
     figure; hold on
     boundedline(freq, nanmean(RelSpectrum), nanstd(RelSpectrum) ./ sqrt(exp_idx), 'cmap', cmap(90, :))
-    plot(get(gca,'xlim'),[0 0],'r','linewidth',3)
-    set(gca,'TickDir','out');
+    lines = findobj(gcf,'Type','Line');
+    for i = 1:numel(lines) 
+        lines(i).LineWidth = 2;
+    end
+    yline(0, ':k', 'LineWidth', 1.5)
     xlabel('Frequency (Hz)');  ylabel('Relative Power');
-    set(gca,'FontSize',12); set(gca, 'FontName', 'Arial')
+    set(gca,'FontSize', 16, 'FontName', 'Arial', 'TickDir','out', 'LineWidth', 2); 
     title(['Relative Power Spectrum - ' plotArea ' to ' stimArea ' stim'])
-    xlim([1 49]); ylim([-0.2 0.5]);
+    xlim([1 49]); ylim([-0.15 0.2]);
 
     % plot the pre-stim spectrum
     figure; hold on
     boundedline(freq, nanmean(Spectrumpre), nanstd(Spectrumpre) ./ sqrt(exp_idx), 'cmap', cmap(90, :))
     boundedline(freq, nanmean(SpectrumStim), nanstd(SpectrumStim) ./ sqrt(exp_idx), 'cmap', cmap(25, :))
-    set(gca,'TickDir','out'); title(['Pre-Stim Power Spectrum - ' plotArea ' to ' stimArea ' stim' ]); 
+    lines = findobj(gcf,'Type','Line');
+    for i = 1:numel(lines) 
+        lines(i).LineWidth = 2;
+    end
+    title(['Pre-Stim Power Spectrum - ' plotArea ' to ' stimArea ' stim' ]); 
     xlabel('Frequency (Hz)'); ylabel('Power (\muV^2)');
-    set(gca,'FontSize',12); set(gca, 'FontName', 'Arial')
+    set(gca,'FontSize', 16, 'FontName', 'Arial', 'TickDir','out', 'LineWidth', 2); 
     xlim([1 49]); ylim([0.1 100]); 
-    set(gca, 'YScale', 'log')
+    set(gca, 'YScale', 'log'); 
+    legend('', 'pre', '', 'stim'); legend boxoff; 
     
     % add some code here and put the output in different structure fields 
-    
     
     clear RelSpectrum Spectrumpre SpectrumStim
 end 

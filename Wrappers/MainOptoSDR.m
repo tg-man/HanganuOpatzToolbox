@@ -2,16 +2,18 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([73:232]);
+experiments = experiments(73:281);
 experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCsup'));  
 % experiments = experiments(extractfield(experiments, 'IUEconstruct') == 59);
-experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));  
-folderPowRamps = 'Q:\Personal\Tony\Analysis\Results_3Probe_RampPower\';  
-ch_acc = 17:32;  
-ch_str = 1:16; 
-ch_th = 33:48; 
+experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct'))); 
+experiments = experiments([experiments.DiI] == 0); 
+folderPowRamps = 'Q:\Personal\Tony\Analysis\Results_RampPower\';  
+ch_acc = 17:32; 
+ch_str = 1:16;
+ch_th = 33:48;
 
-% loop through experiments
+
+%% loop through experiments
 for exp_idx = 1:numel(experiments)
     experiment = experiments(exp_idx); 
     disp(['running exp ' num2str(exp_idx) ' / ' num2str(numel(experiments))])
@@ -68,7 +70,7 @@ for idx = 1:size(violins, 2)
 end
 ylabel('normalized SDR'); xticklabels({'pre','stim'});
 set(gca, 'FontSize', 16, 'Fontname', 'Arial'); 
-title('SDR: ACC -> Str', 'FontWeight', 'Bold')
+title('SDR: ACC \rightarrow DMS', 'FontWeight', 'Bold')
 plot([1.2,1.8], [SDR_accstr_norm(:,1),SDR_accstr_norm(:,2)], 'k')
 
 
@@ -83,7 +85,7 @@ for idx = 1:size(violins, 2)
 end
 ylabel('normalized SDR'); xticklabels({'pre','stim'});
 set(gca, 'FontSize', 16, 'Fontname', 'Arial'); 
-title('SDR: ACC -> TH', 'FontWeight', 'Bold')
+title('SDR: ACC \rightarrow MD', 'FontWeight', 'Bold')
 plot([1.2,1.8], [SDR_accth_norm(:,1),SDR_accth_norm(:,2)], 'k')
 
 % Code to generate struct for Mattia 
@@ -108,4 +110,6 @@ plot([1.2,1.8], [SDR_accth_norm(:,1),SDR_accth_norm(:,2)], 'k')
 % value = {{'a','b','c'}};
 % s = struct(field,value)
 
-ttest(SDR_accstr_norm(:,1), SDR_accstr_norm(:,2))
+[H_str, p_str] = ttest(SDR_accstr_norm(:,1), SDR_accstr_norm(:,2))
+[H_th, p_th] = ttest(SDR_accth_norm(:,1), SDR_accth_norm(:,2))
+

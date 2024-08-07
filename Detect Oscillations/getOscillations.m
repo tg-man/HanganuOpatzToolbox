@@ -61,16 +61,18 @@ else
     start_a = find(diff(artifact) > 0); 
     stop_a = find(diff(artifact) < 0); 
     
-    % this correct special cases when signal starts and/or stops with an artifact period 
-    if length(stop_a) > length(start_a) % signal starts with an artifact period 
-        start_a = [1, start_a]; 
-    elseif length(stop_a) < length(start_a) % signal stops with an artifact 
-        stop_a = [stop_a, length(thresholded)]; 
-    elseif start_a(1) > stop_a(1) 
-        start_a = [1, start_a]; 
-        stop_a = [stop_a, length(thresholded)]; 
+    if sum(artifact) > 0 % check if an artifact is detected at all
+        % this correct special cases when signal starts and/or stops with an artifact period 
+        if length(stop_a) > length(start_a) % signal starts with an artifact period 
+            start_a = [1, start_a]; 
+        elseif length(stop_a) < length(start_a) % signal stops with an artifact 
+            stop_a = [stop_a, length(thresholded)]; 
+        elseif start_a(1) > stop_a(1) 
+            start_a = [1, start_a]; 
+            stop_a = [stop_a, length(thresholded)]; 
+        end 
     end 
-    
+
     % create output variables of artifact periods 
     timestamps_artifact = [start_a; stop_a]';
     len_artifact = sum(artifact); 

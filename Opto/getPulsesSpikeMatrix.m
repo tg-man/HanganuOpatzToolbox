@@ -33,7 +33,8 @@ else
     % load stimulation properties
     load([folder4stim experiment.name '_StimulationProperties_raw']) 
     % extract info about pulses
-    PulsesInfo = StimulationProperties_raw(strcmp(StimulationProperties_raw(:, 8), 'constant'), :);    
+    PulsesInfo = StimulationProperties_raw(strcmp(StimulationProperties_raw(:, 8), 'constant'), :);  
+    PulseInfo = PulsesInfo((cell2mat(PulsesInfo(:,7)) > 0), :); 
     
     if ~ isempty(PulsesInfo) && numel(spike_matrix) > 1
         % these are in timestamps, convert them to ms

@@ -84,7 +84,8 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0]; 
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
-xlabel('Age (P)'); ylabel('Time in Active Periods'); set(gca, 'FontSize', 16, 'FontName', 'Arial'); xlim([0 9]); ylim([0 1.05]);
+xlabel('Age (P)'); ylabel('Time in Active Periods'); set(gca, 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out'); 
+xlim([0 9]); ylim([0 1.05]);
 title('ACC', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(time_in_osc(:,2), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]); 
@@ -93,7 +94,8 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0]; 
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
-xlabel('Age (P)'); ylabel('Time in Active Periods'); set(gca, 'FontSize', 16, 'FontName', 'Arial'); xlim([0 9]); ylim([0 1.05]);
+xlabel('Age (P)'); ylabel('Time in Active Periods'); set(gca, 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out'); 
+xlim([0 9]); ylim([0 1.05]);
 title('Str', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(time_in_osc(:,3), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]); 
@@ -102,7 +104,8 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0]; 
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
-xlabel('Age (P)'); ylabel('Time in Active Periods'); set(gca, 'FontSize', 16, 'FontName', 'Arial'); xlim([0 9]); ylim([0 1.05]);
+xlabel('Age (P)'); ylabel('Time in Active Periods'); set(gca, 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out'); 
+xlim([0 9]); ylim([0 1.05]);
 title('TH', 'FontSize', 16, 'FontName', 'Arial');
 
 % Number of active Periods
@@ -112,7 +115,8 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0]; 
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
-xlabel('Age (P)'); ylabel('Active periods/min'); set(gca, 'FontSize', 16, 'FontName', 'Arial'); xlim([0 9]); ylim([0 16]);
+xlabel('Age (P)'); ylabel('Active periods/min'); set(gca, 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out'); 
+xlim([0 9]); ylim([0 16]);
 title('ACC', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(num_osc(:,2), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]);
@@ -121,7 +125,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0]; 
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
-xlabel('Age (P)'); ylabel('Active periods/min'); set(gca, 'FontSize', 16, 'FontName', 'Arial'); xlim([0 9]); ylim([0 16]);
+xlabel('Age (P)'); ylabel('Active periods/min'); set(gca, 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out'); xlim([0 9]); ylim([0 16]);
 title('Str', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(num_osc(:,3), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]);
@@ -130,7 +134,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0]; 
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
-xlabel('Age (P)'); ylabel('Active periods/min'); set(gca, 'FontSize', 16, 'FontName', 'Arial'); xlim([0 9]); ylim([0 16]);
+xlabel('Age (P)'); ylabel('Active periods/min'); set(gca, 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out'); xlim([0 9]); ylim([0 16]);
 title('TH', 'FontSize', 16, 'FontName', 'Arial');
 
 % Duration of active Periods
@@ -140,7 +144,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0]; 
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
-xlabel('Age (P)'); ylabel('Duration (s)'); set(gca, 'FontSize', 16, 'FontName', 'Arial'); 
+xlabel('Age (P)'); ylabel('Duration (s)'); set(gca, 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out'); 
 set(gca, 'YScale', 'log'); xlim([0 9]); ylim([0 150]);
 title('ACC', 'FontSize', 16, 'FontName', 'Arial'); 
 
@@ -150,7 +154,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0];
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
-xlabel('Age (P)'); ylabel('Duration (s)'); set(gca, 'FontSize', 16, 'FontName', 'Arial'); 
+xlabel('Age (P)'); ylabel('Duration (s)'); set(gca, 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out'); 
 set(gca, 'YScale', 'log'); xlim([0 9]); ylim([0 150]);
 title('Str', 'FontSize', 16, 'FontName', 'Arial');
 
@@ -160,7 +164,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0];
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
-xlabel('Age (P)'); ylabel('Duration (s)'); set(gca, 'FontSize', 16, 'FontName', 'Arial'); 
+xlabel('Age (P)'); ylabel('Duration (s)'); set(gca, 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out'); 
 set(gca, 'YScale', 'log'); xlim([0 9]); ylim([0 150]);
 title('TH', 'FontSize', 16, 'FontName', 'Arial');
 
@@ -171,7 +175,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0];
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
-xlabel('Age (P)'); ylabel('Amplitude (\muV)'); set(gca, 'FontSize', 16, 'FontName', 'Arial')
+xlabel('Age (P)'); ylabel('Amplitude (\muV)'); set(gca, 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out')
 set(gca, 'YScale', 'log'); xlim([0 9]); ylim([70 2200]);
 title('ACC', 'FontSize', 16, 'FontName', 'Arial');
 
@@ -181,7 +185,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0];
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
-xlabel('Age (P)'); ylabel('Amplitude (\muV)'); set(gca, 'FontSize', 16, 'FontName', 'Arial')
+xlabel('Age (P)'); ylabel('Amplitude (\muV)'); set(gca, 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out')
 set(gca, 'YScale', 'log'); xlim([0 9]); ylim([70 2200]);
 title('Str', 'FontSize', 16, 'FontName', 'Arial');
 
@@ -191,7 +195,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0];
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
-xlabel('Age (P)'); ylabel('Amplitude (\muV)'); set(gca, 'FontSize', 16, 'FontName', 'Arial')
+xlabel('Age (P)'); ylabel('Amplitude (\muV)'); set(gca, 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out')
 set(gca, 'YScale', 'log'); xlim([0 9]); ylim([70 2200]);
 title('TH', 'FontSize', 16, 'FontName', 'Arial');
 
@@ -223,7 +227,7 @@ PowerFast_TH = PowerFast_ACC;
 
 % compute all sort of computations, on an experiment by experiment basis
 for exp_idx = 1 : size(experiments, 2)
-    disp(['loading data exp # ' num2str(exp_idx) '/' num2str(size(experiments, 2))])
+    disp(['loading data exp # ' num2str(exp_idx) ' / ' num2str(size(experiments, 2))])
 
     % select experiment
     experiment = experiments(exp_idx);
@@ -302,7 +306,7 @@ for idx = 1:size(PowerPlotACC)
 %     boundedline(PSDstruct.freqs, PowerPlotPFC(idx,:), shading1(idx,:), 'cmap', YlGnBu(round(100/8*idx),:));   
 end 
 ylabel('Power (\muV^2)'); xlabel('Frequency (Hz)'); xlim([1 50]); ylim([0.01 30]);
-set(gca, 'YScale', 'log', 'XScale', 'log', 'FontSize', 16);
+set(gca, 'YScale', 'log', 'XScale', 'log', 'FontSize', 16, 'LineWidth', 2, 'TickDir', 'out');
 title('ACC', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(sum(Power_ACC, 2), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]); 
@@ -312,7 +316,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
 ylabel('Broadband Power (\muV^2)'); xlabel('Age (p)'); xlim([0.5 8.5]); ylim([5 1500]);
-set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2.5);
+set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2, 'TickDir', 'out');
 title('ACC', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(sum(Power_ACC(:, freqs < 4) , 2), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]); 
@@ -322,7 +326,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
 ylabel('Power < 4 Hz (\muV^2)'); xlabel('Age (p)'); xlim([0.5 8.5]); 
-set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2.5);
+set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2, 'TickDir', 'out');
 title('ACC', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(sum(Power_ACC(:, freqs > 4 & freqs < 12) , 2), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]); 
@@ -332,7 +336,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
 ylabel('Power 4 - 12 Hz (\muV^2)'); xlabel('Age (p)'); xlim([0.5 8.5]); 
-set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2.5);
+set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2, 'TickDir', 'out');
 title('ACC', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(sum(Power_ACC(:, freqs > 12) , 2), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]); 
@@ -342,7 +346,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
 ylabel('Power > 12 Hz (\muV^2)'); xlabel('Age (p)'); xlim([0.5 8.5]); 
-set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2.5);
+set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2, 'TickDir', 'out');
 title('ACC', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; hold on; 
@@ -351,7 +355,7 @@ for idx = 1:size(PowerPlotStr)
 %     boundedline(PSDstruct.freqs, PowerPlotPFC(idx,:), shading1(idx,:), 'cmap', YlGnBu(round(100/8*idx),:));   
 end 
 ylabel('Power (\muV^2)'); xlabel('Frequency (Hz)'); xlim([1 50]); ylim([0.01 30]);
-set(gca, 'YScale', 'log', 'XScale', 'log', 'FontSize', 16);
+set(gca, 'YScale', 'log', 'XScale', 'log', 'FontSize', 16, 'LineWidth', 2, 'TickDir', 'out');
 title('Str', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(sum(Power_Str, 2), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]); 
@@ -361,7 +365,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
 ylabel('Broadband Power (\muV^2)'); xlabel('Age (p)'); xlim([0.5 8.5]); ylim([5 1500]);
-set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2.5);
+set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2, 'TickDir', 'out');
 title('Str', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(sum(Power_Str(:, freqs < 4) , 2), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]); 
@@ -371,7 +375,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
 ylabel('Power < 4 Hz (\muV^2)'); xlabel('Age (p)'); xlim([0.5 8.5]); 
-set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2.5);
+set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2, 'TickDir', 'out');
 title('Str', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(sum(Power_Str(:, freqs > 4 & freqs < 12) , 2), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]); 
@@ -381,7 +385,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
 ylabel('Power 4 - 12 Hz (\muV^2)'); xlabel('Age (p)'); xlim([0.5 8.5]); 
-set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2.5);
+set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2, 'TickDir', 'out');
 title('Str', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(sum(Power_Str(:, freqs > 12) , 2), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]); 
@@ -391,7 +395,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
 ylabel('Power > 12 Hz (\muV^2)'); xlabel('Age (p)'); xlim([0.5 8.5]); 
-set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2.5);
+set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2, 'TickDir', 'out');
 title('Str', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; hold on; 
@@ -400,7 +404,7 @@ for idx = 1:size(PowerPlotTH)
 %     boundedline(PSDstruct.freqs, PowerPlotPFC(idx,:), shading1(idx,:), 'cmap', YlGnBu(round(100/8*idx),:));   
 end 
 ylabel('Power (\muV^2)'); xlabel('Frequency (Hz)'); xlim([1 50]); ylim([0.01 30]);
-set(gca, 'YScale', 'log', 'XScale', 'log', 'FontSize', 16);
+set(gca, 'YScale', 'log', 'XScale', 'log', 'FontSize', 16, 'LineWidth', 2, 'TickDir', 'out');
 title('TH', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(sum(Power_TH, 2), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]); 
@@ -410,7 +414,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
 ylabel('Broadband Power (\muV^2)'); xlabel('Age (p)'); xlim([0.5 8.5]); ylim([5 1500]);
-set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2.5);
+set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2, 'TickDir', 'out');
 title('TH', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(sum(Power_TH(:, freqs < 4) , 2), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]); 
@@ -420,7 +424,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
 ylabel('Power < 4 Hz (\muV^2)'); xlabel('Age (p)'); xlim([0.5 8.5]); 
-set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2.5);
+set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2, 'TickDir', 'out');
 title('TH', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(sum(Power_TH(:, freqs > 4 & freqs < 12) , 2), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]); 
@@ -430,7 +434,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
 ylabel('Power 4 - 12 Hz (\muV^2)'); xlabel('Age (p)'); xlim([0.5 8.5]); 
-set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2.5);
+set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2, 'TickDir', 'out');
 title('TH', 'FontSize', 16, 'FontName', 'Arial');
 
 figure; violins = violinplot(sum(Power_TH(:, freqs > 12) , 2), age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]); 
@@ -440,7 +444,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
 ylabel('Power > 12 Hz (\muV^2)'); xlabel('Age (p)'); xlim([0.5 8.5]); 
-set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2.5);
+set(gca, 'YScale', 'log', 'FontSize', 16, 'LineWidth', 2, 'TickDir', 'out');
 title('TH', 'FontSize', 16, 'FontName', 'Arial');
 
 

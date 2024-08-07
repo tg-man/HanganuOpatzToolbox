@@ -60,7 +60,7 @@ xline(0, 'k:', 'linewidth', 1.5) % reference line for opto
 xline(3, 'k:', 'linewidth', 1.5) % reference line for opto
 ylabel('z-scored firing rate (A.U.)'); xlabel('Time (s)');
 title([Area1 ' vs. ' Area2 ' to ' StimArea ' ramp stim'])
-set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial');
+set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 2);
 xlim([-3 7]); xticks([-3 0 3 6 ]);
 legend('', Area1,'', Area2,'','')
 

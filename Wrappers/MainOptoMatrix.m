@@ -3,12 +3,10 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments(267:281);
+experiments = experiments(327:380);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
-% experiments = experiments(strcmp(extractfield(experiments, 'sites'), '2site'));
-% experiments = experiments(strcmp(extractfield(experiments, 'Area1'), 'PL'));
 save_data = 1;
-repeatCalc = 0;
+repeatCalc = 1;
 pulses = {[0.005, 0.015, 0.050], [0.015, 0.050]}; 
 folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\';
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\';

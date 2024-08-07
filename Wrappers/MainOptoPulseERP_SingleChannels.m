@@ -8,7 +8,7 @@ experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCsup'))
 experiments = experiments(extractfield(experiments, 'IUEconstruct') == 59 );
 pulse_length = 50; % in ms 
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\'; 
-folder4pulseERP = 'Q:\Personal\Tony\Analysis\Results_PulseERP\'; 
+folder4pulseERP = 'Q:\Personal\Tony\Analysis\Results_PulseERP\SingleChannels\'; 
 % loading and filtering variables
 fs = 32000; % sampling rate from data
 downsampling_factor = 32; % downsample for LFP analysis

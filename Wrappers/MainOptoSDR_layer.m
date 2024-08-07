@@ -2,16 +2,24 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([73:232]);
-experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCsup'));  
-experiments = experiments(extractfield(experiments, 'IUEconstruct') == 59);
-% experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));  
-folderPowRamps = 'Q:\Personal\Tony\Analysis\Results_RampPower\';  
-ch_acc = 29:32;  
-ch_str = 1:16; 
-ch_th = 33:48; 
+experiments = experiments(73:281);
+experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCdeep'));  
+% experiments = experiments((extractfield(experiments, 'IUEconstruct') == 59));
+experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct'))); 
+experiments = experiments([experiments.DiI] == 0); 
+folderPowRamps = 'Q:\Personal\Tony\Analysis\Results_RampPower\'; 
 
-% loop through experiments
+layer = 'sup'; % sup or deep
+ 
+if strcmp(layer, 'sup') 
+    ch_acc = 17:20; 
+elseif strcmp(layer, 'deep') 
+    ch_acc = 29:32;  
+end 
+ch_str = 1:16; 
+ch_th = 33:48;
+
+%% loop through experiments
 for exp_idx = 1 : numel(experiments)
     experiment = experiments(exp_idx); 
     disp(['running exp ' num2str(exp_idx) ' / ' num2str(numel(experiments))])
@@ -34,8 +42,8 @@ for exp_idx = 1 : numel(experiments)
     end 
 
     % take out bad channels 
-    bad_ch = rmmissing([experiment.NoisyCh,experiment.OffCh]);
-    power_pre(bad_ch,:) = NaN; 
+    bad_ch = rmmissing([experiment.NoisyCh, experiment.OffCh]);
+    power_pre(bad_ch,:) = NaN;  
     power_stim(bad_ch,:) = NaN; 
     
     % compute SDR (acc str) 
@@ -67,9 +75,9 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
 ylabel('normalized SDR'); xticklabels({'pre','stim'});
-set(gca, 'FontSize', 16, 'Fontname', 'Arial'); 
-title('SDR: ACC -> Str', 'FontWeight', 'Bold')
-plot([1.2,1.8], [SDR_accstr_norm(:,1),SDR_accstr_norm(:,2)], 'k')
+title(['ACC' layer '\rightarrow DMS'], 'FontWeight','normal')
+set(gca, 'FontSize', 16, 'Fontname', 'Arial', 'Linewidth', 2, 'TickDir', 'out'); 
+plot([1.2,1.8], [SDR_accstr_norm(:,1),SDR_accstr_norm(:,2)], 'k', 'Linewidth', 2)
 
 
 figure; 
@@ -82,6 +90,9 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
 ylabel('normalized SDR'); xticklabels({'pre','stim'});
-set(gca, 'FontSize', 16, 'Fontname', 'Arial'); 
-title('SDR: ACC -> TH', 'FontWeight', 'Bold')
-plot([1.2,1.8], [SDR_accth_norm(:,1),SDR_accth_norm(:,2)], 'k')
+title(['ACC' layer '\rightarrow MD'], 'FontWeight','normal')
+set(gca, 'FontSize', 16, 'Fontname', 'Arial', 'Linewidth', 2, 'TickDir', 'out'); 
+plot([1.2,1.8], [SDR_accth_norm(:,1),SDR_accth_norm(:,2)], 'k',  'Linewidth', 2)
+
+[H_str, p_str] = ttest(SDR_accstr_norm(:,1), SDR_accstr_norm(:,2))
+[H_th, p_th] = ttest(SDR_accth_norm(:,1), SDR_accth_norm(:,2))

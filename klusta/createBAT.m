@@ -23,7 +23,7 @@ space = ' '; % MATLAB has some problems in concatenating strings with spaces at 
 
 % these lines here below activate the anaconda shell and klusta
 str1 = '@echo off';
-str2 = 'call C:\Users\tman\Anaconda3\Scripts\activate.bat'; % change this to where you have your Anaconda path. Keep the 'call'! 
+str2 = 'call C:\Users\tman\anaconda3\Scripts\activate.bat'; % change this to where you have your Anaconda path. Keep the 'call'! 
 str3 = ['cd', space, PRMfolder];
 str4 = 'call activate klusta';
 

@@ -4,14 +4,14 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments([48 50 55]);
+experiments = experiments(240:281);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only')); 
 cores = 6; 
 
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
 BrainArea1 = 'ACC';
 layer = 'deep'; % sup or deep
-BrainArea2 = 'TH'; % Str or TH
+BrainArea2 = 'Str'; % Str or TH
 if strcmp(BrainArea2, 'TH') 
     experiments = experiments(strcmp(extractfield(experiments, 'Area3'), 'TH')); 
 end 
@@ -39,3 +39,5 @@ parfor (exp_idx = 1 : size(experiments, 2), cores)
         end 
     end 
 end 
+
+datetime 

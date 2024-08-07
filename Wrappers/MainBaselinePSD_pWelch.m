@@ -2,7 +2,7 @@
 
 clear
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments();
+experiments = experiments(233:281);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only')); 
 cores = 4; 
 save_data = 1; 
@@ -21,7 +21,6 @@ nfft = 800;
 maxFreq = 200;
 
 for exp_idx = 1 : numel(experiments) 
-    tic
     experiment = experiments(exp_idx);
     
     if strcmp(experiment.sites, '3site') 
@@ -53,6 +52,5 @@ for exp_idx = 1 : numel(experiments)
     end 
     
     clear PSD freq
-
-    toc
 end 
+datetime 

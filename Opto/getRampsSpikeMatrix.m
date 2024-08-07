@@ -11,7 +11,8 @@ else
     load([folder4matrix experiment.name])
     % load stimulation properties
     load([folder4stim experiment.name, '_StimulationProperties_raw.mat']);
-    ramps = strcmp(cat(1, StimulationProperties_raw(:, 8)), 'ramp');
+    ramps = strcmp(cat(1, StimulationProperties_raw(:, 8)), 'ramp') & cell2mat(StimulationProperties_raw(:, 7)) > 0;
+
     % ignore if only pulses or baseline
     if nnz(ramps) > 0 && numel(spike_matrix) > 1
         % extract the end of all the ramps

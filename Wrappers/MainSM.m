@@ -3,9 +3,9 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments(267:281);  
+experiments = experiments(327:380);  
 save_data = 1;
-repeatCalc = 1; 
+repeatCalc = 0; 
 folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\';
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\';
 
