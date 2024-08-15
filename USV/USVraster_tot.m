@@ -1,9 +1,9 @@
 clear
 experiments = get_experiment_redux;
-experiments = experiments(256:380);  % [300 301 324:380]
+experiments = experiments([256:301 324:420]);  % [300 301 324:380]
 save_data = 1; 
 
-BrainArea = 'Str'; % 'ACC', 'Str', 'TH'
+BrainArea = 'TH'; % 'ACC', 'Str', 'TH'
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
 
 minInterSyInt = 5000; 
@@ -73,15 +73,15 @@ for animal_idx = 1 : size(animals, 2)
                 end 
                 songs = [songs; song]; 
     
-                % in case spike matrix isn't long enough, zero pad at the end 
-                if size(spike_matrix, 2) < (songs(end, end) + minInterSyInt)
-                    spike_matrix(:, end:(songs(end, end) + minInterSyInt)) = 0; 
-                end 
-                % in case the first song starts too early, remove
-                if songs(1,1) - minInterSyInt + 1 < 0
+                % in case the first one starts too early, drop 
+                if songs(1) < minInterSyInt
                     songs(1,:) = []; 
                 end 
-    
+                % in case the last call is too late, drop
+                while songs(end,1) + minInterSyInt > size(spike_matrix,2)
+                    songs(end,:) = [];
+                end  
+        
                 % make plotting matrix, cells X (double song inter) X trials 
                 if size(songs, 1) >= 1 % check if there're enough songs 
                     % initialize plotting matrix

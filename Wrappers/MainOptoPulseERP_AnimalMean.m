@@ -2,12 +2,13 @@
 
 clear; 
 experiments = get_experiment_redux;
-experiments = experiments([202:380]);
+experiments = experiments([197:301 324:399]); %[300 301 324:399]
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
-experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCdeep'));
-% experiments = experiments(extractfield(experiments, 'IUEconstruct') == 59 );
+experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCsup'));
+% experiments = experiments(extractfield(experiments, 'IUEconstruct') == 13 );
 experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
 experiments = experiments([experiments.DiI] == 0); 
+color = 'k'; 
 pulse_length = 50; % in ms 
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\'; 
 folder4pulseERP = 'Q:\Personal\Tony\Analysis\Results_PulseERP\'; 
@@ -79,24 +80,36 @@ for exp_idx = 1 : size(experiments, 2)
 end
 
 figure; 
-boundedline(-249:250, nanmedian(ERP_acc), nanstd(ERP_acc) ./ sqrt(exp_idx), 'k'); 
+boundedline(-249:250, nanmedian(ERP_acc), nanstd(ERP_acc) ./ sqrt(exp_idx), color); 
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 1.5;
+end
 title('ACC'); xline(0, ':', 'LineWidth', 1.5); xline(pulse_length, ':', 'LineWidth', 1.5); 
 ylabel('ERP (\muV)'); xlabel('time (ms)'); 
-set(gca, 'FontName', 'Arial', 'FontSize', 14); 
+set(gca, 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2, 'TickDir', 'out'); 
 xlim([-249 250])
 
 figure; 
-boundedline(-249:250, nanmedian(ERP_str), nanstd(ERP_str) ./ sqrt(exp_idx), 'k'); 
+boundedline(-249:250, nanmedian(ERP_str), nanstd(ERP_str) ./ sqrt(exp_idx), color); 
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 1.5;
+end
 title('DMS'); xline(0, ':', 'LineWidth', 1.5); xline(pulse_length, ':', 'LineWidth', 1.5); 
 ylabel('ERP (\muV)'); xlabel('time (ms)'); 
-set(gca, 'FontName', 'Arial', 'FontSize', 14); 
+set(gca, 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2, 'TickDir', 'out'); 
 xlim([-249 250])
 
 figure; 
-boundedline(-249:250, nanmedian(ERP_th), nanstd(ERP_th) ./ sqrt(exp_idx), 'k'); 
+boundedline(-249:250, nanmedian(ERP_th), nanstd(ERP_th) ./ sqrt(exp_idx), color); 
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 1.5;
+end
 title('MD'); xline(0, ':', 'LineWidth', 1.5); xline(pulse_length, ':', 'LineWidth', 1.5); 
 ylabel('ERP (\muV)'); xlabel('time (ms)'); 
-set(gca, 'FontName', 'Arial', 'FontSize', 14); 
+set(gca, 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2, 'TickDir', 'out'); 
 xlim([-249 250])
 
 

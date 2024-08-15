@@ -5,7 +5,7 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments(372:377); % what experiments to keep
+experiments = experiments(381:399); % what experiments to keep
 % experiments = experiments(strcmp(extractfield(experiments, 'Area1'), 'PL'));
 
 save_data = 1;

@@ -2,11 +2,11 @@
 clear
 
 StimArea = 'ACCdeep'; %{'ACCsup', 'PLsup', 'Str', 'TH'}; 
-BrainArea = 'ACC';%{'ACC','PL','Str','TH'};
+BrainArea = 'TH';%{'ACC','PL','Str','TH'};
 layer = 'sup'; 
 
 experiments = get_experiment_redux;
-experiments = experiments([300 301 324:380]);
+experiments = experiments([300 301 324:399]);
 % experiments = experiments(strcmp(extractfield(experiments, 'sites'), '3site'));
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
 % experiments = experiments(strcmp(extractfield(experiments, 'electrode1'), 'W241'));
@@ -14,6 +14,7 @@ experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'))
 % experiments = experiments((extractfield(experiments, 'IUEconstruct')) == 59);
 % experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
 % experiments = experiments((extractfield(experiments, 'IUEconstruct')) == 87);
+experiments = experiments((extractfield(experiments, 'IUEconstruct')) == 13);
 
 experiments = experiments([experiments.DiI] == 0); 
 % experiments = experiments([experiments.DiI] == 1); 
@@ -48,16 +49,16 @@ end
 disp(['plotting stim in ' StimArea])
 if ~size(experiments,2) == 0
     plotRampFiringRateHenrik(experiments, BrainArea, StimArea, [folder4matrix BrainArea '\'], folder4stim, folder4ramps);
-%     plotRampFiringPie(experiments, BrainArea, StimArea, folder4ramps); 
+    plotRampFiringPie(experiments, BrainArea, StimArea, folder4ramps); 
 %     plotRampFiringSigUnits(experiments, BrainArea, StimArea, [folder4matrix BrainArea '\'], folder4stim, folder4ramps);
-    plotRampFiringLayer(experiments, BrainArea, StimArea, folder4suainfo, layer, [folder4matrix BrainArea '\'], folder4stim, folder4ramps);
+%     plotRampFiringLayer(experiments, BrainArea, StimArea, folder4suainfo, layer, [folder4matrix BrainArea '\'], folder4stim, folder4ramps);
 else 
     disp(['there is no ' BrainArea ' recording with ' StimArea ' ramp stim!'])
 end 
 
-if ~size(experiments,2) == 0      
+if ~size(experiments,2) == 0
     plotPulsesFiringRate(experiments, BrainArea, StimArea, pulse_length, pulse2plot, [folder4matrix BrainArea '\'], folder4stim, folder4pulses);
 %     plotPulsesFiringLayer(experiments, BrainArea, StimArea, folder4suainfo, layer, pulse_length, [folder4matrix BrainArea '\'], folder4stim, folder4pulses); 
-else 
+else
     disp(['there is no ' BrainArea ' recording with ' StimArea ' pulse stim!'])
-end 
+end

@@ -1,10 +1,10 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([300 301 324:380]);  
+experiments = experiments([256:301 324:399]); % [300 301 324:380]
 save_data = 1; 
 
-BrainArea = 'Str'; % {'ACC', 'Str', 'TH'}
+BrainArea = 'ACC'; % {'ACC', 'Str', 'TH'}
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
 
 minInterSyInt = 5000; 
@@ -62,6 +62,16 @@ for animal_idx = 1 : size(animals, 2)
                 end 
             end 
             songs = [songs; song]; 
+
+            % in case the first one starts too early, drop 
+            if songs(1) < minInterSyInt
+                songs(1,:) = []; 
+            end 
+            % in case the last call is too late, drop
+            while songs(end,1) + minInterSyInt > size(spike_matrix,2)
+                songs(end,:) = [];
+            end 
+
 
             % check if there're enough songs 
             if size(songs, 1) >= 1 

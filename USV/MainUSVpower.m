@@ -3,7 +3,8 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments(256:380);  % 256:380 [300 301 324:380]
+experiments = experiments([256:399]);  % 256:380 [300 301 324:399]
+% experiments = experiments([experiments.IUEconstruct] == 13);
 
 minInterSyInt = 5000; % threshold to merge USV calls together, in ms
 
@@ -41,3 +42,113 @@ for animal_idx = 1 : size(animals, 2)
     USVpower = getUSVpower(experiments4mouse, minInterSyInt, sigparams, psparams, repeat_calc, folder2save); 
     toc
 end 
+
+
+%% Plotting section 
+
+pre_acc = []; 
+pre_str = []; 
+pre_th = []; 
+
+during_acc = []; 
+during_str = []; 
+during_th = []; 
+
+post_acc = []; 
+post_str = []; 
+post_th = []; 
+
+for animal_idx = 1 : size(animals, 2) 
+    % get animal number and all experiments for this animal 
+    animal = animals{animal_idx}; 
+    experiments4mouse = experiments(strcmp(extractfield(experiments, 'animal_ID'), animal)); 
+    badch = rmmissing([experiments4mouse(1).NoisyCh experiments4mouse(1).OffCh]); 
+
+    load([folder2save animal '.mat']);
+    pre = USVpower.pre; 
+    pre(badch, :) = NaN; 
+    during = USVpower.during; 
+    during(badch, :) = NaN; 
+    post = USVpower.post; 
+    post(badch, :) = NaN; 
+
+    pre_acc(animal_idx, :) = nanmedian(pre(17:32, :)); 
+    during_acc(animal_idx, :) = nanmedian(during(17:32, :)); 
+    post_acc(animal_idx, :) = nanmedian(post(17:32, :)); 
+
+    if experiments4mouse(1).target2 == 1
+        pre_str(animal_idx, :) = nanmedian(pre(1:16, :)); 
+        during_str(animal_idx, :) = nanmedian(during(1:16, :)); 
+        post_str(animal_idx, :) = nanmedian(post(1:16, :)); 
+    else 
+        pre_str(animal_idx, :) = NaN;
+        during_str(animal_idx, :) = NaN;  
+        post_str(animal_idx, :) = NaN; 
+    end 
+    if experiments4mouse(1).target3 == 1 
+        pre_th(animal_idx, :) = nanmedian(pre(33:48, :));
+        during_th(animal_idx, :) = nanmedian(during(33:48, :));
+        post_th(animal_idx, :) = nanmedian(post(33:48, :));
+    else 
+        pre_th(animal_idx, :) = NaN;
+        during_th(animal_idx, :) = NaN; 
+        post_th(animal_idx, :) = NaN; 
+    end 
+    freqs = USVpower.freq; 
+end 
+
+figure; hold on; 
+% plot(freqs, nanmedian(pre_acc)); 
+% plot(freqs, nanmedian(during_acc), 'r');
+boundedline(freqs, nanmedian(pre_acc), nanstd(pre_acc) ./ sqrt(size(pre_acc, 1))); 
+boundedline(freqs, nanmedian(post_acc), nanstd(post_acc) ./ sqrt(size(post_acc, 1)), 'cmap', [0.4660 0.6740 0.1880]);
+boundedline(freqs, nanmedian(during_acc), nanstd(during_acc) ./ sqrt(size(pre_acc, 1)), 'r');
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 2;
+end
+xlabel('Frequency (Hz)'); 
+ylabel('Power (\muV^2)');
+set(gca, 'TickDir', 'out', 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2); 
+set(gca, 'YScale', 'log'); 
+xlim([1 49]); 
+legend('', 'pre-USV', '', 'during USV', '', 'post-USV')
+title('ACC')
+
+figure; hold on; 
+% plot(freqs, nanmedian(pre_acc)); 
+% plot(freqs, nanmedian(during_acc), 'r');
+boundedline(freqs, nanmedian(pre_str), nanstd(pre_str) ./ sqrt(size(pre_str, 1))); 
+boundedline(freqs, nanmedian(post_str), nanstd(post_str) ./ sqrt(size(post_str, 1)), 'cmap', [0.4660 0.6740 0.1880]);
+boundedline(freqs, nanmedian(during_str), nanstd(during_str) ./ sqrt(size(pre_str, 1)), 'r');
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 2;
+end
+xlabel('Frequency (Hz)'); 
+ylabel('Power (\muV^2)');
+set(gca, 'TickDir', 'out', 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2); 
+set(gca, 'YScale', 'log'); 
+xlim([1 49]); 
+legend('', 'pre-USV', '', 'during USV', '', 'post-USV')
+title('DMS')
+
+figure; hold on; 
+% plot(freqs, nanmedian(pre_acc)); 
+% plot(freqs, nanmedian(during_acc), 'r');
+boundedline(freqs, nanmedian(pre_th), nanstd(pre_th) ./ sqrt(size(pre_th, 1))); 
+boundedline(freqs, nanmedian(post_th), nanstd(post_th) ./ sqrt(size(post_th, 1)), 'cmap', [0.4660 0.6740 0.1880]);
+boundedline(freqs, nanmedian(during_th), nanstd(during_th) ./ sqrt(size(pre_th, 1)), 'r');
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 2;
+end
+xlabel('Frequency (Hz)'); 
+ylabel('Power (\muV^2)');
+set(gca, 'TickDir', 'out', 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2); 
+set(gca, 'YScale', 'log'); 
+xlim([1 49]); 
+legend('', 'pre-USV', '', 'during USV', '', 'post-USV')
+title('MD')
+
+

@@ -3,7 +3,7 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments(327:380);  
+experiments = experiments(381:399);  
 save_data = 1;
 repeatCalc = 0; 
 folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\';

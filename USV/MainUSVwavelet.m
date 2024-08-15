@@ -3,7 +3,7 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments(256:380);  % 256:380 [300 301 324:380]
+experiments = experiments(256:399);  % 256:380 [300 301 324:380]
 
 minInterSyInt = 5000; % threshold to merge USV calls together, in ms
 

@@ -7,7 +7,7 @@ experiments = experiments();
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only')); 
 % experiments = experiments(extractfield(experiments, 'IUEconstruct') == 87); 
 
-BrainArea = 'TH'; 
+BrainArea = 'ACC'; 
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
 
 % call colormap 

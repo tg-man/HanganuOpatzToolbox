@@ -111,7 +111,7 @@ hold on
 plot([0 0], get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for no modulation
 xlim([-1.1 1.1]); ylim([-0.1 ceil(max(- log10(pvalue)))])
 ylabel('- Log10 (pvalue)'); xlabel('Modulation Index'); alpha(0.5)
-set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
+set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 2)
 title([BrainArea layer ' units to ' StimArea ' stim'])
 
 % volcano plot; size is equal to number of spikes and colored upon
@@ -128,7 +128,7 @@ hold on
 plot([0 0], get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for no modulation
 xlim([-1.1 1.1]); ylim([-0.1 ceil(max(- log10(pvalue_post)))])
 ylabel('- Log10 (pvalue)'); xlabel('Post Modulation Index'); alpha(0.5)
-set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
+set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 2)
 title([BrainArea layer ' units post ' StimArea ' stim'])
 
 modulation = [nnz(OMI < 0 & pvalue < 0.01) ...
@@ -139,26 +139,35 @@ bar([modulation; nan(1, length(modulation))], 'stacked')
 set(gca,'xtick',1); xlim([0.25 1.75]);
 ylabel('Proportion'); xlabel(''); xticks(''); xticklabels('')
 title('Proportion of (un)modulated units')
-set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
+set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 2)
 
 figure;
 boundedline(linspace(0, 10, size(zscored_units, 2)), mean(zscored_units), std(zscored_units) ./ sqrt(size(zscored_units, 1)))
 hold on
-plot([3 3], get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for opto
-plot([6 6], get(gca, 'ylim'), 'k', 'linewidth', 1) % reference line for opto
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 2;
+end
+xline(3, ':k', 'linewidth', 1.5) % reference line for opto
+xline(6, ':k', 'linewidth', 1.5) % reference line for opto
 ylabel('z-scored firing rate (A.U.)'); xlabel('Time (s)'); xlim([0 10])
 title(['SUA firing rate in ' BrainArea layer ' to ' StimArea ' Stim'])
-set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
+set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 2)
+
 
 figure;
 boundedline(linspace(0, 10, size(spikes_reduced, 2)), mean(spikes_reduced), std(spikes_reduced) ./ sqrt(size(spikes_reduced, 1))); 
 hold on
-xline(3, 'k', 'linewidth', 1) % reference line for opto
-xline(6, 'k', 'linewidth', 1) % reference line for opto
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 2;
+end
+xline(3, ':k', 'linewidth', 1.5) % reference line for opto
+xline(6, ':k', 'linewidth', 1.5) % reference line for opto
 ylabel('average FR (Hz)'); xlabel('Time (s)'); xlim([0 10]); 
 %ylim([0 0.0006])
 title(['SUA FR in ' BrainArea layer ' to ' StimArea ' Stim'])
-set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Arial')
+set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 2)
 set(gca, 'YScale', 'log'); 
 
 
