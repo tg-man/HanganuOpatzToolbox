@@ -38,3 +38,13 @@ end
 % Notes for cellfun
 % cellfun(@(inputs) function(inputs), cellarray of inputs)
 
+
+clear
+% load experiments and generic stuff
+experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
+experiments = experiments(197:420);
+experiments = experiments(isnan(extractfield(experiments, 'IUEage'))); 
+experiments = experiments([experiments.DiI] == 0); 
+sup = experiments(strcmp(extractfield(experiments, 'square'), 'ACCsup'));  
+deep = experiments(strcmp(extractfield(experiments, 'square'), 'ACCdeep'));  
+histogram([sup.age])

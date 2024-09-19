@@ -97,7 +97,7 @@ else
                 songs(end,:) = [];
             end 
             
-            % adjust so that the songs timestaps are in LFP frequency 
+            % adjust so that the songs timestamps are in LFP frequency 
             songs = round(songs/(1000/fs_LFP)); 
 
             % loop through every channel call to compute spectra 
@@ -121,9 +121,9 @@ else
     end % exp loop end 
 
     % put everything in a structure 
-    USVpower.pre = nanmean(pre_tot, 3);
-    USVpower.during = nanmean(during_tot, 3); 
-    USVpower.post = nanmean(post_tot, 3); 
+    USVpower.pre = pre_tot;
+    USVpower.during = during_tot; 
+    USVpower.post = post_tot; 
     USVpower.freq = freq; 
 
     % save data 

@@ -1,11 +1,13 @@
-function plotRampUSV(experiments, folder4stim, StimArea)
-
+function [p1, p2] = plotRampUSV(experiments, folder4stim, StimArea)
 % generate a plot for USV with Ramp stim 
 
-Gwindow = gausswin(501, 5); % gaussian window
+Gwindow = gausswin(1001, 4); % gaussian window
 Gwindow = Gwindow / sum(Gwindow); % normalize the gaussian kernel
 call_tot = []; 
 map4plot = viridis(100);
+pre = 1 : 3000; 
+during = 3001 : 6000; 
+post = 6001 : 9000; 
 
 % loop through experiments 
 for exp_idx = 1 : size(experiments, 2) 
@@ -30,7 +32,7 @@ for exp_idx = 1 : size(experiments, 2)
         syllables(1, :) = []; % remove the first "call" - artificially added
         callvec(syllables) = 1; 
         callvec(end) = 0; % set the recording end to 0 - artificially added
-        callvec = downsamp_convolve(callvec, Gwindow, 1); % convolve it
+%         callvec = downsamp_convolve(callvec, Gwindow, 1); % convolve it - but this line doesn't seem to do much... why tho? 
     else 
         disp([experiment.USV ' start or end incorrectly labeled!'])
     end 
@@ -48,6 +50,8 @@ for exp_idx = 1 : size(experiments, 2)
 end % animal loop end 
 
 call_ds = squeeze(mean(call_tot, 1)); 
+call_ds = downsamp_convolve(call_ds', Gwindow, 1); 
+call_ds = call_ds'; 
 call_ds = squeeze(mean(reshape(call_ds, 100, [], size(call_ds, 2)), 1))'; 
 call_ds = zscore(call_ds, [], 2);
 figure; 
@@ -61,7 +65,7 @@ set(gca, 'TickDir', 'out'); set(gca, 'FontSize', 14); set(gca, 'FontName', 'Aria
 title(['USV to ' StimArea ' ramp'])
 
 figure;
-boundedline(linspace(0, 10, size(call_ds, 2)), mean(call_ds), std(call_ds) ./ sqrt(size(call_ds, 1)))
+boundedline(linspace(0, 10, size(call_ds, 2)), mean(call_ds), std(call_ds) ./ sqrt(size(call_ds, 1))); 
 hold on
 xticks([3 6 9])
 xline(3, ':k', 'linewidth', 1.5) % reference line for opto
@@ -73,5 +77,24 @@ lines = findobj(gcf,'Type','Line');
 for i = 1:numel(lines)
   lines(i).LineWidth = 2;
 end
+
+% sum calls together across ramps and make data frame
+call_tot = squeeze(sum(call_tot, 1))'; 
+df(:, 1) = sum(call_tot(:, pre), 2); 
+df(:, 2) = sum(call_tot(:, during), 2); 
+df(:, 3) = sum(call_tot(:, post), 2); 
+% plotting total call number during each period 
+figure; 
+violins = violinplot(df, {'pre', 'during', 'post'}, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]); 
+for idx = 1:size(violins, 2)
+    violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0]; 
+    violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
+end
+set(gca, 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out'); 
+title([StimArea ' stim'])
+
+% stats test 
+[p1, h1] = signrank(df(:, 1), df(:, 2));
+[p2, h2] = signrank(df(:, 1), df(:, 3));
 
 end % function end 

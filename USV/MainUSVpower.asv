@@ -15,7 +15,7 @@ sigparams.fs = 32000; % sampling rate from data
 sigparams.downsampling_factor = 160; % downsample for LFP analysis
 sigparams.low_cut = 1; 
 sigparams.ExtractMode = 1; % extract from neuralynx into matlab
-sigparams.length = 1; % signal length to for pre and post computation, in second
+sigparams.length = 1; % signal length to cut, in second
 
 % pWelch params 
 psparams. windowSize = 1;
