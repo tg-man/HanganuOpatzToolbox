@@ -2,13 +2,14 @@
 
 clear; 
 experiments = get_experiment_redux;
-experiments = experiments([197:301 324:399]); %[300 301 324:399]
+experiments = experiments([197:301 324:426]); %[300 301 324:426]
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
 experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCsup'));
 % experiments = experiments(extractfield(experiments, 'IUEconstruct') == 13 );
 experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
 experiments = experiments([experiments.DiI] == 0); 
 color = 'k'; 
+YlGnBu = cbrewer('seq', 'YlGnBu', 100);
 pulse_length = 50; % in ms 
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\'; 
 folder4pulseERP = 'Q:\Personal\Tony\Analysis\Results_PulseERP\'; 
@@ -107,6 +108,41 @@ lines = findobj(gcf,'Type','Line');
 for i = 1:numel(lines)
   lines(i).LineWidth = 1.5;
 end
+title('MD'); xline(0, ':', 'LineWidth', 1.5); xline(pulse_length, ':', 'LineWidth', 1.5); 
+ylabel('ERP (\muV)'); xlabel('time (ms)'); 
+set(gca, 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2, 'TickDir', 'out'); 
+xlim([-249 250])
+
+
+% age separated figure 
+age = [experiments.age]; 
+uniqueage = unique(age); 
+
+figure;
+for idx = 1 : numel(uniqueage) 
+    plot(-249:250, nanmean(ERP_acc(age == uniqueage(idx), :), 1), 'Color', YlGnBu(round(100/numel(uniqueage)*idx),:), 'LineWidth', 1.5); hold on
+end 
+box off
+title('ACC'); xline(0, ':', 'LineWidth', 1.5); xline(pulse_length, ':', 'LineWidth', 1.5); 
+ylabel('ERP (\muV)'); xlabel('time (ms)'); 
+set(gca, 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2, 'TickDir', 'out'); 
+xlim([-249 250])
+
+figure;
+for idx = 1 : numel(uniqueage) 
+    plot(-249:250, nanmean(ERP_str(age == uniqueage(idx), :), 1), 'Color', YlGnBu(round(100/numel(uniqueage)*idx),:), 'LineWidth', 1.5); hold on
+end 
+box off
+title('DMS'); xline(0, ':', 'LineWidth', 1.5); xline(pulse_length, ':', 'LineWidth', 1.5); 
+ylabel('ERP (\muV)'); xlabel('time (ms)'); 
+set(gca, 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2, 'TickDir', 'out'); 
+xlim([-249 250])
+
+figure;
+for idx = 1 : numel(uniqueage) 
+    plot(-249:250, nanmean(ERP_th(age == uniqueage(idx), :), 1), 'Color', YlGnBu(round(100/numel(uniqueage)*idx),:), 'LineWidth', 1.5); hold on
+end 
+box off
 title('MD'); xline(0, ':', 'LineWidth', 1.5); xline(pulse_length, ':', 'LineWidth', 1.5); 
 ylabel('ERP (\muV)'); xlabel('time (ms)'); 
 set(gca, 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2, 'TickDir', 'out'); 

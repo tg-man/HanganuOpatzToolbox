@@ -2,11 +2,11 @@
 clear
 
 StimArea = 'ACCdeep'; %{'ACCsup', 'PLsup', 'Str', 'TH'}; 
-BrainArea = 'TH';%{'ACC','PL','Str','TH'};
+BrainArea = 'ACC';%{'ACC','PL','Str','TH'};
 layer = 'sup'; 
 
 experiments = get_experiment_redux;
-experiments = experiments([300 301 324:399]);
+experiments = experiments([300 301 324:420]);
 % experiments = experiments(strcmp(extractfield(experiments, 'sites'), '3site'));
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
 % experiments = experiments(strcmp(extractfield(experiments, 'electrode1'), 'W241'));
@@ -48,17 +48,17 @@ end
 
 disp(['plotting stim in ' StimArea])
 if ~size(experiments,2) == 0
-    plotRampFiringRateHenrik(experiments, BrainArea, StimArea, [folder4matrix BrainArea '\'], folder4stim, folder4ramps);
-    plotRampFiringPie(experiments, BrainArea, StimArea, folder4ramps); 
+%     plotRampFiringRateHenrik(experiments, BrainArea, StimArea, [folder4matrix BrainArea '\'], folder4stim, folder4ramps);
+%     plotRampFiringPie(experiments, BrainArea, StimArea, folder4ramps); 
 %     plotRampFiringSigUnits(experiments, BrainArea, StimArea, [folder4matrix BrainArea '\'], folder4stim, folder4ramps);
-%     plotRampFiringLayer(experiments, BrainArea, StimArea, folder4suainfo, layer, [folder4matrix BrainArea '\'], folder4stim, folder4ramps);
+    plotRampFiringLayer(experiments, BrainArea, StimArea, folder4suainfo, layer, [folder4matrix BrainArea '\'], folder4stim, folder4ramps);
 else 
     disp(['there is no ' BrainArea ' recording with ' StimArea ' ramp stim!'])
 end 
 
-if ~size(experiments,2) == 0
-    plotPulsesFiringRate(experiments, BrainArea, StimArea, pulse_length, pulse2plot, [folder4matrix BrainArea '\'], folder4stim, folder4pulses);
+% if ~size(experiments,2) == 0
+%     plotPulsesFiringRate(experiments, BrainArea, StimArea, pulse_length, pulse2plot, [folder4matrix BrainArea '\'], folder4stim, folder4pulses);
 %     plotPulsesFiringLayer(experiments, BrainArea, StimArea, folder4suainfo, layer, pulse_length, [folder4matrix BrainArea '\'], folder4stim, folder4pulses); 
-else
-    disp(['there is no ' BrainArea ' recording with ' StimArea ' pulse stim!'])
-end
+% else
+%     disp(['there is no ' BrainArea ' recording with ' StimArea ' pulse stim!'])
+% end

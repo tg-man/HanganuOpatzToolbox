@@ -44,9 +44,12 @@ else
     maxFreq = psparams. maxFreq;
   
     % looping through experiments
+    pre5_tot = []; 
+    pre3_tot = [];
     pre_tot = []; 
     post_tot = []; 
     during_tot = []; 
+    
     for exp_idx = 1 : size(experiments, 2) 
         experiment = experiments(exp_idx); 
     
@@ -104,6 +107,8 @@ else
             disp('power spectruming...')
             for si = 1 : size(songs, 1) 
                 for ch = ch2load
+                    [pre5(ch, :), ~] = pWelchSpectrum(LFP(ch, (songs(si,1) - length*5*fs_LFP):(songs(si, 1) - length*4*fs_LFP - 1)), windowSize, overlap, nfft, fs_LFP, maxFreq);
+                    [pre3(ch, :), ~] = pWelchSpectrum(LFP(ch, (songs(si,1) - length*3*fs_LFP):(songs(si, 1) - length*2*fs_LFP - 1)), windowSize, overlap, nfft, fs_LFP, maxFreq);
                     [pre(ch, :), freq] = pWelchSpectrum(LFP(ch, (songs(si,1) - length*fs_LFP):(songs(si, 1) - 1)), windowSize, overlap, nfft, fs_LFP, maxFreq);
                     [post(ch, :), ~] = pWelchSpectrum(LFP(ch, (songs(si,2) + 1):(songs(si, 2) + length*fs_LFP)), windowSize, overlap, nfft, fs_LFP, maxFreq);
                     if (songs(si, 2) - songs(si, 1)) > fs_LFP % if the call was long enough 
@@ -112,6 +117,8 @@ else
                         during(ch, :) = NaN([1, high_cut/fs_LFP*nfft + 1]); 
                     end 
                 end 
+                pre5_tot = cat(3, pre5_tot, pre5); 
+                pre3_tot = cat(3, pre3_tot, pre3);
                 pre_tot  = cat(3, pre_tot, pre); 
                 during_tot = cat(3, during_tot, during); 
                 post_tot = cat(3, post_tot, post); 
@@ -121,6 +128,8 @@ else
     end % exp loop end 
 
     % put everything in a structure 
+    USVpower.pre5 = pre5_tot; 
+    USVpower.pre3 = pre3_tot;
     USVpower.pre = pre_tot;
     USVpower.during = during_tot; 
     USVpower.post = post_tot; 

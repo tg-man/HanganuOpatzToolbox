@@ -1,22 +1,24 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([282:420]);
+experiments = experiments([73:301 324:426]);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
+stimArea = 'ACCsup';
+experiments = experiments(strcmp(extractfield(experiments, 'square'), stimArea)); 
 % experiments = experiments(strcmp(extractfield(experiments, 'sites'), '2site'));
-% experiments = experiments(extractfield(experiments, 'IUEconstruct') == 59);
-% experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
+% experiments = experiments(extractfield(experiments, 'IUEconstruct') == 13);
+experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
+experiments = experiments([experiments.DiI] == 0);
+
 save_data = 1;
 repeatCalc = 0;
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\';
 folderPowRamps = 'Q:\Personal\Tony\Analysis\Results_RampPower\'; % getRampPower params needs to be adjusted accordingly! 
 BrainAreas = {'ACC', 'Str', 'TH'}; %{'ACC','PL','Str','TH'};
-% stimArea = 'ACCsup';
-% experiments = experiments(strcmp(extractfield(experiments, 'square'), stimArea)); 
+
 % experiments = experiments(strcmp(extractfield(experiments, 'sites'), '3site')); 
 CSCs = 1:48; 
 cores = 4; 
-
 
 % compute/plot ramp power stuff
 getStimProperties(experiments, save_data, repeatCalc, folder4stim)
@@ -29,8 +31,8 @@ for idx = 1 : numel(experiments)
     end 
 end
 
-% % bad channels were taking out during plotting 
-% plotRampPower(experiments, stimArea, BrainAreas, folderPowRamps)
+% bad channels were taking out during plotting 
+plotRampPower(experiments, stimArea, BrainAreas, folderPowRamps)
 
 %plotRampSignal(experiment, CSC, save_data, repeatCalc, folder4stim, folderPowRamps); 
 

@@ -49,25 +49,9 @@ xlabel('Age (P)'); ylabel('Firing Rate (Hz)'); xlim([0 9]); ylim([0.005 100])
 set(gca, 'FontSize', 16, 'FontName', 'Arial', 'YScale', 'log', 'LineWidth', 2, 'TickDir', 'out'); 
 title(BrainArea, 'FontSize', 14, 'FontWeight','bold', 'FontName', 'Arial'); 
 
+fr2plot = [fr_acc]
 % simple figure; 
-fr2plot = [fr_acc; fr_str; fr_th]'; 
-x = unique(age);
-for i = 1 : numel(x)
-    y(i, :) = nanmedian(fr2plot(age == x(i), :), 1);
-    s(i, :) = nanstd(fr2plot(age == x(i), :), 1) ./ sqrt(sum(age == x(i)));
-end 
-y = y + y((y - s) < 0) + 0.00001; 
-figure; hold on; 
-boundedline(x, y(:, 3), s(:, 3), 'cmap', Greens(end,:)); 
-boundedline(x, y(:, 1), s(:, 1), 'cmap', Blues(end,:)); 
-boundedline(x, y(:, 2), s(:, 2), 'cmap', Reds(end,:)); 
-lines = findobj(gcf,'Type','Line');
-for i = 1:numel(lines)
-  lines(i).LineWidth = 2;
-end
-xlabel('Age (P)'); ylabel('Firing Rate (Hz)'); 
-set(gca, 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out', 'YScale', 'log'); 
-xlim([4.5 12.5]);
+
 
 
 

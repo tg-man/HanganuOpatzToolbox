@@ -16,7 +16,8 @@ function RampSTTC = getRampSTTC_ba(experiment, folder4OM, BrainArea1, BrainArea2
 % convert lags to seconds
 lags = lags / 1000;
 
-if exist([folder4OSTTC BrainArea1 BrainArea2 '\' experiment.name]) && repeat_calc == 0 
+if exist([folder4OSTTC BrainArea1 BrainArea2 '\' experiment.name '.mat']) && repeat_calc == 0 
+    disp([experiment.name ' already computed!']); 
     load([folder4OSTTC BrainArea1 BrainArea2 '\' experiment.name]); 
 else
     % load ramp matrices 

@@ -1,0 +1,186 @@
+function USVSTTC = getUSVSTTC(experiments, a1, a2, minInterSyInt, lags, repeat_calc, folder4SM, folder2save)
+% Tony Oct. 2024
+% computes sttc at 3 time points: 
+%     1) 5s before onset (1s total signal) 
+%     2) 1s before onset (1s total signal) 
+%     3) during actual calling 
+% inputs: 
+%     - experiments: all experiments from one animal 
+%     - a1 & a2: number index of the brain areas to calculate in experiment sheet 
+%     - minInterSyInt: interval threshold to merge USV period into one 
+%     - lags: vectors of all lags for STTC, in miliseconds 
+%     - repeat_calc: 0 false, everything else true 
+%     - folder4SM: where all spike matrices live 
+%     - folder2save: where to save USV STTC files 
+
+area1 = experiments(1).(['Area' num2str(a1)]); 
+area2 = experiments(1).(['Area' num2str(a2)]); 
+cores = 8; 
+
+if repeat_calc == 0 && exist([folder2save area1 area2 '\' experiments(1).animal_ID '.mat'],'file')
+    load([folder2save area1 area2 '\' experiments(1).animal_ID]); 
+else 
+    % First, concatenate all the matrix together 
+    % get a list of all spike matrices 
+    for exp_idx = 1 : size(experiments, 2)
+        experiment = experiments(exp_idx);
+        load([folder4SM area1 '\' experiment.name]); 
+        eval(['sm1_' num2str(exp_idx) ' = spike_matrix;']);
+        eval(['cells1_' num2str(exp_idx) ' = clusters;']);
+        clear spike_matrix clusters
+        load([folder4SM area2 '\' experiment.name]); 
+        eval(['sm2_' num2str(exp_idx) ' = spike_matrix;']);
+        eval(['cells2_' num2str(exp_idx) ' = clusters;']);
+        clear spike_matrix clusters
+    end
+    % pad all matrix so that same experiment have the same length
+    z2p = 0; 
+    for exp_idx = 1 : size(experiments, 2) 
+        % find out the longer length
+        pd = max(size(eval(['sm1_' num2str(exp_idx)]), 2), size(eval(['sm2_' num2str(exp_idx)]), 2)); 
+        % pad the matrices 
+        eval(['sm1_' num2str(exp_idx) '(:, end:pd) = 0;'])
+        eval(['sm2_' num2str(exp_idx) '(:, end:pd) = 0;'])
+        z2p = [z2p; pd]; 
+    end 
+    z2p = cumsum(z2p); 
+    % get the a union of clusters for each area 
+    cells1 = []; 
+    cells2 = []; 
+    for exp_idx = 1 : size(experiments, 2) 
+        cells1 = union(cells1, eval(['cells1_' num2str(exp_idx)]));
+        cells2 = union(cells2, eval(['cells2_' num2str(exp_idx)]));
+    end 
+    % concatenate all the matrix together 
+    sm1 = []; 
+    sm2 = []; 
+    for exp_idx = 1 : size(experiments, 2)
+        [~, loc] = ismember(eval(['cells1_' num2str(exp_idx)]), cells1);
+        temp(loc, :) = eval(['sm1_' num2str(exp_idx)]); 
+        if size(sm1, 1)  < size(sm1, 1) 
+            temp = [temp; zeros(size(sm1, 1) - size(sm1, 1), size(temp, 2))]
+        end 
+        sm1 = [sm1 temp]; 
+        clear temp 
+        [~, loc] = ismember(eval(['cells2_' num2str(exp_idx)]), cells2);
+        temp(loc, :) = eval(['sm2_' num2str(exp_idx)]); 
+        sm2 = [sm2 temp]; 
+        clear temp  
+    end 
+    % clean up work space to release memory 
+    eval(['clear ', strjoin([who('sm*_*'); who('cells*_*')])]);
+    
+    % concatenate all the time stamps from different experiment sessions 
+    totcall = []; 
+    for exp_idx = 1 : size(experiments, 2) 
+        experiment = experiments(exp_idx); 
+        % load USV file 
+        syllables = []; % initialize 
+        load([experiment.USV_path experiment.USV '.mat'])
+        Calls = Calls(Calls.Accept == 1, :); % filter out rejected calls 
+        % check labeling and extract numbers
+        if double(string(Calls.('Type')(1))) == 9 && double(string(Calls.('Type')(end))) == 8  
+            syllables(:, 1) = Calls.('Box')(:,1); % extract beginning timestamps
+            syllables(:, 2) = Calls.('Box')(:,1) + Calls.('Box')(:, 3); % extract end timestamps
+            syllables = round((syllables - syllables(1, 1)) * 1000); % justify recording beginning and convert to ms to fit to spike matrix 
+            syllables(1, :) = []; % remove the first "call" - artificially added start
+            syllables(end, :) = []; % remove the last "ca;;" - artificially added end 
+        else 
+             disp([experiment.USV ' start or end incorrectly labeled!']); 
+        end 
+        % merge calls if they are close enough together
+        if size(syllables, 1) > 1 % check if the animal has vocalized at all
+            songs = []; 
+            song = syllables(1, :); 
+            for sy_idx = 2 : size(syllables, 1) 
+                if syllables(sy_idx, 1) - song(2) < minInterSyInt
+                    song(2) = syllables(sy_idx, 2);
+                else 
+                    songs = [songs; song]; 
+                    song = syllables(sy_idx, :); 
+                end 
+            end 
+            songs = [songs; song]; % still miliseconds here 
+            songs = songs + z2p(exp_idx); % add padding time to align with spike matrices 
+            totcall = [totcall; songs]; 
+        end % conditional end 
+    end % exp loop end 
+    % in case the first call starts too early, drop 
+    if totcall(1) < minInterSyInt
+        totcall(1,:) = []; 
+    end 
+    % in case the last call is too late, drop
+    if totcall(end,1) + minInterSyInt > size(sm1, 2)
+        songs(end,:) = [];
+    end 
+    % timestamps of all call period 
+    veccall = cell2mat(arrayfun(@(i) totcall(i,1):totcall(i,2), 1:size(totcall, 1), 'UniformOutput', false));
+    % also timestamps for baseline period and preparatory period 
+    totprep(:, 2) = totcall(:, 1) - 3;
+    totprep(:, 1) = totprep(:, 2) - 1000;
+    vecprep = cell2mat(arrayfun(@(i) totprep(i,1):totprep(i,2), 1:size(totprep, 1), 'UniformOutput', false));
+    totbl(:, 1) = totcall(:, 1) - 5000; 
+    totbl(:, 2) = totbl(:, 1) + 1000; 
+    vecbl = cell2mat(arrayfun(@(i) totbl(i,1):totbl(i,2), 1:size(totbl, 1), 'UniformOutput', false));
+    
+    % compute STTC, looping thru lags and each unit pair 
+    pair = 1; 
+    for unit1 = 1 : size(sm1, 1)
+        % create different spike trains by setting period outside of interest to zero 
+        st1bl = sm1(unit1, :); 
+        st1bl(setdiff(1:z2p(end), vecbl)) = 0; % baseline vec
+        st1prep = sm1(unit1, :); 
+        st1prep(setdiff(1:z2p(end), vecprep)) = 0; % prep period vec
+        st1call = sm1(unit1, :); 
+        st1call(setdiff(1:z2p(end), veccall)) = 0; % calling period vec 
+        % grab sttc params 
+        num1bl =  sum(st1bl);
+        num1prep = sum(st1prep);
+        num1call = sum(st1call);
+        time1bl = find(st1bl) / 1000; 
+        time1prep = find(st1prep) / 1000; 
+        time1call = find(st1call) / 1000; 
+
+        % 2nd loop for 2nd spike matrix 
+        for unit2 = 1 : size(sm2, 1) 
+            % create different spike trains by setting period outside of interest to zero 
+            st2bl = sm2(unit2, :); 
+            st2bl(setdiff(1:z2p(end), vecbl)) = 0; % baseline vec
+            st2prep = sm2(unit2, :); 
+            st2prep(setdiff(1:z2p(end), vecprep)) = 0; % prep period vec
+            st2call = sm2(unit2, :); 
+            st2call(setdiff(1:z2p(end), veccall)) = 0; % calling period vec 
+            % grab sttc params 
+            num2bl =  sum(st2bl);
+            num2prep = sum(st2prep);
+            num2call = sum(st2call);
+            time2bl = find(st2bl) / 1000; 
+            time2prep = find(st2prep) / 1000; 
+            time2call = find(st2call) / 1000; 
+
+            % actual calculation part!!!! 
+            parfor (lag_idx = 1: length(lags), cores) 
+                baseline(pair, lag_idx) = getSTTC(num1bl, num2bl, lags(lag_idx)/1000, [0 z2p(end)/1000], time1bl, time2bl); 
+                prep(pair, lag_idx) = getSTTC(num1prep, num2prep, lags(lag_idx)/1000, [0 z2p(end)/1000], time1prep, time2prep); 
+                during(pair, lag_idx) = getSTTC(num1call, num2call, lags(lag_idx)/1000, [0 z2p(end)/1000], time1call, time2call); 
+            end 
+            pair = pair + 1; 
+        end 
+    end 
+    
+    % put in a structure 
+    USVSTTC.lags = lags; 
+    USVSTTC.baseline = baseline; 
+    USVSTTC.prep = prep; 
+    USVSTTC.during = during; 
+    USVSTTC.cells1 = cells1; 
+    USVSTTC.cells2 = cells2; 
+    USVSTTC.z2p = z2p; 
+    
+    % save data 
+    if ~exist([folder2save area1 area2], 'dir') 
+        mkdir([folder2save area1 area2])
+    end 
+    save([folder2save area1 area2 '\' experiments(1).animal_ID], 'USVSTTC'); 
+end % repeat calc check end 
+end % function end 

@@ -3,11 +3,13 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments(381:399);  
+experiments = experiments(421:426);  
 save_data = 1;
-repeatCalc = 0; 
+repeatCalc = 1; 
 folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\';
+% folder4SUAinfo = 'C:\Users\tman\Desktop\';
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\';
+% folder4SM = 'C:\Users\tman\Desktop\';
 
 % brain areas
 BrainAreas = {'ACC','Str','TH'}; % {'ACC','PL','Str','TH'}

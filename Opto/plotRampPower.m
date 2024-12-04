@@ -74,7 +74,7 @@ for area_idx = 1: numel(plotAreas)
     yline(0, ':k', 'LineWidth', 1.5)
     xlabel('Frequency (Hz)');  ylabel('Relative Power');
     set(gca,'FontSize', 16, 'FontName', 'Arial', 'TickDir','out', 'LineWidth', 2); 
-    title(['Relative Power Spectrum - ' plotArea ' to ' stimArea ' stim'])
+    title([plotArea ' to ' stimArea ' stim'])
     xlim([1 49]); ylim([-0.15 0.2]);
 
     % plot the pre-stim spectrum
@@ -85,7 +85,7 @@ for area_idx = 1: numel(plotAreas)
     for i = 1:numel(lines) 
         lines(i).LineWidth = 2;
     end
-    title(['Pre-Stim Power Spectrum - ' plotArea ' to ' stimArea ' stim' ]); 
+    title([plotArea ' to ' stimArea ' stim' ]); 
     xlabel('Frequency (Hz)'); ylabel('Power (\muV^2)');
     set(gca,'FontSize', 16, 'FontName', 'Arial', 'TickDir','out', 'LineWidth', 2); 
     xlim([1 49]); ylim([0.1 100]); 

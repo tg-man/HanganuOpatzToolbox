@@ -4,6 +4,8 @@ function [SUAinfo, features] = loadKlusta(animal, PRMfolder, DATfolder, save_dat
 % instead of current cluster,commented previous version. 
 % Now PRV is calculated like in phy gui.
 
+warning('off', 'MATLAB:imagesci:deprecatedHDF5:deprecatedAttributeSyntax')
+
 filenamekwik = strcat(PRMfolder, animal, filesep, animal, '.kwik'); % name kwik file
 filenamekwx = strcat(PRMfolder, animal, filesep, animal, '.kwx'); % name kwix file
 
@@ -33,15 +35,13 @@ for DATfile_idx = 1 : numel(DATfiles)
             gwfparams.spikeClusters = Clusters;            
         end
     elseif DATfile_idx == numel(DATfiles)
-        gwfparams.spikeTimes = TimeStamps(RecordingBreaks(DATfile_idx - 1)...
-            : end);
-        gwfparams.spikeClusters = Clusters(RecordingBreaks(DATfile_idx - 1)...
-            : end);
+        gwfparams.spikeTimes = TimeStamps(RecordingBreaks(DATfile_idx - 1) + 1: end); % + 1 is added here
+        gwfparams.spikeClusters = Clusters(RecordingBreaks(DATfile_idx - 1) + 1: end); % + 1 is added here
     else
-        gwfparams.spikeTimes = TimeStamps(RecordingBreaks(DATfile_idx - 1)...
-            : RecordingBreaks(DATfile_idx));
-        gwfparams.spikeClusters = Clusters(RecordingBreaks(DATfile_idx - 1)...
-            : RecordingBreaks(DATfile_idx));
+        gwfparams.spikeTimes = TimeStamps(RecordingBreaks(DATfile_idx - 1) + 1 ...
+            : RecordingBreaks(DATfile_idx));  % + 1 is added here
+        gwfparams.spikeClusters = Clusters(RecordingBreaks(DATfile_idx - 1) + 1 ...
+            : RecordingBreaks(DATfile_idx));  % + 1 is added here
     end
         
     WaveForms = getWaveForms(gwfparams);                                                  % function from CortexLab extracting Waveforms for each cluster                                                                         
@@ -82,6 +82,7 @@ for DATfile_idx = 1 : numel(DATfiles)
     SUAinfo{DATfile_idx} = SUA;
 end
 
+warning('on', 'MATLAB:imagesci:deprecatedHDF5:deprecatedAttributeSyntax')
 
 if save_data == 1
     if ~exist(directory2save)

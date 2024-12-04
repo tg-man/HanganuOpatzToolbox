@@ -5,7 +5,7 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments(400:420); % what experiments to keep
+experiments = experiments(421:426); % what experiments to keep
 % experiments = experiments(strcmp(extractfield(experiments, 'Area1'), 'PL'));
 
 save_data = 1;
@@ -38,6 +38,7 @@ for idx_area = 1 : numel(BrainAreas)
     animals = animals(~cellfun('isempty', animals));
     animals = unique(cellfun(@num2str, animals, 'un', 0));
         
+%     for idx_animal = 1 : length(animals)
     parfor (idx_animal = 1 : length(animals), cores)
         
         animal = animals{idx_animal};

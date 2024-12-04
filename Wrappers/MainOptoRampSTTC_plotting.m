@@ -3,7 +3,7 @@
 clear; 
 cmap = cbrewer('seq', 'YlGnBu', 100);
 experiments = get_experiment_redux;
-experiments = experiments([73:326]);
+experiments = experiments([327:420]);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
 experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCsup'));
 experiments = experiments(extractfield(experiments, 'IUEconstruct') == 59);

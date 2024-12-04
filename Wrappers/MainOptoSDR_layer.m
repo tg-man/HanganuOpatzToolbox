@@ -3,13 +3,13 @@
 clear
 experiments = get_experiment_redux;
 experiments = experiments([300 301 324:420]);
-experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCsup'));  
+experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCdeep'));  
 experiments = experiments((extractfield(experiments, 'IUEconstruct') == 13));
 % experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct'))); 
 experiments = experiments([experiments.DiI] == 0); 
 folderPowRamps = 'Q:\Personal\Tony\Analysis\Results_RampPower\'; 
 
-layer = 'sup'; % sup or deep
+layer = 'deep'; % sup or deep
  
 if strcmp(layer, 'sup') 
     ch_acc = 17:20; 
@@ -75,10 +75,21 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
 ylabel('normalized SDR'); xticklabels({'pre','stim'});
-title(['ACC' layer '\rightarrow DMS'], 'FontWeight','normal')
+title(['ACC' layer '\rightarrow DMS'], 'FontWeight','bold')
 set(gca, 'FontSize', 16, 'Fontname', 'Arial', 'Linewidth', 2, 'TickDir', 'out'); 
-plot([1.2,1.8], [SDR_accstr_norm(:,1),SDR_accstr_norm(:,2)], 'k', 'Linewidth', 2)
-
+plot([1.2,1.8], [SDR_accstr_norm(:,1),SDR_accstr_norm(:,2)], 'k', 'Linewidth', 1.5)
+% simple figure 
+figure; hold on; 
+plot([1 2], SDR_accstr_norm, 'Color', [0.7 0.7 0.7]); box off; 
+scatter([1 2], SDR_accstr_norm, 'MarkerEdgeColor', 'none', 'MarkerFaceColor', [0.7 0.7 0.7])
+plot(nanmedian(SDR_accstr_norm, 1), 'Color', [0.6350 0.0780 0.1840], 'Linewidth', 2)
+scatter([1 2], nanmedian(SDR_accstr_norm, 1), 'MarkerEdgeColor', 'none', 'MarkerFaceColor', [0.6350 0.0780 0.1840])
+xlim([0.7 2.3]);
+yline(0, ':k','Linewidth', 1.2); 
+set(gca, 'FontSize', 14, 'Fontname', 'Arial', 'TickDir', 'out', 'LineWidth', 2); 
+xticks([1 2]); xticklabels({'pre', 'stim'});
+ylabel('normalized SDR');
+title(['ACC' layer '\rightarrow DMS'], 'FontWeight','normal')
 
 figure; 
 SDRpre_accth_norm = (SDRpre_accth(:,1) - SDRpre_accth(:,2))./(SDRpre_accth(:,1) + SDRpre_accth(:,2));
@@ -90,9 +101,22 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
 ylabel('normalized SDR'); xticklabels({'pre','stim'});
-title(['ACC' layer '\rightarrow MD'], 'FontWeight','normal')
+title(['ACC' layer '\rightarrow MD'], 'FontWeight','bold')
 set(gca, 'FontSize', 16, 'Fontname', 'Arial', 'Linewidth', 2, 'TickDir', 'out'); 
-plot([1.2,1.8], [SDR_accth_norm(:,1),SDR_accth_norm(:,2)], 'k',  'Linewidth', 2)
+plot([1.2,1.8], [SDR_accth_norm(:,1),SDR_accth_norm(:,2)], 'k',  'Linewidth', 1.5)
+% simple figure 
+figure; hold on; 
+plot([1 2], SDR_accth_norm, 'Color', [0.7 0.7 0.7]); box off; 
+scatter([1 2], SDR_accth_norm, 'MarkerEdgeColor', 'none', 'MarkerFaceColor', [0.7 0.7 0.7])
+plot(nanmedian(SDR_accth_norm, 1), 'Color', [0.6350 0.0780 0.1840], 'Linewidth', 2)
+scatter([1 2], nanmedian(SDR_accth_norm, 1), 'MarkerEdgeColor', 'none', 'MarkerFaceColor', [0.6350 0.0780 0.1840])
+xlim([0.7 2.3]);
+yline(0, ':k','Linewidth', 1.2); 
+set(gca, 'FontSize', 14, 'Fontname', 'Arial', 'TickDir', 'out', 'LineWidth', 2); 
+xticks([1 2]); xticklabels({'pre', 'stim'});
+ylabel('normalized SDR');
+title(['ACC' layer '\rightarrow MD'], 'FontWeight','normal')
 
-[H_str, p_str] = ttest(SDR_accstr_norm(:,1), SDR_accstr_norm(:,2))
-[H_th, p_th] = ttest(SDR_accth_norm(:,1), SDR_accth_norm(:,2))
+[p_str, H_str] = signrank(SDR_accstr_norm(:,1), SDR_accstr_norm(:,2))
+[p_th, H_th] = signrank(SDR_accth_norm(:,1), SDR_accth_norm(:,2))
+

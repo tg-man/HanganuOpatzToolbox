@@ -1,10 +1,10 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments(256:281);  
+experiments = experiments([256:301 324:399]);  
 save_data = 1; 
 
-BrainArea = 'TH'; % {'ACC', 'Str', 'TH'}
+BrainArea = 'ACC'; % {'ACC', 'Str', 'TH'}
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
 
 minInterSyInt = 5000; 

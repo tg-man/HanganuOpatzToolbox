@@ -3,7 +3,7 @@
 clear
 experiments = get_experiment_redux;
 experiments = experiments([300 301 324:420]);
-experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCdeep'));  
+experiments = experiments(strcmp(extractfield(experiments, 'square'), 'ACCsup'));  
 experiments = experiments(extractfield(experiments, 'IUEconstruct') == 13);
 % experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct'))); 
 experiments = experiments([experiments.DiI] == 0); 
@@ -69,9 +69,10 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
 ylabel('normalized SDR'); xticklabels({'pre','stim'});
-set(gca, 'FontSize', 16, 'Fontname', 'Arial', 'Linewidth', 2, 'TickDir', 'out'); 
+set(gca, 'FontSize', 16, 'Fontname', 'Arial'); 
 title('SDR: ACC \rightarrow DMS', 'FontWeight', 'Bold')
 plot([1.2,1.8], [SDR_accstr_norm(:,1),SDR_accstr_norm(:,2)], 'k', 'Linewidth', 1.5)
+
 
 figure; 
 SDRpre_accth_norm = (SDRpre_accth(:,1) - SDRpre_accth(:,2))./(SDRpre_accth(:,1) + SDRpre_accth(:,2));
@@ -83,7 +84,7 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
 ylabel('normalized SDR'); xticklabels({'pre','stim'});
-set(gca, 'FontSize', 16, 'Fontname', 'Arial', 'Linewidth', 2, 'TickDir', 'out'); 
+set(gca, 'FontSize', 16, 'Fontname', 'Arial'); 
 title('SDR: ACC \rightarrow MD', 'FontWeight', 'Bold')
 plot([1.2,1.8], [SDR_accth_norm(:,1),SDR_accth_norm(:,2)], 'k', 'Linewidth', 1.5)
 

@@ -9,7 +9,7 @@ end
 % edit line thickness 
 lines = findobj(gcf,'Type','Line');
 for i = 1:numel(lines)
-  lines(i).LineWidth = 2.8;
+  lines(i).LineWidth = 2;
 end
 
 % text symbols 
@@ -38,6 +38,10 @@ end
 % Notes for cellfun
 % cellfun(@(inputs) function(inputs), cellarray of inputs)
 
+set(gca, 'FontSize',20, 'LineWidth', 2.5)
+title()
+
+xticklabels({'Baseline', 'Prep', 'During'})
 
 clear
 % load experiments and generic stuff

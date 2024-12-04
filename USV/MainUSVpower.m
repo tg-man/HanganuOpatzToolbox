@@ -3,7 +3,7 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([256:420]);  % 256:380 [300 301 324:399]
+experiments = experiments([256:301 303 306 309 312 315 318 321 324:420]);  % 256:380 [300 301 324:399]
 % experiments = experiments([experiments.IUEconstruct] == 13);
 
 minInterSyInt = 5000; % threshold to merge USV calls together, in ms
@@ -23,7 +23,7 @@ psparams. overlap = 0.4;
 psparams. nfft = 256;
 psparams. maxFreq = 100;
 
-repeat_calc = 1; 
+repeat_calc = 0; 
 folder2save = 'Q:\Personal\Tony\Analysis\Results_USVpower\'; 
 
 % get unique animal numbers 

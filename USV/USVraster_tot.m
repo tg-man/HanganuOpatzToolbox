@@ -1,6 +1,6 @@
 clear
 experiments = get_experiment_redux;
-experiments = experiments([256:301 324:420]);  % [300 301 324:380]
+experiments = experiments([300 301 324:420]);  % [300 301 324:380]
 save_data = 1; 
 
 BrainArea = 'TH'; % 'ACC', 'Str', 'TH'
@@ -108,8 +108,14 @@ end
 % average across songs, covolution, and zscore 
 usvmat_tot_conv = downsamp_convolve(usvmat_tot, Gwindow, 1); 
 z2plot = zscore(usvmat_tot_conv, [], 2); 
-idx_sorted = sort_peak_time(z2plot, 500); % sort 
 
+% split the z2plot matrix in half, even vs odd for example. Sort max time
+% based on the even matrix and plot the odd matrix to get rid of random
+% firing maxima 
+
+% maybe split it already in the animal loop??? 
+% 
+idx_sorted = sort_peak_time(z2plot, 500); % sort 
 % sorted raster justified to song onset 
 figure; 
 imagesc((-minInterSyInt + 1:minInterSyInt)/1000, 1:size(z2plot, 1), flipud(z2plot(idx_sorted, :))); colormap(map4plot) % plot
@@ -118,27 +124,42 @@ set(gca, 'FontSize', 14, 'FontName', 'Arial')
 xticks([-4 -2 0 2 4]); xlabel('Time (s)');
 title([BrainArea], 'FontWeight','normal') 
 xlim([-4.5 4.5])
-% line profile 
-figure; 
-subplot(211); % zscore
-boundedline((-minInterSyInt + 1 : minInterSyInt)/1000, mean(z2plot), std(z2plot) ./ sqrt(size(z2plot, 1)));
-lines = findobj(gcf,'Type','Line');
-for i = 1:numel(lines)
-  lines(i).LineWidth = 1.5;
-end
-xline(0, ':k','LineWidth', 1); 
-xlim([-4.5 4.5])
-xticks([-4 -2 0 2 4]); xlabel('Time (s)'); ylabel('z-score fr'); 
-set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 1); 
-title([BrainArea])
-subplot(212); % actual fr 
-boundedline((-minInterSyInt + 1 : minInterSyInt)/1000, mean(usvmat_tot_conv), std(usvmat_tot_conv) ./ sqrt(size(usvmat_tot_conv, 1)));
-lines = findobj(gcf,'Type','Line');
-for i = 1:numel(lines)
-  lines(i).LineWidth = 1.5;
-end
-xline(0, ':k','LineWidth', 1); 
-xlim([-4.5 4.5])
-xticks([-4 -2 0 2 4]); xlabel('Time (s)'); ylabel('fr (Hz)'); 
-set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 1); 
-% set(gca, 'YScale', 'log')
+
+% % line profile 
+% figure; 
+% subplot(211); % zscore
+% boundedline((-minInterSyInt + 1 : minInterSyInt)/1000, mean(z2plot), std(z2plot) ./ sqrt(size(z2plot, 1)));
+% lines = findobj(gcf,'Type','Line');
+% for i = 1:numel(lines)
+%   lines(i).LineWidth = 1.5;
+% end
+% xline(0, ':k','LineWidth', 1); 
+% xlim([-4.5 4.5])
+% xticks([-4 -2 0 2 4]); xlabel('Time (s)'); ylabel('z-score fr'); 
+% set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 1); 
+% title([BrainArea])
+% subplot(212); % actual fr 
+% boundedline((-minInterSyInt + 1 : minInterSyInt)/1000, mean(usvmat_tot_conv), std(usvmat_tot_conv) ./ sqrt(size(usvmat_tot_conv, 1)));
+% lines = findobj(gcf,'Type','Line');
+% for i = 1:numel(lines)
+%   lines(i).LineWidth = 1.5;
+% end
+% xline(0, ':k','LineWidth', 1); 
+% xlim([-4.5 4.5])
+% xticks([-4 -2 0 2 4]); xlabel('Time (s)'); ylabel('fr (Hz)'); 
+% set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 1); 
+% % set(gca, 'YScale', 'log')
+
+
+% figure; 
+% boundedline((-minInterSyInt + 1 : minInterSyInt)/1000, mean(z2plot), std(z2plot) ./ sqrt(size(z2plot, 1)));
+% lines = findobj(gcf,'Type','Line');
+% for i = 1:numel(lines)
+%   lines(i).LineWidth = 1.5;
+% end
+% xline(0, ':k','LineWidth', 1); 
+% xlim([-4.5 4.5])
+% xticks([-4 -2 0 2 4]); xlabel('Time (s)'); ylabel('z-score fr'); 
+% set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 1); 
+% title([BrainArea])
+
