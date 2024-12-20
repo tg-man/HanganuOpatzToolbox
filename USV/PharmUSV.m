@@ -3,6 +3,11 @@ clear
 L1 = readtable ('Q:\Personal\Tony\Analysis\PharmUSV.xlsx');
 folder = 'Q:\Personal\Tony\Analysis\Results_USV\';
 L1 = L1(L1.exp_L == 1 & L1.exp_R == 1,:);
+W1 = unstack(L1(:, [1 2 3]), L1.Properties.VariableNames([3]), 'age');
+
+
+sum(L1.age == 11 & L1.C21 == 1)
+sum(L1.age == 12 & L1.C21 == 1)
 
 for i = 1 : height(L1)
     if ~isempty(L1.file{i})
@@ -147,6 +152,7 @@ plot([1.3 1.7], [W1.callnum_0 W1.callnum_1] + 1, 'Color', 'k', 'LineWidth', 2);
 xticklabels({'before C21', 'after C21'}); 
 ylabel('# of calls'); 
 set(gca, 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out');
+% set(gca, 'YScale', 'log')
 [p, ~] = signrank(W1.callnum_0, W1.callnum_1); 
 title(['p = ' num2str(p)])
 
@@ -452,13 +458,13 @@ for i = 1 : height(L1)
     highfreq = Calls.Box(:, 2) + Calls.Box(:, 4); 
     freqrange = Calls.Box(:, 4); 
     type = double(string(Calls.Type)); 
-    temp = [table(mouse) table(C21) table(type, length, lowfreq, highfreq, freqrange) stats(:, [17 13 14 15])]; 
+    temp = [table(mouse) table(C21) table(type, length, lowfreq, highfreq, freqrange) stats(:, [18 14 15 16]) stats(:, 1)]; %% update code for new stats output 
     % add to total variable
     calltot = [calltot; temp];
 end 
 
-calltot.Label = double(string(cell2mat(calltot.Label))); 
-calltot = removevars(calltot, {'Score', 'BeginTime_s_', 'EndTime_s_'});
+% calltot.Label = double(string(cell2mat(calltot.Label))); 
+% calltot = removevars(calltot, {'Score', 'BeginTime_s_', 'EndTime_s_'});
 
 % % fix some empty cell display 
 % for i = 1 : size(L1, 1) 
@@ -469,8 +475,8 @@ calltot = removevars(calltot, {'Score', 'BeginTime_s_', 'EndTime_s_'});
 %     end 
 % end 
 
-writetable(calltot, 'Q:\Personal\Tony\PharmUSV_calltot_new.csv');
-test = readtable('Q:\Personal\Tony\PharmUSV_calltot_new.csv');
+writetable(calltot, 'Q:\Personal\Tony\Analysis\PharmUSV_calltot_4.csv', 'QuoteStrings', true);
+test = readtable('Q:\Personal\Tony\Analysis\PharmUSV_calltot_4.csv', 'Delimiter', ',');
 
 %% deprecated first run 
 % 
