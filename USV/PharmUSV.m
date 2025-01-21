@@ -452,13 +452,14 @@ for i = 1 : height(L1)
 
     % get features
     mouse = repmat(L1.mouse(i), [size(stats, 1) 1]);
+    age = repmat(L1.age(i), [size(stats, 1) 1]);
     C21 = repmat(L1.C21(i), [size(stats, 1) 1]);
     length = Calls.Box(:, 3); 
     lowfreq = Calls.Box(:, 2); 
     highfreq = Calls.Box(:, 2) + Calls.Box(:, 4); 
     freqrange = Calls.Box(:, 4); 
     type = double(string(Calls.Type)); 
-    temp = [table(mouse) table(C21) table(type, length, lowfreq, highfreq, freqrange) stats(:, [18 14 15 16]) stats(:, 1)]; %% update code for new stats output 
+    temp = [table(mouse) table(age) table(C21) table(type, length, lowfreq, highfreq, freqrange) stats(:, [18 14 15 16]) stats(:, 1)]; %% update code for new stats output 
     % add to total variable
     calltot = [calltot; temp];
 end 
@@ -478,24 +479,3 @@ end
 writetable(calltot, 'Q:\Personal\Tony\Analysis\PharmUSV_calltot_4.csv', 'QuoteStrings', true);
 test = readtable('Q:\Personal\Tony\Analysis\PharmUSV_calltot_4.csv', 'Delimiter', ',');
 
-%% deprecated first run 
-% 
-% L1 = readtable('C:\Users\tman\Desktop\PharmUSV.xlsx'); 
-% folder = 'Q:\Personal\Tony\Analysis\Results_USV\';
-% 
-% for i = 1 : height(L1)
-%     if ~isempty(L1.file{i})
-%         load([folder L1.file{i} '.mat'])
-%         L1.callnum(i) = sum(Calls.Accept);
-%     end 
-% end 
-% L1 = removevars(L1, "file");
-% 
-% L8 = L1([L1.age] == 8, :);
-% W8 = unstack(L8, {'callnum', 'C21'}, 'time')
-% 
-% L9 = L1([L1.age] == 9, :);
-% W9 = unstack(L9, {'callnum', 'C21'}, 'time')
-% 
-% L10 = L1([L1.age] == 10, :);
-% W10 = unstack(L10, {'callnum', 'C21'}, 'time')
