@@ -1,5 +1,6 @@
-%% Perform PCA on USV related activity
+%% Perform PCA on pre-USV spiking activities
 % Tony Jan 2025
+%% Section 1: on single area data, without time resolution
 
 clear
 experiments = get_experiment_redux;
@@ -175,9 +176,6 @@ usvpca.Properties.VariableNames = {'mouse','age', 'call',  'pc1', 'pc2', 'pc3', 
 
 mean(nonzeros(sum(varexp(:, 6), 2)))
 
-
-
-
 % %% code to split the matrix 
 %     % split call matrix 
 %     col_inds = randperm(size(mat4call, 2)); 
@@ -225,7 +223,8 @@ mean(nonzeros(sum(varexp(:, 6), 2)))
 % end 
 % min(cellnum)
 
-%% 
+%% Section 2: on aggregate data from both area, without time resolution
+
 clear
 experiments = get_experiment_redux;
 experiments = experiments(256:end);
@@ -442,3 +441,116 @@ end
 
 usvpca.Properties.VariableNames = {'mouse','age', 'call',  'pc1', 'pc2', 'pc3', 'pc4', 'pc5', 'pc6'}; 
 writetable(usvpca, ['Q:\Personal\Tony\Analysis\Results_USVdecoder\usvpca_' lower([area1 area2]) '.csv'], 'QuoteStrings', true);
+
+%% Section 3: Single area data, time binned 
+
+clear
+experiments = get_experiment_redux;
+experiments = experiments(256:end);
+experiments = experiments([experiments.target2] == 1);
+experiments = experiments([experiments.DiI] == 0);
+
+% get unique animal numbers
+animals = extractfield(experiments, 'animal_ID');
+animals = animals(~cellfun('isempty', animals));
+animals = unique(cellfun(@num2str, animals, 'un', 0));
+
+folder4sm = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\';
+
+% some params
+area = 'ACC';
+minInterSyInt = 5000; % in ms 
+window = 1000; % in miliseconds
+rand_trial = [20, 5];
+min_calls = 5;
+bootstrap = [50, 50]; % bootstrap 20 trials for call, 10 trials for no call
+pc2take = 6;
+
+% initialize a table 
+% varnames = {'mouse', 'call', 'pc1', 'pc2', 'pc3', 'pc4', 'pc5', 'pc6'}; 
+% vartypes = {'string', 'logical', 'double', 'double', 'double', 'double', 'double', 'double'};
+% usvpca = table('Size', [0 length(varnames)], 'VariableTypes', vartypes, 'VariableNames', varnames);
+usvpca = []; 
+
+
+for animal_idx = 1 : size(animals, 2) 
+    % get animal number and all experiments for this animal 
+    animal = animals{animal_idx}; 
+    experiments4mouse = experiments(strcmp(extractfield(experiments, 'animal_ID'), animal)); 
+
+    % get a list of all cells 
+    cells = [];
+    for exp_idx = 1 : size(experiments4mouse, 2) 
+        experiment = experiments4mouse(exp_idx); 
+        load([folder4SM BrainArea '\' experiment.name]); 
+        cells = union(cells, clusters); 
+    end 
+    clearvars spike_matrix clusters
+
+    % initialize activity mat to be populated later 
+    mat4call = []; 
+    mat4ctrl = []; 
+    % make polled usv spike tensor 
+    for exp_idx = 1 : size(experiments4mouse, 2) 
+        experiment = experiments4mouse(exp_idx); 
+        
+        % load spike matrix 
+        load([folder4SM BrainArea '\' experiment.name]); 
+
+        syllables = []; 
+        % load USV file 
+        load([experiment.USV_path experiment.USV '.mat'])
+        Calls = Calls(Calls.Accept == 1, :); % filter out rejected calls 
+        % check labeling and extract numbers
+        if double(string(Calls.('Type')(1))) == 9 && double(string(Calls.('Type')(end))) == 8  
+            syllables(:, 1) = Calls.('Box')(:,1); % extract beginning timestamps
+            syllables(:, 2) = Calls.('Box')(:,1) + Calls.('Box')(:, 3); % extract end timestamps
+            syllables = round((syllables - syllables(1, 1)) * 1000); % justify recording beginning and convert to ms to fit to spike matrix 
+            syllables(1, :) = []; % remove the first "call" - artificially added start
+            syllables(end, :) = []; % remove the last "ca;;" - artificially added end 
+        else 
+             disp([experiment.USV ' start or end incorrectly labeled!']); 
+        end 
+
+        if size(syllables, 1) > 1
+            % merge calls if they are close enough together 
+            songs = []; 
+            song = syllables(1, :); 
+            for sy_idx = 2 : size(syllables, 1) 
+                if syllables(sy_idx, 1) - song(2) < minInterSyInt
+                    song(2) = syllables(sy_idx, 2);
+                else 
+                    songs = [songs; song]; 
+                    song = syllables(sy_idx, :); 
+                end 
+            end 
+            songs = [songs; song]; 
+
+            % in case the first one starts too early, drop 
+            if songs(1) < minInterSyInt
+                songs(1,:) = []; 
+            end 
+            % in case the last call is too late, drop
+            while songs(end,1) + minInterSyInt > size(spike_matrix,2)
+                songs(end,:) = [];
+            end  
+    
+            % make plotting matrix, cells X (double song inter) X trials 
+            if size(songs, 1) >= 1 % check if there're enough songs 
+                % initialize plotting matrix
+                usvmat = zeros(numel(clusters), 2*minInterSyInt, size(songs, 1)); 
+                for song_idx = 1 : size(songs, 1)
+                    usvmat(:, :, song_idx) = full(spike_matrix(:, (songs(song_idx) - minInterSyInt + 1):(songs(song_idx) + minInterSyInt))); 
+                end 
+                usvmat_temp(logical(sum(cells == clusters, 2)), :, :) = usvmat;
+                usvmat_temp(~logical(sum(cells == clusters, 2)), :, :) = 0; 
+                usvmat_animal = cat(3, usvmat_animal, usvmat_temp); 
+                clear usvmat_temp
+            end 
+        end        
+    end 
+    
+
+end % animal loop end 
+
+

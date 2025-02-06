@@ -22,8 +22,7 @@ animals = extractfield(experiments, 'animal_ID');
 animals = animals(~cellfun('isempty', animals));
 animals = unique(cellfun(@num2str, animals, 'un', 0));
 
-%% calculate one animal at a time 
-
+% calculate one animal at a time 
 for animal_idx = 1 : size(animals, 2) 
     % get animal number and all experiments for this animal 
     animal = animals{animal_idx}; 
