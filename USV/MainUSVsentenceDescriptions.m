@@ -96,12 +96,13 @@ for exp_idx = 1 : size(experiments, 2)
     end % call tables size end 
 end % experiment loop end 
 
-writetable(sen_tot, 'Q:\Personal\Tony\Analysis\ephysUSVsentences.csv', 'QuoteStrings', true);
+
+% writetable(sen_tot, 'Q:\Personal\Tony\Analysis\ephysUSVsentences.csv', 'QuoteStrings', true);
 
 
 
 
-
+length(sen_tot.sentences{1843})
 
 
 

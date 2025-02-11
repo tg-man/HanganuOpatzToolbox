@@ -12,6 +12,7 @@ minSong = 8;
 map4plot = viridis(100);
 Gwindow = gausswin(1001, 5); % gaussian window 
 Gwindow = Gwindow / sum(Gwindow); % normalize the gaussian kernel
+figure; plot(Gwindow)
 
 % get unique animal numbers 
 animals = extractfield(experiments, 'animal_ID');
@@ -120,10 +121,10 @@ idx_sorted = sort_peak_time(z2plot, 500); % sort
 figure; 
 imagesc((-minInterSyInt + 1:minInterSyInt)/1000, 1:size(z2plot, 1), flipud(z2plot(idx_sorted, :))); colormap(map4plot) % plot
 xline(0, ':w','LineWidth', 1.5); ylabel('Cells'); 
-set(gca, 'FontSize', 14, 'FontName', 'Arial')
-xticks([-4 -2 0 2 4]); xlabel('Time (s)');
+set(gca, 'FontSize', 14, 'FontName', 'Arial', 'TickDir', 'out')
+xticks([-4 -3 -2 -1 0 1 2 3 4]); xlabel('Time (s)');
 title([BrainArea], 'FontWeight','normal') 
-xlim([-4.5 4.5])
+xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
 
 % line profile 
 figure; 
@@ -134,8 +135,9 @@ for i = 1:numel(lines)
   lines(i).LineWidth = 1.5;
 end
 xline(0, ':k','LineWidth', 1); 
-xlim([-4.5 4.5])
-xticks([-4 -2 0 2 4]); xlabel('Time (s)'); ylabel('z-score fr'); 
+xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
+xticks([-4 -3 -2 -1 0 1 2 3 4]); xlabel('Time (s)');
+ylabel('z-score fr'); 
 set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 1); 
 title([BrainArea])
 subplot(212); % actual fr 
@@ -145,8 +147,9 @@ for i = 1:numel(lines)
   lines(i).LineWidth = 1.5;
 end
 xline(0, ':k','LineWidth', 1); 
-xlim([-4.5 4.5])
-xticks([-4 -2 0 2 4]); xlabel('Time (s)'); ylabel('fr (Hz)'); 
+xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
+xticks([-4 -3 -2 -1 0 1 2 3 4]); xlabel('Time (s)');
+ylabel('fr (Hz)'); 
 set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 1); 
 % set(gca, 'YScale', 'log')
 
