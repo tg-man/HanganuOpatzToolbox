@@ -369,63 +369,57 @@ end % experiment loop end
 % save it as a df 
 writetable(sen_tot, 'Q:\Personal\Tony\Analysis\PharmUSVsentences.csv', 'QuoteStrings', true);
 
-% % reading test 
-% clear; 
-% X = readtable('Q:\Personal\Tony\Analysis\PharmUSVsentences.csv', 'Delimiter', ',')
+% reading test 
+clear; 
+X = readtable('Q:\Personal\Tony\Analysis\PharmUSVsentences.csv', 'Delimiter', ',')
 
-% % example code of how to convert it back to number arrays 
-% % Replace commas with spaces to allow conversion
-% charStr = strrep(X.lowfreqs{72}, ',', ' ');
-% % Convert to numeric array
-% numArray = str2num(charStr);  % str2double does not work on space-separated lists
+sen_tot.duration = sen_tot.stop - sen_tot.start; 
+sen_tot.length = strlength(sen_tot.sentences); 
+sen_tot.count0 = count(sen_tot.sentences, '0'); 
+sen_tot.frac0 = sen_tot.count0 ./ sen_tot.length; 
 
-% sen_tot.duration = sen_tot.stop - sen_tot.start; 
-% sen_tot.length = strlength(sen_tot.sentences); 
-% sen_tot.count0 = count(sen_tot.sentences, '0'); 
-% sen_tot.frac0 = sen_tot.count0 ./ sen_tot.length; 
-% 
-% df0 = sen_tot(sen_tot.frac0 == 0, :);
-% df1 = sen_tot(sen_tot.frac0 == 1, :);
-% dfm = sen_tot((sen_tot.frac0 < 1) & (sen_tot.frac0 > 0), :);
-% 
-% % some descriptive stats 
-% % duration 
-% figure; histogram(df0.duration) 
-% xlabel('duration (ms)')
-% ylabel('count')
-% set(gca, 'YScale', 'log')
-% title('type-0 only sentence')
-% 
-% figure; histogram(df1.duration) 
-% xlabel('duration (ms)')
-% ylabel('count')
-% set(gca, 'YScale', 'log')
-% title('type-1 only sentence')
-% 
-% figure; histogram(dfm.duration) 
-% xlabel('duration (ms)')
-% ylabel('count')
-% set(gca, 'YScale', 'log')
-% title('mixed sentence')
-% 
-% % number of calls per sentence 
-% figure; histogram(df0.length)
-% xlabel('length (number of calls per sentence)')
-% ylabel('count')
-% set(gca, 'YScale', 'log')
-% title('type-0 only sentence')
-% 
-% figure; histogram(df1.length)
-% xlabel('length (number of calls per sentence)')
-% ylabel('count')
-% set(gca, 'YScale', 'log')
-% title('type-1 only sentence')
-% 
-% figure; histogram(dfm.length)
-% xlabel('length (number of calls per sentence)')
-% ylabel('count')
-% set(gca, 'YScale', 'log')
-% title('mixed sentence')
+df0 = sen_tot(sen_tot.frac0 == 0, :);
+df1 = sen_tot(sen_tot.frac0 == 1, :);
+dfm = sen_tot((sen_tot.frac0 < 1) & (sen_tot.frac0 > 0), :);
+
+% some descriptive stats 
+% duration 
+figure; histogram(df0.duration) 
+xlabel('duration (ms)')
+ylabel('count')
+set(gca, 'YScale', 'log')
+title('type-0 only sentence')
+
+figure; histogram(df1.duration) 
+xlabel('duration (ms)')
+ylabel('count')
+set(gca, 'YScale', 'log')
+title('type-1 only sentence')
+
+figure; histogram(dfm.duration) 
+xlabel('duration (ms)')
+ylabel('count')
+set(gca, 'YScale', 'log')
+title('mixed sentence')
+
+% number of calls per sentence 
+figure; histogram(df0.length)
+xlabel('length (number of calls per sentence)')
+ylabel('count')
+set(gca, 'YScale', 'log')
+title('type-0 only sentence')
+
+figure; histogram(df1.length)
+xlabel('length (number of calls per sentence)')
+ylabel('count')
+set(gca, 'YScale', 'log')
+title('type-1 only sentence')
+
+figure; histogram(dfm.length)
+xlabel('length (number of calls per sentence)')
+ylabel('count')
+set(gca, 'YScale', 'log')
+title('mixed sentence')
 
 
 
