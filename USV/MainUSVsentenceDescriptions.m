@@ -103,7 +103,7 @@ for exp_idx = 1 : size(experiments, 2)
 end % experiment loop end 
 
 % save it as a df 
-writetable(sen_tot, 'Q:\Personal\Tony\Analysis\ephysUSVsentences.csv', 'QuoteStrings', true);
+% writetable(sen_tot, 'Q:\Personal\Tony\Analysis\ephysUSVsentences.csv', 'QuoteStrings', true);
 
 sen_tot.duration = sen_tot.stop - sen_tot.start; 
 sen_tot.length = strlength(sen_tot.sentences); 
@@ -155,126 +155,126 @@ title('mixed sentence')
 
 
 %% spike plotting section 
-
-% select which df to plot with 
-df = dfm; 
-
-folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
-BrainArea = 'TH'; 
-if strcmp(BrainArea, 'TH')
-    experiments = experiments(ismember({experiments.USV}, unique(df.file))); 
-end 
-
-map4plot = viridis(100);
-Gwindow = gausswin(1001, 5); % gaussian window 
-Gwindow = Gwindow / sum(Gwindow); % normalize the gaussian kernel
-% figure; plot(Gwindow)
-
-% get unique animal numbers 
-animals = extractfield(experiments, 'animal_ID');
-animals = animals(~cellfun('isempty', animals));
-animals = unique(cellfun(@num2str, animals, 'un', 0));
-
-% initialize 
-usvmat_tot = []; % cells X time, averaged over calls on an animal basis 
-
-% loop through animals 
-for a_idx = 1 : size(animals, 2)
-    animal = animals{a_idx};
-    df_a = df(strcmp(df.mouse, animal), :);
-    % get experiments of this specific animal 
-    experiments4mouse = experiments(ismember({experiments.USV}, unique(df_a.file))); 
-
-    % get a list of all cells 
-    cells = [];
-    for exp_idx = 1 : size(experiments4mouse, 2) 
-        experiment = experiments4mouse(exp_idx); 
-        load([folder4SM BrainArea '\' experiment.name]); 
-        cells = union(cells, clusters); 
-        clearvars spike_matrix clusters
-    end 
-
-    % initialize the USV spike matrix for this animal, cell x time x sen 
-    temp = []; 
-    % loop through sentences and get brain activity 
-    for s_idx = 1 : size(df_a, 1)
-        % specify sentence 
-        sentence = df_a(s_idx, :);
-        % find experiment
-        experiment = experiments(strcmp({experiments.USV}, sentence.file)); 
-        % load spike matrix and get neural activity 
-        load([folder4SM BrainArea '\' experiment.name]); 
-
-        % zero pad spike matrix at the end in case it's short 
-        % because the tailing calls has been cleared, short spike matrix necessarily means that there's no spikes, not the lack of recording 
-        if size(spike_matrix, 2) < sentence.start + minInterSyInt
-            spike_matrix(:, end:(sentence.start + minInterSyInt)) = 0; 
-        end 
-
-        % cut the part of spike matrix of this particular sentence and        
-        temp(logical(sum(cells == clusters, 2)), :, s_idx) = spike_matrix(:, (sentence.start-minInterSyInt+1) : (sentence.start + minInterSyInt));
-        temp(~logical(sum(cells == clusters, 2)), :, s_idx) = 0; 
-        clearvars spike_matrix clusters
-    end 
-
-    % average across calls and assign to total usvmat 
-    usvmat_tot = [usvmat_tot; mean(temp, 3)]; 
-
-
-end 
-
-% average across songs, covolution, and zscore 
-usvmat_tot_conv = downsamp_convolve(usvmat_tot, Gwindow, 1); 
-z2plot = zscore(usvmat_tot_conv, [], 2); 
-
-idx_sorted = sort_peak_time(z2plot, 500); % sort 
-% sorted raster justified to song onset 
-figure; 
-imagesc((-minInterSyInt + 1:minInterSyInt)/1000, 1:size(z2plot, 1), flipud(z2plot(idx_sorted, :))); colormap(map4plot) % plot
-xline(0, ':w','LineWidth', 1.5); ylabel('Cells'); 
-set(gca, 'FontSize', 14, 'FontName', 'Arial', 'TickDir', 'out')
-xticks([-4 -3 -2 -1 0 1 2 3 4]); xlabel('Time (s)');
-title([BrainArea], 'FontWeight','normal') 
-xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
-
-% line profile 
-figure; 
-subplot(211); % zscore
-boundedline((-minInterSyInt + 1 : minInterSyInt)/1000, mean(z2plot), std(z2plot) ./ sqrt(size(z2plot, 1)));
-lines = findobj(gcf,'Type','Line');
-for i = 1:numel(lines)
-  lines(i).LineWidth = 1.5;
-end
-xline(0, ':k','LineWidth', 1); 
-xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
-xticks([-4 -3 -2 -1 0 1 2 3 4]); xlabel('Time (s)');
-ylabel('z-score fr'); 
-set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 1); 
-title([BrainArea])
-subplot(212); % actual fr 
-boundedline((-minInterSyInt + 1 : minInterSyInt)/1000, mean(usvmat_tot_conv), std(usvmat_tot_conv) ./ sqrt(size(usvmat_tot_conv, 1)));
-lines = findobj(gcf,'Type','Line');
-for i = 1:numel(lines)
-  lines(i).LineWidth = 1.5;
-end
-xline(0, ':k','LineWidth', 1); 
-xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
-xticks([-4 -3 -2 -1 0 1 2 3 4]); xlabel('Time (s)');
-ylabel('fr (Hz)'); 
-set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 1); 
-
+% 
+% % select which df to plot with 
+% df = dfm; 
+% 
+% folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
+% BrainArea = 'TH'; 
+% if strcmp(BrainArea, 'TH')
+%     experiments = experiments(ismember({experiments.USV}, unique(df.file))); 
+% end 
+% 
+% map4plot = viridis(100);
+% Gwindow = gausswin(1001, 5); % gaussian window 
+% Gwindow = Gwindow / sum(Gwindow); % normalize the gaussian kernel
+% % figure; plot(Gwindow)
+% 
+% % get unique animal numbers 
+% animals = extractfield(experiments, 'animal_ID');
+% animals = animals(~cellfun('isempty', animals));
+% animals = unique(cellfun(@num2str, animals, 'un', 0));
+% 
+% % initialize 
+% usvmat_tot = []; % cells X time, averaged over calls on an animal basis 
+% 
+% % loop through animals 
+% for a_idx = 1 : size(animals, 2)
+%     animal = animals{a_idx};
+%     df_a = df(strcmp(df.mouse, animal), :);
+%     % get experiments of this specific animal 
+%     experiments4mouse = experiments(ismember({experiments.USV}, unique(df_a.file))); 
+% 
+%     % get a list of all cells 
+%     cells = [];
+%     for exp_idx = 1 : size(experiments4mouse, 2) 
+%         experiment = experiments4mouse(exp_idx); 
+%         load([folder4SM BrainArea '\' experiment.name]); 
+%         cells = union(cells, clusters); 
+%         clearvars spike_matrix clusters
+%     end 
+% 
+%     % initialize the USV spike matrix for this animal, cell x time x sen 
+%     temp = []; 
+%     % loop through sentences and get brain activity 
+%     for s_idx = 1 : size(df_a, 1)
+%         % specify sentence 
+%         sentence = df_a(s_idx, :);
+%         % find experiment
+%         experiment = experiments(strcmp({experiments.USV}, sentence.file)); 
+%         % load spike matrix and get neural activity 
+%         load([folder4SM BrainArea '\' experiment.name]); 
+% 
+%         % zero pad spike matrix at the end in case it's short 
+%         % because the tailing calls has been cleared, short spike matrix necessarily means that there's no spikes, not the lack of recording 
+%         if size(spike_matrix, 2) < sentence.start + minInterSyInt
+%             spike_matrix(:, end:(sentence.start + minInterSyInt)) = 0; 
+%         end 
+% 
+%         % cut the part of spike matrix of this particular sentence and        
+%         temp(logical(sum(cells == clusters, 2)), :, s_idx) = spike_matrix(:, (sentence.start-minInterSyInt+1) : (sentence.start + minInterSyInt));
+%         temp(~logical(sum(cells == clusters, 2)), :, s_idx) = 0; 
+%         clearvars spike_matrix clusters
+%     end 
+% 
+%     % average across calls and assign to total usvmat 
+%     usvmat_tot = [usvmat_tot; mean(temp, 3)]; 
+% 
+% 
+% end 
+% 
+% % average across songs, covolution, and zscore 
+% usvmat_tot_conv = downsamp_convolve(usvmat_tot, Gwindow, 1); 
+% z2plot = zscore(usvmat_tot_conv, [], 2); 
+% 
+% idx_sorted = sort_peak_time(z2plot, 500); % sort 
+% % sorted raster justified to song onset 
+% figure; 
+% imagesc((-minInterSyInt + 1:minInterSyInt)/1000, 1:size(z2plot, 1), flipud(z2plot(idx_sorted, :))); colormap(map4plot) % plot
+% xline(0, ':w','LineWidth', 1.5); ylabel('Cells'); 
+% set(gca, 'FontSize', 14, 'FontName', 'Arial', 'TickDir', 'out')
+% xticks([-4 -3 -2 -1 0 1 2 3 4]); xlabel('Time (s)');
+% title([BrainArea], 'FontWeight','normal') 
+% xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
+% 
+% % line profile 
+% figure; 
+% subplot(211); % zscore
+% boundedline((-minInterSyInt + 1 : minInterSyInt)/1000, mean(z2plot), std(z2plot) ./ sqrt(size(z2plot, 1)));
+% lines = findobj(gcf,'Type','Line');
+% for i = 1:numel(lines)
+%   lines(i).LineWidth = 1.5;
+% end
+% xline(0, ':k','LineWidth', 1); 
+% xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
+% xticks([-4 -3 -2 -1 0 1 2 3 4]); xlabel('Time (s)');
+% ylabel('z-score fr'); 
+% set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 1); 
+% title([BrainArea])
+% subplot(212); % actual fr 
+% boundedline((-minInterSyInt + 1 : minInterSyInt)/1000, mean(usvmat_tot_conv), std(usvmat_tot_conv) ./ sqrt(size(usvmat_tot_conv, 1)));
+% lines = findobj(gcf,'Type','Line');
+% for i = 1:numel(lines)
+%   lines(i).LineWidth = 1.5;
+% end
+% xline(0, ':k','LineWidth', 1); 
+% xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
+% xticks([-4 -3 -2 -1 0 1 2 3 4]); xlabel('Time (s)');
+% ylabel('fr (Hz)'); 
+% set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 1); 
+% 
 
 %% Pharm section 
 
 clear
+% get table with t-sne labels 
+T = readtable('Q:\Personal\Tony\Analysis\PharmUSV_pooled_tsne.csv', 'Delimiter', ',');
+
 % get experiments
 experiments = readtable('Q:\Personal\Tony\Analysis\PharmUSV.xlsx');
 experiments = experiments(experiments.exp_L == 1 & experiments.exp_R == 1,:);
 experiments.exp_L = []; 
 experiments.exp_R = []; 
-
-% get table with t-sne labels 
-T = readtable('Q:\Personal\Tony\Analysis\PharmUSV_pooled_tsne.csv', 'Delimiter', ',');
 
 % params 
 minInterSyInt = 5000; % in ms 
@@ -355,7 +355,8 @@ for exp_idx = 1 : size(experiments, 1)
             mouse = repmat(experiment.mouse, [size(songs, 1) 1]); 
             file = repmat(experiment.file, [size(songs, 1) 1]);
             age = repmat(experiment.age, [size(songs, 1) 1]);
-            temp = [table(mouse) table(age) array2table(songs, 'VariableNames', {'start', 'stop'}) table(sentences)...
+            C21 = repmat(T_exp.C21(1), [size(songs, 1) 1]); 
+            temp = [table(mouse) table(age) table(C21) array2table(songs, 'VariableNames', {'start', 'stop'}) table(sentences)...
                 table(lowfreqs) table(freqranges) table(meanpowers) table(file)]; 
             % add to total table 
             sen_tot = [sen_tot; temp]; 
@@ -429,10 +430,60 @@ writetable(sen_tot, 'Q:\Personal\Tony\Analysis\PharmUSVsentences.csv', 'QuoteStr
 
 
 
+%%  
+clear; 
+T = readtable('C:\Users\tman\Desktop\rampUSVsentences_grouped.csv', 'Delimiter', ','); 
 
+% get experiments
+experiments = get_experiment_redux;
+experiments = experiments(256:end);
+experiments = experiments([experiments.target2] == 1);
+experiments = experiments([experiments.DiI] == 0);
 
+folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\'; 
+post = 3000; % in miliseconds 
 
+% initialize duration 
+T.dur_s = NaN([size(T, 1), 1]); 
 
+for idx = 1 : size(T, 1)
+    animal = T.mouse(idx); 
+    if T.condition(idx) == 0 
+        exp4row = experiments(strcmp(extractfield(experiments, 'animal_ID'), animal) & strcmp(extractfield(experiments, 'Exp_type'), 'baseline only'));
+        % get USV files and timestamps 
+        load([exp4row.USV_path exp4row.USV]); 
+        Calls = Calls(Calls.Accept, :);
+        if double(string(Calls.('Type')(1))) == 9 && double(string(Calls.('Type')(end))) == 8
+            T.dur_s(idx) = round(Calls.Box(end, 1) - Calls.Box(1)); % in seconds 
+        end
+    elseif ~T.condition(idx) == 0
+        exp4row = experiments(strcmp(extractfield(experiments, 'animal_ID'), animal) & strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
+        for exp_idx = 1 : size(exp4row, 2)
+            experiment = exp4row(exp_idx); 
+            load([folder4stim experiment.name '_StimulationProperties_raw.mat']); 
+            ramps = strcmp(StimulationProperties_raw(:, 8), 'ramp');
+            StimulationProperties_raw = StimulationProperties_raw(ramps, :); 
+            stim = round(cell2mat([StimulationProperties_raw(1, 1) StimulationProperties_raw(end ,2)]) / 3.2); 
+            stim(end) = stim(end) + post; % add some post last ramp laser
+            % add it 
+            if isnan(T.dur_s(idx))
+                temp = 0; 
+            else 
+                temp = T.dur_s(idx); 
+            end 
+            T.dur_s(idx) = temp + round((stim(end) - stim(1))/1000);  % in seconds 
+            clear temp
+        end 
+    end 
+end 
+
+% calculate and save 
+T.norm_0 = T.pure_0 ./ T.dur_s;
+T.norm_1 = T.pure_1 ./ T.dur_s;
+T.norm_mixed = T.mixed ./ T.dur_s;
+T.norm_tot = (T.pure_0 + T.pure_1 + T.mixed) ./ T.dur_s;
+
+writetable(T, 'C:\Users\tman\Desktop\rampUSVsentences_grouped_wNorm.csv', 'QuoteStrings', true);
 
 
 
