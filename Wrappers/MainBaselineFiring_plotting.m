@@ -7,7 +7,7 @@ experiments = experiments(1:420);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only')); 
 % experiments = experiments(extractfield(experiments, 'IUEconstruct') == 87); 
 
-BrainArea = 'TH'; 
+BrainArea = 'ACC'; 
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
 
 % call colormap 
@@ -49,7 +49,82 @@ xlabel('Age (P)'); ylabel('Firing Rate (Hz)'); xlim([0 9]); ylim([0.005 100])
 set(gca, 'FontSize', 16, 'FontName', 'Arial', 'YScale', 'log', 'LineWidth', 2, 'TickDir', 'out'); 
 title(BrainArea, 'FontSize', 14, 'FontWeight','bold', 'FontName', 'Arial'); 
 
-% simple figure; 
+%% simple figure; 
+
+clear
+% load experiments and generic stuff
+experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
+experiments = experiments(1:426);
+experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only')); 
+% experiments = experiments(extractfield(experiments, 'IUEconstruct') == 87); 
+
+folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
+
+% call colormap 
+YlGnBu = cbrewer('seq', 'YlGnBu', 100);
+Greens = cbrewer('seq', 'Greens', 100); 
+Blues = cbrewer('seq', 'Blues', 100); 
+Reds = cbrewer('seq', 'Reds', 100); 
+
+fr_acc = NaN(1, size(experiments, 2)); 
+fr_str = NaN(1, size(experiments, 2)); 
+ages_acc = NaN(1, size(experiments, 2)); 
+ages_str = NaN(1, size(experiments, 2)); 
+
+for exp_idx = 1 : size(experiments, 2)
+    experiment = experiments(exp_idx); 
+
+    % ACC
+    if experiment.target1 == 1 
+        load([folder4SM 'ACC' filesep experiment.name]);
+        len = size(spike_matrix, 2) / 1000; 
+        spikes_tot = full(sum(sum(spike_matrix)));   
+        fr_acc(exp_idx) = spikes_tot / len;
+        ages_acc(exp_idx) = experiment.age;
+    end 
+    clear spike_matrix
+
+    % Str 
+    if experiment.target2 == 1 
+        load([folder4SM 'Str' filesep experiment.name]);
+        len = size(spike_matrix, 2) / 1000; 
+        spikes_tot = full(sum(sum(spike_matrix)));   
+        fr_str(exp_idx) = spikes_tot / len;
+        ages_str(exp_idx) = experiment.age;
+    end 
+    clear spike_matrix
+end
+
+
+% plot Str 
+figure; hold on; 
+x = unique(rmmissing(ages_str));
+for i = 1 : numel(x)
+    y(i) = nanmedian(fr_acc(ages_str == x(i)));
+    s(i) = nanstd(fr_acc(ages_str == x(i))) ./ sqrt(sum(ages_str == x(i)));
+end 
+% y = y + y((y - s) < 0) + 0.00001; 
+boundedline(x, y, s, 'cmap', Reds(end,:)); 
+clearvars x y s; 
+% plot ACC
+x = unique(rmmissing(ages_acc));
+for i = 1 : numel(x)
+    y(i) = nanmedian(fr_acc(ages_acc == x(i)));
+    s(i) = nanstd(fr_acc(ages_acc == x(i))) ./ sqrt(sum(ages_acc == x(i)));
+end 
+boundedline(x, y, s, 'cmap', Blues(end,:)); 
+clearvars x y s; 
+
+xlabel('Age (P)'); ylabel('Firing Rate (Hz)'); 
+set(gca, 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out', 'YScale', 'log'); 
+xlim([4.5 12.5]);
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 2;
+end
+
+
+
 fr2plot = [fr_acc; fr_str; fr_th]'; 
 x = unique(age);
 for i = 1 : numel(x)

@@ -230,7 +230,7 @@ legend('cluster 0', 'cluster 1')
 
 clear
 % get table with t-sne labels 
-T = readtable('Q:\Personal\Tony\Analysis\ephysUSVfeatures_pooled_tsne.csv', 'Delimiter', ',');
+T = readtable('Q:\Personal\Tony\Analysis\USV_csvs\ephysUSVfeatures_pooled_tsne.csv', 'Delimiter', ',');
 
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\'; 
 
@@ -243,8 +243,8 @@ experiments = experiments([experiments.target2] == 1);
 experiments = experiments([experiments.DiI] == 0);
 for i = 1 : size(experiments, 2)
     experiment = experiments(i); 
-    if length(experiment.IUEconstruct) == 1 && experiment.IUEconstruct == 13
-%     if length(experiment.IUEconstruct) == 1 && isnan(experiment.IUEconstruct)
+    if length(experiment.IUEconstruct) == 1 && experiment.IUEconstruct == 13  % switch if statement here to filter different experiments 
+%     if length(experiment.IUEconstruct) == 1 && isnan(experiment.IUEconstruct)  % switch if statement here to filter different experiments 
         opsin(i) = 1; 
     else 
         opsin(i) = 0; 
@@ -264,7 +264,14 @@ OptoT = table('Size', [size(animals, 2)*2, 4], ...
     'VariableNames', {'mouse', 'condition', 'type0', 'type1'});
 OptoT{:, 3:4} = NaN; 
 OptoT.mouse = reshape(repmat(animals, [2, 1]), [], 1);
-OptoT.condition = repmat([0; 1], [size(animals, 2), 1]);
+if experiments(1).IUEconstruct == 13 
+    stimcon = 1; 
+    con = 'stim'; 
+elseif isnan(experiments(1).IUEconstruct)
+    stimcon = 2; 
+    con = 'ctrl'; 
+end 
+OptoT.condition = repmat([0; stimcon], [size(animals, 2), 1]);
 
 % loop through table rows 
 for idx = 1 : size(OptoT, 1)
@@ -340,62 +347,11 @@ for idx = 1 : size(OptoT, 1)
 end 
 
 % save 
-% OptoT.frac_0 = OptoT.type0 ./ (OptoT.type0 + OptoT.type1);
-% OptoT.frac_1 = OptoT.type1 ./ (OptoT.type0 + OptoT.type1);
-% writetable(OptoT, 'C:\Users\tman\Desktop\OptoUSVcalltypes_stim.csv', 'QuoteStrings', true);
+OptoT.frac_0 = OptoT.type0 ./ (OptoT.type0 + OptoT.type1);
+OptoT.frac_1 = OptoT.type1 ./ (OptoT.type0 + OptoT.type1);
+writetable(OptoT, ['Q:\Personal\Tony\Analysis\USV_csvs\rampUSVcalltypes_' con '.csv'], 'QuoteStrings', true);
 
-%% apply normalization by recording length 
 
-clear; 
-T = readtable('C:/Users/tman/Desktop/RampUSVcalltypes.csv', 'Delimiter', ',');
-% get lists of experiments 
-experiments = get_experiment_redux;
-experiments = experiments(256:end);
-experiments = experiments([experiments.target2] == 1);
-experiments = experiments([experiments.DiI] == 0);
-
-folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\'; 
-post = 3000; % in miliseconds 
-
-% initialize duration 
-T.dur_s = NaN([size(T, 1), 1]); 
-
-for idx = 1 : size(T, 1)
-    animal = T.mouse(idx); 
-    if T.condition(idx) == 0 
-        exp4row = experiments(strcmp(extractfield(experiments, 'animal_ID'), animal) & strcmp(extractfield(experiments, 'Exp_type'), 'baseline only'));
-        % get USV files and timestamps 
-        load([exp4row.USV_path exp4row.USV]); 
-        Calls = Calls(Calls.Accept, :);
-        if double(string(Calls.('Type')(1))) == 9 && double(string(Calls.('Type')(end))) == 8
-            T.dur_s(idx) = round(Calls.Box(end, 1) - Calls.Box(1)); % in seconds 
-        end
-    elseif ~T.condition(idx) == 0
-        exp4row = experiments(strcmp(extractfield(experiments, 'animal_ID'), animal) & strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
-        for exp_idx = 1 : size(exp4row, 2)
-            experiment = exp4row(exp_idx); 
-            load([folder4stim experiment.name '_StimulationProperties_raw.mat']); 
-            ramps = strcmp(StimulationProperties_raw(:, 8), 'ramp');
-            StimulationProperties_raw = StimulationProperties_raw(ramps, :); 
-            stim = round(cell2mat([StimulationProperties_raw(1, 1) StimulationProperties_raw(end ,2)]) / 3.2); 
-            stim(end) = stim(end) + post; % add some post last ramp laser
-            % add it 
-            if isnan(T.dur_s(idx))
-                temp = 0; 
-            else 
-                temp = T.dur_s(idx); 
-            end 
-            T.dur_s(idx) = temp + round((stim(end) - stim(1))/1000);  % in seconds 
-            clear temp
-        end 
-    end 
-end 
-
-T.norm_0 = T.type0 ./ T.dur_s; 
-T.norm_1 = T.type1 ./ T.dur_s; 
-T.norm_tot = (T.type1 + T.type0) ./ T.dur_s; 
-% save 
-writetable(T, 'C:\Users\tman\Desktop\RampUSVcalltypes_wNorm.csv', 'QuoteStrings', true);
 
 
 

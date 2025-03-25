@@ -1,18 +1,14 @@
-%% 
+%% USV sentence detector 
 
-% length 
-% weight: number of 1s or 0s in the entire string 
-% run-lenght statistics: maximal consecutive blocks of 0s or 1s 
-%     can also loook at the disdtribution of run length (hpw many runs of
-%     of each) 
-% transition count: how many times the sequence switches 
-% periodicity: whether the string repeats itself 
-% sub-word complexity/factor complexity: "richness" measure, distinct substrings of a given k (ask for a function)  
-% algorithmic (kolmogorov) complexity 
-% Lempel-ziv complexity: roughly, how many "patterns" appear as you scan from left -> right.
-% compression ratio: real-world compressor (eg. DEFLATE, LZMA) and see how many butyes the sequence takes when compressed, 
-%     similar sequences may compress similarly, or the concatenation might commpress better if they share similar patterns. 
-
+% take T-SNE cluster output of all USV calls and generate dataframe with sentences 
+% 
+% input: (csv's with calls and features) 
+%     - ephysUSVfeatures_pooled_tsne.csv
+%     - PharmUSV_pooled_tsne.csv
+% 
+% output: (csv's with sentences and features) 
+%     - ephysUSVsentences.csv 
+%     - pharmUSVsentences.csv    
 
 clear
 % get experiments
@@ -22,7 +18,7 @@ experiments = experiments([experiments.target2] == 1);
 experiments = experiments([experiments.DiI] == 0);
 
 % get table with t-sne labels 
-T = readtable('Q:\Personal\Tony\Analysis\ephysUSVfeatures_pooled_tsne.csv', 'Delimiter', ',');
+T = readtable('Q:\Personal\Tony\Analysis\USV_csvs\ephysUSVfeatures_pooled_tsne.csv', 'Delimiter', ',');
 
 % params 
 minInterSyInt = 5000; % in ms 
@@ -103,7 +99,7 @@ for exp_idx = 1 : size(experiments, 2)
 end % experiment loop end 
 
 % save it as a df 
-% writetable(sen_tot, 'Q:\Personal\Tony\Analysis\ephysUSVsentences.csv', 'QuoteStrings', true);
+% writetable(sen_tot, 'Q:\Personal\Tony\Analysis\USV_csvs\ephysUSVsentences.csv', 'QuoteStrings', true);
 
 sen_tot.duration = sen_tot.stop - sen_tot.start; 
 sen_tot.length = strlength(sen_tot.sentences); 
@@ -114,44 +110,44 @@ df0 = sen_tot(sen_tot.frac0 == 0, :);
 df1 = sen_tot(sen_tot.frac0 == 1, :);
 dfm = sen_tot((sen_tot.frac0 < 1) & (sen_tot.frac0 > 0), :);
 
-% some descriptive stats 
-% duration 
-figure; histogram(df0.duration) 
-xlabel('duration (ms)')
-ylabel('count')
-set(gca, 'YScale', 'log')
-title('type-0 only sentence')
-
-figure; histogram(df1.duration) 
-xlabel('duration (ms)')
-ylabel('count')
-set(gca, 'YScale', 'log')
-title('type-1 only sentence')
-
-figure; histogram(dfm.duration) 
-xlabel('duration (ms)')
-ylabel('count')
-set(gca, 'YScale', 'log')
-title('mixed sentence')
-
-% number of calls per sentence 
-figure; histogram(df0.length)
-xlabel('length (number of calls per sentence)')
-ylabel('count')
-set(gca, 'YScale', 'log')
-title('type-0 only sentence')
-
-figure; histogram(df1.length)
-xlabel('length (number of calls per sentence)')
-ylabel('count')
-set(gca, 'YScale', 'log')
-title('type-1 only sentence')
-
-figure; histogram(dfm.length)
-xlabel('length (number of calls per sentence)')
-ylabel('count')
-set(gca, 'YScale', 'log')
-title('mixed sentence')
+% % some descriptive stats 
+% % duration 
+% figure; histogram(df0.duration) 
+% xlabel('duration (ms)')
+% ylabel('count')
+% set(gca, 'YScale', 'log')
+% title('type-0 only sentence')
+% 
+% figure; histogram(df1.duration) 
+% xlabel('duration (ms)')
+% ylabel('count')
+% set(gca, 'YScale', 'log')
+% title('type-1 only sentence')
+% 
+% figure; histogram(dfm.duration) 
+% xlabel('duration (ms)')
+% ylabel('count')
+% set(gca, 'YScale', 'log')
+% title('mixed sentence')
+% 
+% % number of calls per sentence 
+% figure; histogram(df0.length)
+% xlabel('length (number of calls per sentence)')
+% ylabel('count')
+% set(gca, 'YScale', 'log')
+% title('type-0 only sentence')
+% 
+% figure; histogram(df1.length)
+% xlabel('length (number of calls per sentence)')
+% ylabel('count')
+% set(gca, 'YScale', 'log')
+% title('type-1 only sentence')
+% 
+% figure; histogram(dfm.length)
+% xlabel('length (number of calls per sentence)')
+% ylabel('count')
+% set(gca, 'YScale', 'log')
+% title('mixed sentence')
 
 
 %% spike plotting section 
@@ -268,10 +264,10 @@ title('mixed sentence')
 
 clear
 % get table with t-sne labels 
-T = readtable('Q:\Personal\Tony\Analysis\PharmUSV_pooled_tsne.csv', 'Delimiter', ',');
+T = readtable('Q:\Personal\Tony\Analysis\USV_csvs\PharmUSV_pooled_tsne.csv', 'Delimiter', ',');
 
 % get experiments
-experiments = readtable('Q:\Personal\Tony\Analysis\PharmUSV.xlsx');
+experiments = readtable('Q:\Personal\Tony\Analysis\USV_csvs\PharmUSV.xlsx');
 experiments = experiments(experiments.exp_L == 1 & experiments.exp_R == 1,:);
 experiments.exp_L = []; 
 experiments.exp_R = []; 
@@ -368,7 +364,7 @@ for exp_idx = 1 : size(experiments, 1)
 end % experiment loop end 
 
 % save it as a df 
-writetable(sen_tot, 'Q:\Personal\Tony\Analysis\PharmUSVsentences.csv', 'QuoteStrings', true);
+writetable(sen_tot, 'Q:\Personal\Tony\Analysis\USV_csvs\PharmUSVsentences.csv', 'QuoteStrings', true);
 
 % % reading test 
 % clear; 
@@ -427,63 +423,6 @@ writetable(sen_tot, 'Q:\Personal\Tony\Analysis\PharmUSVsentences.csv', 'QuoteStr
 % ylabel('count')
 % set(gca, 'YScale', 'log')
 % title('mixed sentence')
-
-
-
-%%  
-clear; 
-T = readtable('C:\Users\tman\Desktop\rampUSVsentences_grouped.csv', 'Delimiter', ','); 
-
-% get experiments
-experiments = get_experiment_redux;
-experiments = experiments(256:end);
-experiments = experiments([experiments.target2] == 1);
-experiments = experiments([experiments.DiI] == 0);
-
-folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\'; 
-post = 3000; % in miliseconds 
-
-% initialize duration 
-T.dur_s = NaN([size(T, 1), 1]); 
-
-for idx = 1 : size(T, 1)
-    animal = T.mouse(idx); 
-    if T.condition(idx) == 0 
-        exp4row = experiments(strcmp(extractfield(experiments, 'animal_ID'), animal) & strcmp(extractfield(experiments, 'Exp_type'), 'baseline only'));
-        % get USV files and timestamps 
-        load([exp4row.USV_path exp4row.USV]); 
-        Calls = Calls(Calls.Accept, :);
-        if double(string(Calls.('Type')(1))) == 9 && double(string(Calls.('Type')(end))) == 8
-            T.dur_s(idx) = round(Calls.Box(end, 1) - Calls.Box(1)); % in seconds 
-        end
-    elseif ~T.condition(idx) == 0
-        exp4row = experiments(strcmp(extractfield(experiments, 'animal_ID'), animal) & strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
-        for exp_idx = 1 : size(exp4row, 2)
-            experiment = exp4row(exp_idx); 
-            load([folder4stim experiment.name '_StimulationProperties_raw.mat']); 
-            ramps = strcmp(StimulationProperties_raw(:, 8), 'ramp');
-            StimulationProperties_raw = StimulationProperties_raw(ramps, :); 
-            stim = round(cell2mat([StimulationProperties_raw(1, 1) StimulationProperties_raw(end ,2)]) / 3.2); 
-            stim(end) = stim(end) + post; % add some post last ramp laser
-            % add it 
-            if isnan(T.dur_s(idx))
-                temp = 0; 
-            else 
-                temp = T.dur_s(idx); 
-            end 
-            T.dur_s(idx) = temp + round((stim(end) - stim(1))/1000);  % in seconds 
-            clear temp
-        end 
-    end 
-end 
-
-% calculate and save 
-T.norm_0 = T.pure_0 ./ T.dur_s;
-T.norm_1 = T.pure_1 ./ T.dur_s;
-T.norm_mixed = T.mixed ./ T.dur_s;
-T.norm_tot = (T.pure_0 + T.pure_1 + T.mixed) ./ T.dur_s;
-
-writetable(T, 'C:\Users\tman\Desktop\rampUSVsentences_grouped_wNorm.csv', 'QuoteStrings', true);
 
 
 

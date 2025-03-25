@@ -101,9 +101,14 @@ title('ACC')
 % Str wavelet plot 
 figure; imagesc('Xdata', x, 'YData', USVwavelet.freqs, 'CData', plot4str); colormap parula; 
 xlim([-5 5]); ylim([1 70]); 
-xticks([-4 -2 0 2 4]); xline(0, ':k', 'LineWidth', 1.5); 
-xlabel('time (s)'); ylabel('freq (Hz)')
-set(gca, 'FontName', 'Arial', 'FontSize', 18)
+xticks([-4 -2 0 2 4]); 
+xline(0, ':k', 'LineWidth', 1.5); 
+xticks([-4 -2 0 2 4]); 
+yticks([10 30 50 70]); 
+xlabel('Time (s)'); 
+ylabel('Freq (Hz)')
+set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out')
+clim([0.5 13])
 title('Str')
 % TH 
 figure; imagesc('Xdata', x, 'YData', USVwavelet.freqs, 'CData', plot4th); colormap parula; 
