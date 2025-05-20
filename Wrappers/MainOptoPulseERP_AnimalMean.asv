@@ -22,8 +22,8 @@ stim_adjust = 1000 / fs_LFP; % to adjust stim timestamps to the same fs as LFP
 ExtractMode = 1; % extract from neuralynx into matlab
 cores = 6;  
 
+%% 
 
-% loop to load data 
 for exp_idx = 1 : size(experiments, 2) 
     experiment = experiments(exp_idx); 
 
@@ -98,52 +98,20 @@ set(gca, 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2, 'TickDir', 'out');
 xlim([-249 250])
 
 
+ERP_str = rand(94, 500); 
+
 % age separated figure 
-ERP_str_exp = ERP_str(exp, :); 
 age = [experiments.age]; 
-age = age(exp); 
-% plot it 
-figure; hold on
-for i = min(unique(age)) : max(unique(age))
-    plot(-249:250, nanmedian(ERP_str_exp(age == i, :)), 'Color', YlGnBu(round(find(unique(age) == i)/numel(unique(age))*100), :), 'LineWidth', 1.5)
+ERP_str_exp = ERP_str(exp, :); 
+
+figure; 
+for i = 1: numel(unique(age))
 end 
-title('Str', 'Fontweight', 'normal'); xline(0, ':', 'LineWidth', 1.5); xline(pulse_length, ':', 'LineWidth', 1.5); 
-ylabel('ERP (\muV)'); xlabel('Time (ms)'); 
-set(gca, 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2, 'TickDir', 'out'); 
-xlim([-249 250])
 
 
-% plot it 
-figure; hold on
-for i = min(unique(age)) : max(unique(age))
-    plot(-249:250, smoothdata(nanmedian(ERP_str_exp(age == i, :))), 'Color', YlGnBu(round(find(unique(age) == i)/numel(unique(age))*100), :), 'LineWidth', 1.5)
-end 
-title('Str', 'Fontweight', 'normal'); xline(0, ':', 'LineWidth', 1.5); xline(pulse_length, ':', 'LineWidth', 1.5); 
-ylabel('ERP (\muV)'); xlabel('Time (ms)'); 
-set(gca, 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2, 'TickDir', 'out'); 
-xlim([-249 250])
-legend({'P7', 'P8', 'P9', 'P10', 'P11', 'P12', '', ''})
-
-boundedline(-249:250, nanmedian(ERP_str(ctrl, :)), nanstd(ERP_str(ctrl, :)) ./ sqrt(sum(ctrl)),	'cmap', [0.5 0.5 0.5]); % control first 
 
 
-% plot it 
-figure; hold on
-for i = min(unique(age)) : max(unique(age))
-    boundedline(-249:250, smoothdata(nanmedian(ERP_str_exp(age == i, :))), nanstd(ERP_str_exp(age == i, :)) ./ sqrt(sum(age == i)),...
-        'cmap', YlGnBu(round(find(unique(age) == i)/numel(unique(age))*100), :), ...
-        'alpha')
-end 
-lines = findobj(gcf,'Type','Line');
-for i = 1:numel(lines)
-  lines(i).LineWidth = 1.5;
-end
-title('Str', 'Fontweight', 'normal'); xline(0, ':', 'LineWidth', 1.5); xline(pulse_length, ':', 'LineWidth', 1.5); 
-ylabel('ERP (\muV)'); xlabel('Time (ms)'); 
-set(gca, 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2, 'TickDir', 'out'); 
-xlim([-249 250])
-ylim([-8 12])
-legend({'', 'P7', '', 'P8', '', 'P9', '', 'P10','', 'P11','', 'P12', '', ''})
+
 
 %% old deprecated version that might still contain useful code 
 

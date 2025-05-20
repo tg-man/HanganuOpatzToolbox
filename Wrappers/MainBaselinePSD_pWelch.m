@@ -1,9 +1,20 @@
 %% baseline PSD using pWelch method instead of mtspecgramc
 
-clear
-experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments(233:281);
+clear; 
+experiments = get_experiment_redux;
+for i = 1 : size(experiments, 2)
+    experiment = experiments(i); 
+    if length(experiment.IUEconstruct) == 1
+        keep(i) = 1; 
+    else
+        keep(i) = 0; 
+    end 
+end 
+experiments = experiments(logical(keep)); %[300 301 324:426]
+experiments = experiments([experiments.DiI] == 0); 
+experiments = experiments(extractfield(experiments, 'IUEconstruct') == 13 | isnan(extractfield(experiments, 'IUEconstruct')));
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only')); 
+
 cores = 4; 
 save_data = 1; 
 
@@ -14,7 +25,7 @@ ExtractMode = 1; % extract from neuralynx into matlab
 downsampling_factor = 32; 
 
 % pWelch variables 
-freq_filt = [2 500];
+freq_filt = [0.1 500];
 windowSize = 1;
 overlap = 0.4;
 nfft = 800;
@@ -29,28 +40,31 @@ for exp_idx = 1 : numel(experiments)
         ch2load = 1 : 32; 
     end 
 
-    % load signal, filter, and compute pWelch for LFP
-    disp(['Loading signal ' num2str(exp_idx) ' / ' num2str(numel(experiments))])
-    parfor (channel = ch2load, cores) 
-        file_to_load = [experiment.path, experiment.name, '\CSC', num2str(channel), '.ncs'];
-        [~, signal, fs] = load_nlx_Modes(file_to_load, ExtractMode, []);
-        signal = ZeroPhaseFilter(signal, fs, freq_filt); % origianlly 0.1
-        signal = signal(1 : downsampling_factor : end);
-        [PSD(channel, :), freq(channel, :)] = pWelchSpectrum(signal, windowSize, overlap, nfft, fs / downsampling_factor, maxFreq); 
-    end
+    % only calculate if the file doesn't exist yet 
+    if ~exist([folder4pwelch experiment.name '.mat'])
 
-    % build struct 
-    PSDpWelch.PSD = PSD; 
-    PSDpWelch.freq = freq(1, :); 
-
-    % save data 
-    if save_data == 1 
-        if ~exist(folder4pwelch, 'dir')
-            mkdir(folder4pwelch)
-        end 
-        save([folder4pwelch experiment.name], 'PSDpWelch')
-    end 
+        % load signal, filter, and compute pWelch for LFP
+        disp(['Loading signal ' num2str(exp_idx) ' / ' num2str(numel(experiments))])
+        parfor (channel = ch2load, cores) 
+            file_to_load = [experiment.path, experiment.name, '\CSC', num2str(channel), '.ncs'];
+            [~, signal, fs] = load_nlx_Modes(file_to_load, ExtractMode, []);
+            signal = ZeroPhaseFilter(signal, fs, freq_filt); % origianlly 0.1
+            signal = signal(1 : downsampling_factor : end);
+            [PSD(channel, :), freq(channel, :)] = pWelchSpectrum(signal, windowSize, overlap, nfft, fs / downsampling_factor, maxFreq); 
+        end
     
-    clear PSD freq
+        % build struct 
+        PSDpWelch.PSD = PSD; 
+        PSDpWelch.freq = freq(1, :); 
+    
+        % save data 
+        if save_data == 1 
+            if ~exist(folder4pwelch, 'dir')
+                mkdir(folder4pwelch)
+            end 
+            save([folder4pwelch experiment.name], 'PSDpWelch')
+        end % save data check end 
+        
+        clear PSD freq
+    end % check file end 
 end 
-datetime 

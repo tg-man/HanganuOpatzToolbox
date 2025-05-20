@@ -99,7 +99,7 @@ for exp_idx = 1 : size(experiments, 2)
 end % experiment loop end 
 
 % save it as a df 
-% writetable(sen_tot, 'Q:\Personal\Tony\Analysis\USV_csvs\ephysUSVsentences.csv', 'QuoteStrings', true);
+writetable(sen_tot, 'Q:\Personal\Tony\Analysis\USV_csvs\ephysUSVsentences.csv', 'QuoteStrings', true);
 
 sen_tot.duration = sen_tot.stop - sen_tot.start; 
 sen_tot.length = strlength(sen_tot.sentences); 

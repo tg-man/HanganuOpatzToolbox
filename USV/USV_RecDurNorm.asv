@@ -3,7 +3,7 @@
 %% sentence section 
 
 clear; 
-file = 'Q:\Personal\Tony\Analysis\USV_csvs\old\rampUSVsentences_grouped.csv'; 
+file = 'Q:\Personal\Tony\Analysis\USV_csvs\rampUSVsentences_strstim_grouped.csv'; 
 T = readtable(file, 'Delimiter', ','); 
 
 % get experiments
@@ -55,7 +55,7 @@ T.norm_1 = T.pure_1 ./ T.dur_s;
 T.norm_mixed = T.mixed ./ T.dur_s;
 T.norm_tot = (T.pure_0 + T.pure_1 + T.mixed) ./ T.dur_s;
 
-writetable(T, [file(1:end-4) '_wNorm.csv'], 'QuoteStrings', true);
+writetable(T, [file() '_wNorm.csv'], 'QuoteStrings', true);
 
 %% isolated call section 
 

@@ -9,7 +9,7 @@ clear all
 klusta = 1;
 common_average_reference = 1;
 experiments = get_experiment_redux(klusta);
-experiments = experiments(422:429);
+experiments = experiments(433:448);
 % experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto')); 
 cores = 4; 
 

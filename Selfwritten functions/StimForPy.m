@@ -18,14 +18,14 @@ for exp_idx = 1 : size(experiments, 2)
     % load stim prop file
     load([folder4stim experiment.name '_StimulationProperties_raw.mat']);
     ramps = StimulationProperties_raw(strcmp(StimulationProperties_raw(:, 8), 'ramp'), :);
-    ramps = ramps(1:30, :);
+%     ramps = ramps(1:30, :);
     start = round(cell2mat(ramps(1, 1)) / 3.2); 
     stop = round(cell2mat(ramps(end, 2)) / 3.2); 
 
 
     % save in table 
     mouse = {experiment.animal_ID}; 
-    file = {experiment.USV}; 
+    usvfile = {experiment.USV}; 
     stim = {experiment.ramp}; 
     if experiment.IUEconstruct == 59
         type = {'IUE'}; 
@@ -39,10 +39,10 @@ for exp_idx = 1 : size(experiments, 2)
         type = {'exclude'};
     end 
        
-    temp = [table(mouse) table(file) array2table([start stop], 'VariableNames', {'start', 'stop'}) table(stim) table(type)]; 
+    temp = [table(mouse) table(usvfile) array2table([start stop], 'VariableNames', {'start', 'stop'}) table(stim) table(type)]; 
 
     stims = [stims; temp]; 
-    clear StimulationProperties_raw ramps start stop mouse file stim type
+    clear StimulationProperties_raw ramps start stop mouse usvfile stim type
 end 
 
 writetable(stims, [folder4stim 'allstims.csv'], 'QuoteStrings', true);

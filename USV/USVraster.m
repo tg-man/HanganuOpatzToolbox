@@ -6,16 +6,19 @@ experiments = experiments([experiments.target2] == 1);
 experiments = experiments([experiments.DiI] == 0);
 save_data = 1; 
 
-BrainArea = 'ACC'; % 'ACC', 'Str', 'TH'
+BrainArea = 'Str'; % 'ACC', 'Str', 'TH'
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
 
 minInterSyInt = 5000; 
 minSong = 6; 
 
+% call colormap 
 map4plot = viridis(100);
+YlGnBu = cbrewer('seq', 'YlGnBu', 100);
+
 Gwindow = gausswin(1001, 5); % gaussian window 
 Gwindow = Gwindow / sum(Gwindow); % normalize the gaussian kernel
-figure; plot(Gwindow)
+% figure; plot(Gwindow)
 
 % get unique animal numbers 
 animals = extractfield(experiments, 'animal_ID');
@@ -24,6 +27,7 @@ animals = unique(cellfun(@num2str, animals, 'un', 0));
 
 % initialize 
 usvmat_tot = []; 
+age = []; 
 
 for animal_idx = 1 : size(animals, 2) 
     % get animal number and all experiments for this animal 
@@ -104,6 +108,7 @@ for animal_idx = 1 : size(animals, 2)
         % check if the animal vocalized enough
         if size(usvmat_animal, 3) > minSong
             usvmat_tot = [usvmat_tot; mean(usvmat_animal, 3)]; 
+            age = [age; repmat(experiment.age, [size(usvmat_animal, 1), 1])];
         end 
     end 
 end
@@ -129,7 +134,7 @@ xticks([-4 -3 -2 -1 0 1 2 3 4]); xlabel('Time (s)');
 title([BrainArea], 'FontWeight','normal') 
 xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
 
-% line profile 
+% PSTH line profile 
 figure; 
 subplot(211); % zscore
 boundedline((-minInterSyInt + 1 : minInterSyInt)/1000, mean(z2plot), std(z2plot) ./ sqrt(size(z2plot, 1)));
@@ -156,6 +161,39 @@ ylabel('fr (Hz)');
 set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 1); 
 % set(gca, 'YScale', 'log')
 
+
+% age separated PSTH 
+uniage = unique(age); 
+figure; 
+subplot(211)
+hold on
+for idx = 1 : numel(uniage)
+    age2plot = uniage(idx); 
+    plot((-minInterSyInt + 1 : minInterSyInt)/1000, mean(z2plot(age == age2plot, :)), 'Color', YlGnBu(round(idx*100/numel(uniage)), :), 'LineWidth', 1.5)
+end 
+xline(0, ':k','LineWidth', 1); 
+legend({'P5', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', ''}, 'Location', 'eastoutside','FontSize', 8); 
+legend box off
+xticks([-4 -3 -2 -1 0 1 2 3 4]); 
+xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
+xlabel('Time (s)');
+ylabel('z-score fr'); 
+set(gca, 'FontSize', 14, 'FontName', 'Arial', 'TickDir', 'out')
+title([BrainArea], 'FontWeight','normal')
+subplot(212);
+hold on
+for idx = 1 : numel(uniage)
+    age2plot = uniage(idx); 
+    plot((-minInterSyInt + 1 : minInterSyInt)/1000, mean(usvmat_tot_conv(age == age2plot, :)), 'Color', YlGnBu(round(idx*100/numel(uniage)), :), 'LineWidth', 1.5)
+end 
+xline(0, ':k','LineWidth', 1); 
+legend({'P5', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', ''}, 'Location', 'eastoutside','FontSize', 8); 
+legend box off
+xticks([-4 -3 -2 -1 0 1 2 3 4]); 
+xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
+xlabel('Time (s)');
+ylabel('FR (Hz)'); 
+set(gca, 'FontSize', 14, 'FontName', 'Arial', 'TickDir', 'out')
 
 % figure; 
 % boundedline((-minInterSyInt + 1 : minInterSyInt)/1000, mean(z2plot), std(z2plot) ./ sqrt(size(z2plot, 1)));

@@ -115,6 +115,7 @@ ylabel('- Log10 (pvalue)'); xlabel('Post Modulation Index'); alpha(0.5)
 set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 2)
 title([RespArea ' units post ' StimArea ' stim'])
 
+% bar plot for percentage 
 modulation = [nnz(OMI < 0 & pvalue < 0.01) ...
     nnz(pvalue > 0.01) nnz(OMI > 0 & pvalue < 0.01)];
 modulation = modulation ./ length(OMI);
