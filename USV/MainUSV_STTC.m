@@ -2,7 +2,7 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments([256:301 303 306 309 312 315 318 321 324:420]);  % 256:380 [300 301 324:399]
+experiments = experiments(421:448);  % 256:380 [300 301 324:399] [256:301 303 306 309 312 315 318 321 324:420]
 % experiments = experiments([experiments.IUEconstruct] == 13);
 
 % get unique animal numbers 

@@ -1,8 +1,9 @@
-function USVpower = getUSVpower(experiments, minInterSyInt, sigparams, psparams, repeat_calc, folder2save)
+function USVpower = getUSVpower(experiments, T, sigparams, psparams, repeat_calc, folder2save)
 % Tony July 2024 
 % 
 % input: 
 %     experiments: all experiments of the animal. Can be one or multiple 
+%     T: all USV sentence of the animal, .csv loaded as matlab table  
 %     minInterSyInt: mininum interval between calls to not be merged together. Also the timewindow before and after call onset. 
 %     sigparams: 
 %         ch2load
@@ -17,12 +18,12 @@ function USVpower = getUSVpower(experiments, minInterSyInt, sigparams, psparams,
 %     folder2save: 
 % 
 % output: 
-%     struct of wavelet transforms of all channels, averaged across calls 
+%     struct of pWelch specturm, ch x freq x trials 
 
 
 % check if already computed 
 if repeat_calc == 0 && exist([folder2save experiments(1).animal_ID, '.mat'])
-    disp([experiments(1).animal_ID ' already computed'])
+%     disp([experiments(1).animal_ID ' already computed'])
     load([folder2save experiments(1).animal_ID, '.mat']); % if so, just load 
 
 % if not, compute
@@ -42,98 +43,55 @@ else
     overlap = psparams. overlap;
     nfft = psparams. nfft;
     maxFreq = psparams. maxFreq;
+
+    % convert timestamp to the same as LFP
+    T.start = round(T.start / (1000 / fs_LFP)); 
+    T.stop = round(T.stop / (1000 / fs_LFP)); 
   
     % looping through experiments
-    pre5_tot = []; 
-    pre3_tot = [];
-    pre_tot = []; 
-    post_tot = []; 
+    baseline_tot = []; 
+    prep_tot = []; 
     during_tot = []; 
     
     for exp_idx = 1 : size(experiments, 2) 
         experiment = experiments(exp_idx); 
     
-        % load USV file 
-        syllables = []; % initialize 
-        load([experiment.USV_path experiment.USV '.mat'])
-        Calls = Calls(Calls.Accept == 1, :); % filter out rejected calls 
-        % check labeling and extract numbers
-        if double(string(Calls.('Type')(1))) == 9 && double(string(Calls.('Type')(end))) == 8  
-            syllables(:, 1) = Calls.('Box')(:,1); % extract beginning timestamps
-            syllables(:, 2) = Calls.('Box')(:,1) + Calls.('Box')(:, 3); % extract end timestamps
-            syllables = round((syllables - syllables(1, 1)) * 1000); % justify recording beginning and convert to ms to fit to spike matrix 
-            syllables(1, :) = []; % remove the first "call" - artificially added start
-            syllables(end, :) = []; % remove the last "ca;;" - artificially added end 
-        else 
-             disp([experiment.USV ' start or end incorrectly labeled!']); 
+        % load signal 
+%         disp(['loading signal for ' experiment.animal_ID ' exp ' num2str(exp_idx)])
+        parfor (channel = ch2load, cores) 
+            file_to_load = [experiment.path, experiment.name, '\CSC', num2str(channel), '.ncs'];
+            [~, signal, ~] = load_nlx_Modes(file_to_load, ExtractMode, []);
+            signal = ZeroPhaseFilter(signal, fs, [low_cut high_cut]); % origianlly 0.1
+            LFP(channel, :) = signal(1 : downsampling_factor : end);
         end 
-    
-        if size(syllables, 1) > 1 % check if the animal has vocalized at all
-            % merge calls if they are close enough together 
-            songs = []; 
-            song = syllables(1, :); 
-            for sy_idx = 2 : size(syllables, 1) 
-                if syllables(sy_idx, 1) - song(2) < minInterSyInt
-                    song(2) = syllables(sy_idx, 2);
-                else 
-                    songs = [songs; song]; 
-                    song = syllables(sy_idx, :); 
-                end 
-            end 
-            songs = [songs; song]; % still miliseconds here 
-    
-            % load signal 
-            disp(['loading signal for ' experiment.animal_ID ' exp ' num2str(exp_idx)])
-            parfor (channel = ch2load, cores) 
-                file_to_load = [experiment.path, experiment.name, '\CSC', num2str(channel), '.ncs'];
-                [~, signal, ~] = load_nlx_Modes(file_to_load, ExtractMode, []);
-                signal = ZeroPhaseFilter(signal, fs, [low_cut high_cut]); % origianlly 0.1
-                LFP(channel, :) = signal(1 : downsampling_factor : end);
-            end 
-    
-            % in case the first one starts too early, drop 
-            if songs(1) < minInterSyInt
-                songs(1,:) = []; 
-            end 
-            % in case the last call is too late, drop
-            if songs(end,1) + minInterSyInt > size(LFP,2)*1000/fs_LFP
-                songs(end,:) = [];
-            end 
-            
-            % adjust so that the songs timestamps are in LFP frequency 
-            songs = round(songs/(1000/fs_LFP)); 
 
-            % loop through every channel call to compute spectra 
-            disp('power spectruming...')
-            for si = 1 : size(songs, 1) 
-                for ch = ch2load
-                    [pre5(ch, :), ~] = pWelchSpectrum(LFP(ch, (songs(si,1) - length*5*fs_LFP):(songs(si, 1) - length*4*fs_LFP - 1)), windowSize, overlap, nfft, fs_LFP, maxFreq);
-                    [pre3(ch, :), ~] = pWelchSpectrum(LFP(ch, (songs(si,1) - length*3*fs_LFP):(songs(si, 1) - length*2*fs_LFP - 1)), windowSize, overlap, nfft, fs_LFP, maxFreq);
-                    [pre(ch, :), freq] = pWelchSpectrum(LFP(ch, (songs(si,1) - length*fs_LFP):(songs(si, 1) - 1)), windowSize, overlap, nfft, fs_LFP, maxFreq);
-                    [post(ch, :), ~] = pWelchSpectrum(LFP(ch, (songs(si,2) + 1):(songs(si, 2) + length*fs_LFP)), windowSize, overlap, nfft, fs_LFP, maxFreq);
-                    if (songs(si, 2) - songs(si, 1)) > fs_LFP % if the call was long enough 
-                        [during(ch, :), ~] = pWelchSpectrum(LFP(ch, songs(si,1):(songs(si, 1) + length*fs_LFP - 1)), windowSize, overlap, nfft, fs_LFP, maxFreq);
-                    else 
-                        during(ch, :) = NaN([1, high_cut/fs_LFP*nfft + 1]); 
-                    end 
+        % set USV file 
+        T_exp = T(strcmp(T.usvfile, experiment.USV), :);
+
+        % loop through every channel call to compute spectra 
+        for si = 1 : size(T_exp, 1) 
+            for ch = ch2load
+                [baseline(ch, :), freq] = pWelchSpectrum(LFP(ch, (T_exp.start(si) - length*5*fs_LFP):(T_exp.start(si) - length*4*fs_LFP - 1)), windowSize, overlap, nfft, fs_LFP, maxFreq);
+                [prep(ch, :), ~] = pWelchSpectrum(LFP(ch, (T_exp.start(si) - length*1*fs_LFP):(T_exp.start(si) - 1)), windowSize, overlap, nfft, fs_LFP, maxFreq);
+                if (T_exp.stop(si) - T_exp.start(si)) > fs_LFP % if the call was long enough 
+                    [during(ch, :), ~] = pWelchSpectrum(LFP(ch, T_exp.start(si):(T_exp.start(si) + length*fs_LFP - 1)), windowSize, overlap, nfft, fs_LFP, maxFreq);
+                else 
+                    during(ch, :) = NaN([1, high_cut/fs_LFP*nfft + 1]); 
                 end 
-                pre5_tot = cat(3, pre5_tot, pre5); 
-                pre3_tot = cat(3, pre3_tot, pre3);
-                pre_tot  = cat(3, pre_tot, pre); 
-                during_tot = cat(3, during_tot, during); 
-                post_tot = cat(3, post_tot, post); 
             end 
-            clear LFP 
-        end % conditional end 
+            baseline_tot = cat(3, baseline_tot, baseline); 
+            prep_tot  = cat(3, prep_tot, prep); 
+            during_tot = cat(3, during_tot, during); 
+        end 
+        clear LFP 
     end % exp loop end 
 
     % put everything in a structure 
-    USVpower.pre5 = pre5_tot; 
-    USVpower.pre3 = pre3_tot;
-    USVpower.pre = pre_tot;
+    USVpower.baseline = baseline_tot; 
+    USVpower.prep = prep_tot;
     USVpower.during = during_tot; 
-    USVpower.post = post_tot; 
     USVpower.freq = freq; 
+    USVpower.note = 'ch x freqs x trials';
 
     % save data 
     if ~exist(folder2save, 'dir') 

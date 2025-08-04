@@ -42,7 +42,7 @@ folder4pulses = 'Q:\Personal\Tony\Analysis\Results_OptoMatricesPulse\';
 folder4ramps = 'Q:\Personal\Tony\Analysis\Results_OptoMatricesRamp\';
 
 % which brain area to plot spikes for 
-area = 'ACC'; 
+area = 'Str'; 
 % which pulse duration to look at 
 pulse2plot = 0.05; 
 

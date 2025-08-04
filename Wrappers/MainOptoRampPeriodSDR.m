@@ -100,18 +100,29 @@ end
 experiments = experiments(logical(keep)); %[300 301 324:426]
 experiments = experiments([experiments.DiI] == 0); 
 experiments = experiments(extractfield(experiments, 'IUEconstruct') == 13 | isnan(extractfield(experiments, 'IUEconstruct')));
+experiments = experiments(contains({experiments.ramp}, 'ACC') | strcmp({experiments.ramp}, 'NaN'));
+% experiments = experiments(strcmp({experiments.ramp}, 'Str') | strcmp({experiments.ramp}, 'NaN'));
 
 % useful paths 
 folder4rampPSD = 'Q:\Personal\Tony\Analysis\Results_RampPeriodPower\'; 
 folder4basePSD = 'Q:\Personal\Tony\Analysis\Results_PSD_pWelch\'; 
+folder2save = 'Q:\Personal\Tony\Analysis\Results_RampPeriodSDR\'; 
+
+% params 
+freq_bin = [4 45]; 
 
 % get unique animal list 
 animals = unique({experiments.animal_ID}); 
 
-% initialize 
-T = table('Size', [0, 5],...
-    'VariableNames', {'Animal', 'condition', 'SDR1', 'SDR2', 'normSDR'}, ...
-    'VariableTypes', {'string', 'double', 'double', 'double', 'double'});
+% initialize long trial based table 
+T = table('Size', [0, 6],...
+    'VariableNames', {'Animal', 'condition', 'opsin', 'SDR1', 'SDR2', 'normSDR'}, ...
+    'VariableTypes', {'string', 'string', 'double','double', 'double', 'double'});
+
+% initialize animal arregate table
+T_mouse = table('Size', [0, 6],...
+    'VariableNames', {'Animal', 'condition', 'opsin', 'SDR1', 'SDR2', 'normSDR'}, ...
+    'VariableTypes', {'string', 'string', 'double','double', 'double', 'double'});
 
 % loop through animals 
 for animal_idx = 1 : numel(animals)
@@ -125,13 +136,16 @@ for animal_idx = 1 : numel(animals)
         load([folder4basePSD experiment.name]); 
         power_acc = mean(PSDpWelch.PSD(17:32, :)); 
         power_str = mean(PSDpWelch.PSD(1:16, :));
+        freqs = PSDpWelch.freq; 
         % calculate SDR 
-        SDR = getSDR(power_acc, power_str, freqs, []);
+        SDR = getSDR(power_acc, power_str, freqs, freq_bin);
         normSDR = (SDR(1) - SDR(2)) / (SDR(1) + SDR(2));
         % set condition for baseline 
-        condition = 0; 
-        T = [T; table({animal}, condition, SDR(1), SDR(2), normSDR, 'VariableNames', {'Animal', 'condition', 'SDR1', 'SDR2', 'normSDR'})];
-        clearvars SDR normSDR PSDpWelch condition
+        condition = {'baseline'}; 
+        % put into final table 
+        T = [T; table({animal}, condition, experiment.IUEconstruct, SDR(1), SDR(2), normSDR, 'VariableNames', {'Animal', 'condition', 'opsin', 'SDR1', 'SDR2', 'normSDR'})];
+        T_mouse = [T_mouse; table({animal}, condition, experiment.IUEconstruct, SDR(1), SDR(2), normSDR, 'VariableNames', {'Animal', 'condition', 'opsin', 'SDR1', 'SDR2', 'normSDR'})];
+        clearvars SDR normSDR PSDpWelch condition power_str power_acc
     end % check baselin experiment end 
 
     % check if there's opto experiments 
@@ -139,60 +153,52 @@ for animal_idx = 1 : numel(animals)
     if any(contains({exp4mouse.Exp_type}, 'opto'))
         optos = exp4mouse(contains({exp4mouse.Exp_type}, 'opto')); 
 
-        % initialize power variable
-        power_acc = []; 
-        power_str = []; 
+        temp = []; 
         % now loop through opto experiments 
         for exp_idx = 1 : size(optos, 2)
             experiment = optos(exp_idx); 
             % load PSD 
             load([folder4rampPSD experiment.name]); 
-            % assign values for brain areas 
-            power_acc = [power_acc; mean(RampPeriodPSD.PSD(17:32, :))]; 
-            power_str = [power_str; mean(RampPeriodPSD.PSD(1:16, :))];
+            % extract values for PSD  
+            power_acc = mean(RampPeriodPSD.PSD(17:32, :)); 
+            power_str = mean(RampPeriodPSD.PSD(1:16, :));
             freqs = RampPeriodPSD.freq; 
-            clearvars RampPeriodPSD
+            SDR = getSDR(power_acc, power_str, freqs, freq_bin);
+            normSDR = (SDR(1) - SDR(2)) / (SDR(1) + SDR(2));
+            % set condition for baseline 
+            condition = {'stim'}; 
+            % put into final table 
+            T = [T; table({animal}, condition, experiment.IUEconstruct, SDR(1), SDR(2), normSDR, 'VariableNames', {'Animal', 'condition', 'opsin', 'SDR1', 'SDR2', 'normSDR'})];
+            temp = [temp; [SDR normSDR]];
+            clearvars RampPeriodPSD power_str power_acc SDR normSDR
         end % opto exp loop end 
+        temp = nanmean(temp, 1);
+        T_mouse = [T_mouse; table({animal}, condition, experiment.IUEconstruct, temp(1), temp(2), temp(3), 'VariableNames', {'Animal', 'condition', 'opsin', 'SDR1', 'SDR2', 'normSDR'})];
 
-        % in case more than 1 experiments, average power spectra 
-        if size(optos, 2) > 1 
-            power_acc = mean(power_acc); 
-            power_str = mean(power_str); 
-        end 
-
-        % compute SDR 
-        SDR = getSDR(power_acc, power_str, freqs, []);
-        normSDR = (SDR(1) - SDR(2)) / (SDR(1) + SDR(2));
-
-        % set condition, 1 = stim and 2 = ctrl 
-        if experiment.IUEconstruct == 13
-            condition = 1; 
-        else 
-            condition =2; 
-        end 
-
-        % put into final table 
-        T = [T; table({animal}, condition, SDR(1), SDR(2), normSDR, 'VariableNames', {'Animal', 'condition', 'SDR1', 'SDR2', 'normSDR'})];
-
-        clearvars SDR normSDR condition
     end % check opto experiments end 
-
 end % animal loop end 
 
+% assign a group column for easy plotting 
+T_mouse.group = NaN(height(T_mouse), 1);
+T_mouse.group(strcmp(T_mouse.condition, 'baseline') & T_mouse.opsin == 13) = 1; 
+T_mouse.group(strcmp(T_mouse.condition, 'stim') & T_mouse.opsin == 13) = 2; 
+T_mouse.group(strcmp(T_mouse.condition, 'baseline') & isnan(T_mouse.opsin)) = 3; 
+T_mouse.group(strcmp(T_mouse.condition, 'stim') & isnan(T_mouse.opsin)) = 4; 
+
 % make wide format table for plotting 
-T_wide = unstack(T(:, {'Animal', 'condition', 'normSDR'}), 'normSDR', 'condition');  
+T_mouse_wide = unstack(T_mouse(:, {'Animal', 'group', 'normSDR'}), 'normSDR', 'group');  
 
 % plot stim group 
 figure; 
-violins = violinplot([T_wide.x0, T_wide.x1]); 
+violins = violinplot([T_mouse_wide.x1, T_mouse_wide.x2]); 
 for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0];
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
 hold on; 
-plot([1.2 1.8], [T_wide.x0, T_wide.x1], 'k')
+plot([1.2 1.8], [T_mouse_wide.x1, T_mouse_wide.x2], 'k')
 yline(0, ':k'); 
-ylim([-1.03 1.03])
+ylim([-0.6 0.5])
 xticklabels({'Baseline', 'Stim'})
 ylabel('Normalized SDR (A.U.)')
 set(gca, 'TickDir', 'out', 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2)
@@ -200,18 +206,18 @@ title('ACC \rightarrow Str', 'FontWeight', 'normal')
 
 % plot control group 
 figure; 
-violins = violinplot([T_wide.x0, T_wide.x2]); 
+violins = violinplot([T_mouse_wide.x3, T_mouse_wide.x4]); 
 for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0];
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1;
 end
 hold on; 
-plot([1.2 1.8], [T_wide.x0, T_wide.x2], 'k')
+plot([1.2 1.8], [T_mouse_wide.x3, T_mouse_wide.x4], 'k')
 yline(0, ':k'); 
-ylim([-1.03 1.03])
-xticklabels({'Baseline', 'Ctrl'})
+ylim([-0.6 0.5])
+xticklabels({'Baseline', 'Stim'})
 ylabel('Normalized SDR (A.U.)')
 set(gca, 'TickDir', 'out', 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2)
 title('ACC \rightarrow Str', 'FontWeight', 'normal')
 
-
+writetable(T, [folder2save 'RampPeriodSDR_' experiment.ramp(1:3) '.csv']); 

@@ -3,7 +3,7 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments(256:399);  % 256:380 [300 301 324:380]
+experiments = experiments(256:end);  % 256:380 [300 301 324:380]
 
 minInterSyInt = 5000; % threshold to merge USV calls together, in ms
 
@@ -97,7 +97,7 @@ xlabel('Time (s)');
 ylabel('Freq (Hz)')
 set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out')
 clim([0.5 13])
-title('ACC')
+title('ACC', 'FontWeight','normal')
 % Str wavelet plot 
 figure; imagesc('Xdata', x, 'YData', USVwavelet.freqs, 'CData', plot4str); colormap parula; 
 xlim([-5 5]); ylim([1 70]); 
@@ -109,7 +109,7 @@ xlabel('Time (s)');
 ylabel('Freq (Hz)')
 set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out')
 clim([0.5 13])
-title('Str')
+title('Str', 'FontWeight','normal')
 % TH 
 figure; imagesc('Xdata', x, 'YData', USVwavelet.freqs, 'CData', plot4th); colormap parula; 
 xlim([-5 5]); ylim([1 70]); 

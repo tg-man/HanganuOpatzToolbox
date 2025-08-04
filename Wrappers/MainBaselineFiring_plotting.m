@@ -3,7 +3,7 @@
 clear
 % load experiments and generic stuff
 experiments = get_experiment_redux; %function that pulls experimental indicies from your excel file
-experiments = experiments(1:420);
+experiments = experiments();
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only')); 
 % experiments = experiments(extractfield(experiments, 'IUEconstruct') == 87); 
 
@@ -45,9 +45,9 @@ for idx = 1:size(violins, 2)
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0]; 
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
 end
-xlabel('Age (P)'); ylabel('Firing Rate (Hz)'); xlim([0 9]); ylim([0.005 100])
-set(gca, 'FontSize', 16, 'FontName', 'Arial', 'YScale', 'log', 'LineWidth', 2, 'TickDir', 'out'); 
-title(BrainArea, 'FontSize', 14, 'FontWeight','bold', 'FontName', 'Arial'); 
+xlabel('Age (P)'); ylabel('Firing Rate (Hz)'); xlim([0 9]); ylim([0.01 110])
+set(gca, 'FontSize', 18, 'FontName', 'Arial', 'YScale', 'log', 'LineWidth', 2, 'TickDir', 'out'); 
+title(BrainArea, 'FontSize', 18, 'FontWeight','normal', 'FontName', 'Arial'); 
 
 %% simple figure; 
 
@@ -103,7 +103,6 @@ for i = 1 : numel(x)
     y(i) = nanmedian(fr_acc(ages_str == x(i)));
     s(i) = nanstd(fr_acc(ages_str == x(i))) ./ sqrt(sum(ages_str == x(i)));
 end 
-% y = y + y((y - s) < 0) + 0.00001; 
 boundedline(x, y, s, 'cmap', Reds(end,:)); 
 clearvars x y s; 
 % plot ACC

@@ -60,7 +60,7 @@ writetable(T, [file(1:end-4) '_wNorm.csv'], 'QuoteStrings', true);
 %% isolated call section 
 
 clear; 
-T = readtable('Q:\Personal\Tony\Analysis\USV_csvs\rampUSVisocalls_grouped.csv', 'Delimiter', ','); 
+T = readtable('Q:\Personal\Tony\Analysis\USV_csvs\old\rampUSVisocalls_grouped.csv', 'Delimiter', ','); 
 
 % get experiments
 experiments = get_experiment_redux;
@@ -106,18 +106,18 @@ for idx = 1 : size(T, 1)
 end 
 
 % save 
-writetable(T, 'Q:\Personal\Tony\Analysis\USV_csvs\rampUSVisocalls_grouped_wNorm.csv', 'QuoteStrings', true);
+writetable(T, 'Q:\Personal\Tony\Analysis\USV_csvs\old\rampUSVisocalls_grouped_wNorm.csv', 'QuoteStrings', true);
 
 
 %% all single call section 
 
 clear; 
-T1 = readtable('Q:\Personal\Tony\Analysis\USV_csvs\RampUSVcalltypes_stim.csv', 'Delimiter', ',');
-T2 = readtable('Q:\Personal\Tony\Analysis\USV_csvs\RampUSVcalltypes_ctrl.csv', 'Delimiter', ',');
+T1 = readtable('Q:\Personal\Tony\Analysis\USV_csvs\old\RampUSVcalltypes_stim.csv', 'Delimiter', ',');
+T2 = readtable('Q:\Personal\Tony\Analysis\USV_csvs\old\RampUSVcalltypes_ctrl.csv', 'Delimiter', ',');
 T = [T1; T2]; 
 
 % save the concatenated table first 
-writetable(T, 'Q:\Personal\Tony\Analysis\USV_csvs\rampUSVcalltypes.csv', 'QuoteStrings', true);
+writetable(T, 'Q:\Personal\Tony\Analysis\USV_csvs\old\rampUSVcalltypes.csv', 'QuoteStrings', true);
 
 % get lists of experiments 
 experiments = get_experiment_redux;
@@ -167,4 +167,4 @@ T.norm_1 = T.type1 ./ T.dur_s;
 T.norm_tot = (T.type1 + T.type0) ./ T.dur_s; 
 
 % save 
-writetable(T, 'Q:\Personal\Tony\Analysis\USV_csvs\rampUSVcalltypes_wNorm.csv', 'QuoteStrings', true);
+writetable(T, 'Q:\Personal\Tony\Analysis\USV_csvs\old\rampUSVcalltypes_wNorm.csv', 'QuoteStrings', true);
