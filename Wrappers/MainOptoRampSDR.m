@@ -1,7 +1,6 @@
 %% Opto SDR 
 
 clear
-
 % filter experiments 
 experiments = get_experiment_redux;
 for i = 1 : size(experiments, 2)
@@ -22,8 +21,8 @@ stimarea = 'ACC';
 experiments = experiments(contains({experiments.ramp}, stimarea)); 
 
 % select condition: injection or control 
-% experiments = experiments(extractfield(experiments, 'IUEconstruct') == 13);
-experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
+experiments = experiments(extractfield(experiments, 'IUEconstruct') == 13);
+% experiments = experiments(isnan(extractfield(experiments, 'IUEconstruct')));
 
 folderPowRamps = 'Q:\Personal\Tony\Analysis\Results_RampPower\';  
 folder2save = 'Q:\Personal\Tony\Analysis\Results_RampSDR\';
@@ -96,7 +95,7 @@ for idx = 1:size(violins, 2)
 end
 ylabel('normalized SDR'); xticklabels({'pre','stim'});
 set(gca, 'FontSize', 16, 'Fontname', 'Arial', 'Linewidth', 2, 'TickDir', 'out'); 
-title('SDR: ACC \rightarrow DMS', 'FontWeight', 'Bold')
+title('ACC \rightarrow DMS', 'FontWeight', 'Bold')
 plot([1.2,1.8], [T_mouse{:, "SDRpre"}, T_mouse{:, "SDRstim"}], 'k', 'Linewidth', 1.5)
 
 [H_str, p_str] = signrank(T_mouse{:, "SDRpre"}, T_mouse{:, "SDRstim"})

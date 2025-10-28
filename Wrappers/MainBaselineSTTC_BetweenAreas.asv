@@ -50,20 +50,17 @@ end
 
 %% generate csv for R 
 
-experiments = experiments([experiments.target2] == 1); 
-
 STTCs_tot = []; 
 
 for exp_idx = 1 : size(experiments, 2) 
     experiment = experiments(exp_idx); 
     load([folder4STTC BrainArea1 BrainArea2 '\' experiment.name]);
-    % table for all mouse STTCs 
-    STTCs_mouse = [table(repmat({experiment.animal_ID}, [size(Tcoeff.STTC, 1), 1]), repmat(experiment.age, [size(Tcoeff.STTC, 1), 1]), 'VariableNames',{'mouse', 'age'}),...
-        array2table(Tcoeff.STTC, 'VariableNames', {'sttc5', 'sttc10', 'sttc20', 'sttc50', 'sttc100', 'sttc500'})]; 
-    STTCs_tot = [STTCs_tot; STTCs_mouse]; 
-    clearvars STTCs_mouse
+
+    
+
+    STTCs_mouse = [table(repmat({experiment.animal_ID}, [size(Tcoeff.STTC, 1), 1]), repmat 'VariableNames',{'mosue'}),...
+        array2table(Tcoeff.STTC, 'VariableNames', {'sttc5', 'sttc10', 'sttc20', 'sttc50', 'sttc100', 'sttc500'})]
+
+    temp_during = table(repmat({mouse}, [numel(sttc_during), 1]), sttc_during, repmat({'during'}, [numel(sttc_during), 1]), repmat(exp4mouse(1).IUEconstruct, [numel(sttc_during), 1]), ...
+            'VariableNames', {'mouse','sttc','condition', 'opsin'});
 end 
-
-% save 
-writetable(STTCs_tot, [folder4STTC 'sttc_' BrainArea1 BrainArea2 '.csv'], 'Delimiter', ',');
-

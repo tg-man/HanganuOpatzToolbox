@@ -37,17 +37,26 @@ for exp_idx = 1: size(experiments, 2)
     end 
 end
 
+% fr = log10(fr);
 age = [experiments.age]; 
 
-figure; violins = violinplot(fr, age, 'ViolinAlpha', 0.7, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]);
+figure; violins = violinplot(fr, age, 'ViolinAlpha', 0.9, 'Width', 0.4, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0]);
 for idx = 1:size(violins, 2)
     violins(idx).ViolinColor = YlGnBu(round(100/8*idx),:);
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0]; 
     violins(idx).ScatterPlot.MarkerFaceAlpha = 1; 
+    violins(idx).ScatterPlot.SizeData = 12; 
 end
-xlabel('Age (P)'); ylabel('Firing Rate (Hz)'); xlim([0 9]); ylim([0.01 110])
+xlabel('Age (P)'); 
+ylabel('Firing Rate (Hz)'); 
+xlim([0 9]); 
+ylim([0.01 110]); 
 set(gca, 'FontSize', 18, 'FontName', 'Arial', 'YScale', 'log', 'LineWidth', 2, 'TickDir', 'out'); 
+% set(gca, 'FontSize', 18, 'FontName', 'Arial', 'LineWidth', 2, 'TickDir', 'out'); 
 title(BrainArea, 'FontSize', 18, 'FontWeight','normal', 'FontName', 'Arial'); 
+set(gcf, 'Units', 'inches', 'Position', [1, 1, 6, 4]);
+yticklabels({'0.01', '1', '100'});
+
 
 %% simple figure; 
 

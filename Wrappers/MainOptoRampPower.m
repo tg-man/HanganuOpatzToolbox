@@ -13,10 +13,10 @@ end
 experiments = experiments(logical(keep)); %[300 301 324:426]
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
 experiments = experiments([experiments.DiI] == 0); 
-% experiments = experiments(extractfield(experiments, 'IUEconstruct') == 13 | isnan(extractfield(experiments, 'IUEconstruct')));
+experiments = experiments(extractfield(experiments, 'IUEconstruct') == 13 | isnan(extractfield(experiments, 'IUEconstruct')));
 
 save_data = 1;
-repeatCalc = 1;
+repeatCalc = 0;
 folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\';
 folderPowRamps = 'Q:\Personal\Tony\Analysis\Results_RampPower\'; % getRampPower params needs to be adjusted accordingly! 
 
@@ -35,8 +35,6 @@ params.nfft = 1024;
 params.maxFreq = 100;
 params.downsample_factor = 32; % from 32k Hz 
 
-% experiments = experiments(strcmp(extractfield(experiments, 'sites'), '3site')); 
-CSCs = 1:48; 
 cores = 4; 
 
 % compute/plot ramp power stuff
@@ -46,6 +44,11 @@ for idx = 1 : numel(experiments)
     tic
     experiment = experiments(idx); 
     disp(['running experiment number ' num2str(idx) ' out of ' num2str(size(experiments, 2))])
+    if strcmp(experiment.sites, '2site') 
+        CSCs = 1:32; 
+    elseif strcmp(experiment.sites, '3site')
+        CSCs = 1:48; 
+    end 
     parfor (CSC = CSCs, cores) 
         getRampPower(experiment, CSC, save_data, params, repeatCalc, folder4stim, folderPowRamps);
     end 
@@ -53,6 +56,7 @@ for idx = 1 : numel(experiments)
 end
 
 % bad channels were taking out during plotting 
-% plotRampPower(experiments, stimArea, BrainAreas, folderPowRamps)
+plotRampPower(experiments, 'ACC', 17:32, folderPowRamps);
+plotRampPower(experiments, 'ACC', 1:16, folderPowRamps);
 
 %plotRampSignal(experiment, CSC, save_data, repeatCalc, folder4stim, folderPowRamps); 

@@ -142,14 +142,14 @@ title([area ' ctrl group'], 'FontWeight', 'normal')
 % PSTH line plot 
 figure;
 units2plot = zscored_units(condition == 1, :);
-boundedline(linspace(-500, 1000, size(zscored_units, 2)), nanmean(units2plot), nanstd(units2plot) ./ sqrt(size(units2plot, 1)), 'k')
+boundedline(linspace(-500, 1000, size(zscored_units, 2)), nanmean(units2plot), nanstd(units2plot) ./ sqrt(size(units2plot, 1)))
 hold on; 
 units2plot = zscored_units(condition == 0, :);
 boundedline(linspace(-500, 1000, size(zscored_units, 2)), nanmean(units2plot), nanstd(units2plot) ./ sqrt(size(units2plot, 1)), 'cmap', [0.65 0.65 0.65])
 ylabel('Firing rate z-score (A.U.)'); 
 xlabel('Time (ms)'); 
 xlim([-249 250]);
-set(gca, 'TickDir', 'out', 'FontSize', 16, 'FontName', 'Arial', 'LineWidth', 2); 
+set(gca, 'TickDir', 'out', 'FontSize', 18, 'FontName', 'Arial', 'LineWidth', 2); 
 lines = findobj(gcf,'Type','Line');
 for i = 1:numel(lines)
   lines(i).LineWidth = 2;

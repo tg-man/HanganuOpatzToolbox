@@ -6,7 +6,8 @@ experiments = experiments([experiments.target2] == 1);
 experiments = experiments([experiments.DiI] == 0);
 save_data = 1; 
 
-BrainArea = 'Str'; % 'ACC', 'Str', 'TH'
+% BrainArea = 'ACC'; % 'ACC', 'Str', 'TH'
+BrainArea = 'Str'; 
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
 
 minInterSyInt = 5000; 
@@ -118,48 +119,85 @@ end
 usvmat_tot_conv = downsamp_convolve(usvmat_tot, Gwindow, 1); 
 z2plot = zscore(usvmat_tot_conv, [], 2); 
 
-% split the z2plot matrix in half, even vs odd for example. Sort max time
-% based on the even matrix and plot the odd matrix to get rid of random
-% firing maxima 
-
-% maybe split it already in the animal loop??? 
 % 
 idx_sorted = sort_peak_time(z2plot, 500); % sort 
 % sorted raster justified to song onset 
 figure; 
+set(gcf, 'Units', 'inches', 'Position', [1, 1, 6, 4]);
 imagesc((-minInterSyInt + 1:minInterSyInt)/1000, 1:size(z2plot, 1), flipud(z2plot(idx_sorted, :))); colormap(map4plot) % plot
-xline(0, ':w','LineWidth', 1.5); ylabel('Cells'); 
-set(gca, 'FontSize', 14, 'FontName', 'Arial', 'TickDir', 'out')
-xticks([-4 -3 -2 -1 0 1 2 3 4]); xlabel('Time (s)');
+xline(0, ':w','LineWidth', 1.5); 
+ylabel('Cells'); 
+xticks([-4 -3 -2 -1 0 1 2 3 4]); 
+xlim([-minInterSyInt+300 minInterSyInt-300]/1000);
+xlabel('Time (s)');
+set(gca, 'FontSize', 18, 'FontName', 'Arial', 'TickDir', 'out')
+caxis([-0.5 2.5]);
+title([BrainArea], 'FontWeight','bold') 
+
+% 
+idx_sorted = sort_peak_time(z2plot(:, 2000:8000), 500); % sort 
+% sorted raster justified to song onset 
+figure; 
+set(gcf, 'Units', 'inches', 'Position', [1, 1, 6, 4]);
+imagesc((-3001 + 1:3000)/1000, 1:size(z2plot(:, 2000:8000), 1), flipud(z2plot(idx_sorted, 2000:8000))); colormap(map4plot) % plot
+xline(0, ':w','LineWidth', 1.5); 
+ylabel('Cells'); 
+xticks([-3 -2 -1 0 1 2 3]); 
+% xlim([-minInterSyInt+300 minInterSyInt-300]/1000);
+xlabel('Time (s)');
+caxis([-0.5 2.5]);
+set(gca, 'FontSize', 18, 'FontName', 'Arial', 'TickDir', 'out')
 title([BrainArea], 'FontWeight','normal') 
-xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
+
+
+% % split the z2plot matrix in half, even vs odd for example. Sort max time
+% % based on the even matrix and plot the odd matrix to get rid of random
+% % firing maxima
+% z2plot1 = z2plot(1:2:end, :); 
+% z2plot2 = z2plot(2:2:end, :); 
+% idx_sorted = sort_peak_time(z2plot1, 500); % sort 
+% figure; 
+% imagesc((-minInterSyInt + 1:minInterSyInt)/1000, 1:size(z2plot2, 1), flipud(z2plot2(idx_sorted, :))); colormap(map4plot) % plot
+% % xline(0, ':w','LineWidth', 1.5); 
+% ylabel('Cells'); 
+% xticks([-4 -2 0 2 4]); 
+% xlim([-minInterSyInt+300 minInterSyInt-300]/1000);
+% xlabel('Time (s)');
+% set(gca, 'FontSize', 18, 'FontName', 'Arial', 'TickDir', 'out')
+% title([BrainArea], 'FontWeight', 'bold') 
+
 
 % PSTH line profile 
 figure; 
-subplot(211); % zscore
+set(gcf, 'Units', 'inches', 'Position', [1, 1, 6, 2.5]);
 boundedline((-minInterSyInt + 1 : minInterSyInt)/1000, mean(z2plot), std(z2plot) ./ sqrt(size(z2plot, 1)));
 lines = findobj(gcf,'Type','Line');
 for i = 1:numel(lines)
-  lines(i).LineWidth = 1.5;
+  lines(i).LineWidth = 2;
 end
 xline(0, ':k','LineWidth', 1); 
 xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
-xticks([-4 -3 -2 -1 0 1 2 3 4]); xlabel('Time (s)');
-ylabel('z-score fr'); 
-set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 1); 
-title([BrainArea])
-subplot(212); % actual fr 
-boundedline((-minInterSyInt + 1 : minInterSyInt)/1000, mean(usvmat_tot_conv), std(usvmat_tot_conv) ./ sqrt(size(usvmat_tot_conv, 1)));
-lines = findobj(gcf,'Type','Line');
-for i = 1:numel(lines)
-  lines(i).LineWidth = 1.5;
-end
-xline(0, ':k','LineWidth', 1); 
-xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
-xticks([-4 -3 -2 -1 0 1 2 3 4]); xlabel('Time (s)');
-ylabel('fr (Hz)'); 
-set(gca, 'TickDir', 'out', 'FontSize', 14, 'FontName', 'Arial', 'LineWidth', 1); 
-% set(gca, 'YScale', 'log')
+xticks([-4 -3 -2 -1 0 1 2 3 4]); 
+xlabel('Time (s)');
+yticks([0 0.7 1.4]);
+ylabel('Firing z-score'); 
+ylim([-0.45 1.6]);
+set(gca, 'TickDir', 'out', 'FontSize', 18, 'FontName', 'Arial', 'LineWidth', 2); 
+title([BrainArea], 'FontWeight', 'normal')
+
+% figure; 
+% % subplot(212); % actual fr 
+% boundedline((-minInterSyInt + 1 : minInterSyInt)/1000, mean(usvmat_tot_conv), std(usvmat_tot_conv) ./ sqrt(size(usvmat_tot_conv, 1)));
+% lines = findobj(gcf,'Type','Line');
+% for i = 1:numel(lines)
+%   lines(i).LineWidth = 1.5;
+% end
+% xline(0, ':k','LineWidth', 1); 
+% xlim([-minInterSyInt+300 minInterSyInt-300]/1000)
+% xticks([-4 -3 -2 -1 0 1 2 3 4]); xlabel('Time (s)');
+% ylabel('fr (Hz)'); 
+% set(gca, 'TickDir', 'out', 'FontSize', 18, 'FontName', 'Arial', 'LineWidth', 1); 
+% % set(gca, 'YScale', 'log')
 
 
 % age separated PSTH 

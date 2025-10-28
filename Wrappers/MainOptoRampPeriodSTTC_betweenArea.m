@@ -190,14 +190,14 @@ end
 experiments = get_experiment_redux;
 experiments = experiments(ismember({experiments.animal_ID}, animals));
 
-% stimarea = 'ACC'; 
-stimarea = 'Str'; 
+stimarea = 'ACC'; 
+% stimarea = 'Str'; 
 experiments = experiments(contains({experiments.ramp}, stimarea) | strcmp({experiments.ramp}, 'NaN'));
 
 % links 
 folder4baseline = 'Q:\Personal\Tony\Analysis\Results_STTC\ACCStr\'; 
 % lag to take [5 10 20 50 100 500]
-lag_idx = 5; 
+lag_idx = 6; 
 
 % initialize 
 T = []; 

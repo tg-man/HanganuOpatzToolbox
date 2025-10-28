@@ -28,9 +28,6 @@ else
     StimulationProperties_raw = StimulationProperties_raw(ramps, :); 
     StimulationProperties_raw = StimulationProperties_raw(round(cell2mat(StimulationProperties_raw(:, 5))) == 3, :); 
     if size(StimulationProperties_raw,1) > 0
-%         % pre-allocate variables
-%         Pre = zeros(size(StimulationProperties_raw,1), 161);
-%         Half1 = Pre; Half2 = Pre; Post = Pre;
         % loop over single ramps (no concatenate because of overlap)
         for ramp = 1 : size(StimulationProperties_raw,1)
             % loaded here 4s before and 5s after the ramp       

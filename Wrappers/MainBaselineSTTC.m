@@ -15,7 +15,7 @@ experiments = experiments(256:end);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only')); 
 cores = 6; 
 
-BrainArea = 'TH'; % ACC, Str, TH 
+BrainArea = 'ACC'; % ACC, Str, TH 
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
 
 folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\'; 

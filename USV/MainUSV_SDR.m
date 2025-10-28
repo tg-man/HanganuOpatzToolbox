@@ -74,27 +74,32 @@ end
 
 
 figure; hold on
-plot([1 2], [sdr_mouse.baseline sdr_mouse.prep], 'Color', [0.7 0.7 0.7], 'LineWidth', 1)
-plot([2 3], [sdr_mouse.prep sdr_mouse.during], 'Color', [0.7 0.7 0.7], 'LineWidth', 1)
-plot([1 2], nanmean([sdr_mouse.baseline sdr_mouse.prep]), 'Color', 'b', 'LineWidth', 2) 
-plot([2 3], nanmean([sdr_mouse.prep sdr_mouse.during]), 'Color', 'b', 'LineWidth', 2)
+plot([1.1 1.9], [sdr_mouse.baseline sdr_mouse.prep], 'Color', [0.7 0.7 0.7], 'LineWidth', 1)
+plot([2.1 2.9], [sdr_mouse.prep sdr_mouse.during], 'Color', [0.7 0.7 0.7], 'LineWidth', 1)
+% plot([1 2], nanmean([sdr_mouse.baseline sdr_mouse.prep]), 'Color', 'b', 'LineWidth', 2) 
+% plot([2 3], nanmean([sdr_mouse.prep sdr_mouse.during]), 'Color', 'b', 'LineWidth', 2)
 yline(0, '--', 'LineWidth', 1.5)
-ylim([-0.9 0.8])
+ylim([-0.83 0.76])
 xlim([0.5 3.5])
-
-% figure; 
-violins = violinplot(sdr_mouse(:, {'baseline', 'prep', 'during'}), {'baseline', 'prep', 'during'}, 'Width', 0.3, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0], 'ViolinAlpha', 0.5);
+% violin plot 
+violins = violinplot(sdr_mouse(:, {'baseline', 'prep', 'during'}), {'Baseline', 'Prep', 'During'}, 'Width', 0.2, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0], 'ViolinAlpha', 0.8);
 for idx = 1 : size(violins, 2)
 %     violins(idx).ViolinColor = YlGnBu(round(100/8*idx),:);
     violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0]; 
     violins(idx).ScatterPlot.MarkerFaceAlpha = 0; 
 end
-% yline(0, ':', 'LineWidth', 1.5)
-ylim([-0.9 0.8])
+ifn = viridis; 
+violins(1).ViolinColor = ifn(100, :);
+violins(3).ViolinColor = ifn(100, :);
+violins(2).ViolinColor = ifn(230, :);
+xticklabels({'Baseline', 'Prep', 'During'}); 
+ylabel('Normalized SDR');
+set(gca, 'TickDir', 'out', 'FontSize', 20, 'FontName', 'Arial', 'LineWidth', 2); 
 
-figure; 
-violinplot(sdr_sentence(:, {'baseline', 'prep', 'during'}))
-yline(0, '--', 'LineWidth', 1.5)
+
+% figure; 
+% violinplot(sdr_sentence(:, {'baseline', 'prep', 'during'}))
+% yline(0, '--', 'LineWidth', 1.5)
 
 % % old deprecated plotting script 
 % %% plotting 

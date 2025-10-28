@@ -88,28 +88,38 @@ plot4th = nanmean(plot4th, 3);
 x = linspace(-(size(plot4acc, 2) / USVwavelet.fs)/2, (size(plot4acc, 2) / USVwavelet.fs)/2, size(plot4acc, 2)); 
 % ACC wavelet plot 
 figure; imagesc('Xdata', x, 'YData', USVwavelet.freqs, 'CData', plot4acc); %colormap parula; 
-xlim([-5 5]); ylim([1 70]); 
+xlim([-4.7 4.7]); 
+ylim([1 70]); 
 xticks([-4 -2 0 2 4]); 
 xline(0, ':k', 'LineWidth', 1.5); 
-xticks([-4 -2 0 2 4]); 
-yticks([10 30 50 70]); 
+xticks([-4:4]); 
+yticks([10 40 70]); 
 xlabel('Time (s)'); 
 ylabel('Freq (Hz)')
-set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out')
+set(gca, 'FontName', 'Arial', 'FontSize', 18, 'TickDir', 'out')
 clim([0.5 13])
+cb = colorbar('eastoutside');
+cb.Ticks = 1:6:13;
+set(gcf, 'Units', 'pixels', 'Position', [200, 200, 610, 230]);
 title('ACC', 'FontWeight','normal')
+
 % Str wavelet plot 
 figure; imagesc('Xdata', x, 'YData', USVwavelet.freqs, 'CData', plot4str); colormap parula; 
-xlim([-5 5]); ylim([1 70]); 
+xlim([-4.7 4.7]);  
+ylim([1 70]); 
 xticks([-4 -2 0 2 4]); 
 xline(0, ':k', 'LineWidth', 1.5); 
-xticks([-4 -2 0 2 4]); 
-yticks([10 30 50 70]); 
+xticks([-4:4]); 
+yticks([10 40 70]); 
 xlabel('Time (s)'); 
 ylabel('Freq (Hz)')
-set(gca, 'FontName', 'Arial', 'FontSize', 20, 'TickDir', 'out')
+set(gca, 'FontName', 'Arial', 'FontSize', 18, 'TickDir', 'out')
 clim([0.5 13])
+cb = colorbar;
+cb.Ticks = 1:6:13;
+set(gcf, 'Units', 'pixels', 'Position', [200, 200, 610, 230]);
 title('Str', 'FontWeight','normal')
+
 % TH 
 figure; imagesc('Xdata', x, 'YData', USVwavelet.freqs, 'CData', plot4th); colormap parula; 
 xlim([-5 5]); ylim([1 70]); 
