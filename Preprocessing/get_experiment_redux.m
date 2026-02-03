@@ -29,6 +29,7 @@ xlRange = 'A1:DZ1000';
 % [~, idxC_ageGroup] = find(strcmp(InfoandDevMil, 'Age Group'));
 [~, idxC_ramp] = find(strcmp(InfoandDevMil, 'ramp'));
 [~, idxC_square] = find(strcmp(InfoandDevMil, 'square'));
+[~, idxC_laserpower] = find(strcmp(InfoandDevMil, 'powerEst'));
 [~, idxC_baseline] = find(strcmp(InfoandDevMil, 'baseline'));
 % [~, idxC_PL] = find(strcmp(InfoandDevMil, 'PFC_PL'));
 [~, idxC_klusta] = find(strcmp(InfoandDevMil, 'Klusta'));
@@ -73,6 +74,11 @@ for row = 6:1000
 %             experiments(InfoandDevMil{row,  idxC_n_experiment}).HPreversal = InfoandDevMil{row,  idxC_HPreversal};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).ramp = InfoandDevMil{row,  idxC_ramp};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).square = InfoandDevMil{row,  idxC_square};
+            try 
+                experiments(InfoandDevMil{row,  idxC_n_experiment}).laserpower = str2num(InfoandDevMil{row,  idxC_laserpower});
+            catch 
+                experiments(InfoandDevMil{row,  idxC_n_experiment}).laserpower = InfoandDevMil{row,  idxC_laserpower};
+            end 
             experiments(InfoandDevMil{row,  idxC_n_experiment}).baseline = InfoandDevMil{row,  idxC_baseline};
 %             experiments(InfoandDevMil{row,  idxC_n_experiment}).PL = InfoandDevMil{row,  idxC_PL};
             experiments(InfoandDevMil{row,  idxC_n_experiment}).Klusta = InfoandDevMil{row,  idxC_klusta};

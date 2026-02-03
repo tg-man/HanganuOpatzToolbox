@@ -154,7 +154,8 @@ lines = findobj(gcf,'Type','Line');
 for i = 1:numel(lines)
   lines(i).LineWidth = 2;
 end
-fill([0 0 pulse2plot*1000 pulse2plot*1000], [-0.5 2 2 -0.5], [0 0.30 1], 'FaceAlpha', 0.3, 'EdgeColor', 'none')
+fill([0 0 pulse2plot*1000 pulse2plot*1000], [-1 4 4 -1], [0 0.30 1], 'FaceAlpha', 0.3, 'EdgeColor', 'none')
+legend({'', 'stim', '', 'ctrl', '', ''}); legend boxoff
 title(area, 'FontWeight', 'normal')
 
 

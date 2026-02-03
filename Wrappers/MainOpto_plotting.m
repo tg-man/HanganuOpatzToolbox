@@ -2,9 +2,21 @@
 % select stim type and brain areas to look at in the script before plotting function 
 % everything else is taken care of by the plotting function 
 
-clear; 
+clear;
+
+% filter experiments to leave specific type of stim 
+% stim = 'ACC'; 
+stim = 'Str'; 
+
+% which brain area to plot spikes for 
+% area = 'ACC'; 
+area = 'Str'; 
+
+% which pulse duration to look at 
+pulse2plot = 0.05; 
+
 experiments = get_experiment_redux;
-experiments = experiments(1:448);
+experiments = experiments(1:502);
 % keep only opto experiments 
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto')); 
 % get rid of experiments with more than 1 opsin 
@@ -21,28 +33,20 @@ experiments = experiments(logical(keep)); %[300 301 324:426]
 experiments = experiments([experiments.DiI] == 0); 
 % keep only injection experiments 
 experiments = experiments(extractfield(experiments, 'IUEconstruct') == 13 | isnan(extractfield(experiments, 'IUEconstruct')));
-% filter experiments to leave specific type of stim 
-% stim = 'ACC'; 
-stim = 'Str'; 
 experiments = experiments(contains({experiments.ramp}, stim));
+experiments = experiments([experiments.laserpower] < 10)
 
 % useful paths 
 folder4matrix = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\';
 folder4pulses = 'Q:\Personal\Tony\Analysis\Results_OptoMatricesPulse\';
 folder4ramps = 'Q:\Personal\Tony\Analysis\Results_OptoMatricesRamp\';
 
-% which brain area to plot spikes for 
-% area = 'ACC'; 
-area = 'Str'; 
-% which pulse duration to look at 
-pulse2plot = 0.05; 
-
 
 % ramp plotting 
 [spikes_tot_r, allcells_r, mice_r, age_r] = plotRampSpikes(experiments, area, folder4matrix, folder4ramps);
 
 % pulse plotting 
-% [spikes_tot_p, allcells_p, mice_p, age_p] = plotPulseSpikes(experiments, area, folder4matrix, folder4pulses, pulse2plot);
+[spikes_tot_p, allcells_p, mice_p, age_p] = plotPulseSpikes(experiments, area, folder4matrix, folder4pulses, pulse2plot);
 
 % % compute/plot firing rate stuff with separate deep or sum stim
 % plotRampFiringComp(experiments, 'Str', 'TH', StimArea, folder4ramps)

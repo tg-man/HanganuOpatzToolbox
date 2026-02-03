@@ -132,7 +132,7 @@ xticks([3 6 9]* size(spikes_reduced, 2) / 10);
 xticklabels({3 6 9}); 
 xlabel('Time (s)')
 set(gca, 'TickDir', 'out', 'FontSize', 16, 'FontName', 'Arial')
-title([area ', stim group'], 'FontWeight', 'normal')
+title([area ', ChR2'], 'FontWeight', 'normal')
 % plot units from ctrl experiments 
 units2plot = zscored_units(condition == 0, :);
 idx_sorted = sort_spike_trains(units2plot);
@@ -148,7 +148,7 @@ xticks([3 6 9]* size(spikes_reduced, 2) / 10);
 xticklabels({3 6 9}); 
 xlabel('Time (s)')
 set(gca, 'TickDir', 'out', 'FontSize', 16, 'FontName', 'Arial')
-title([area ', ctrl group'], 'FontWeight', 'normal')
+title([area ', Ctrl'], 'FontWeight', 'normal')
 
 
 % PSTH line profile 

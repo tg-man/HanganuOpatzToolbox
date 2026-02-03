@@ -20,7 +20,7 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments(256:end);
+experiments = experiments(256:506);
 experiments = experiments([experiments.target2] == 1);
 experiments = experiments([experiments.DiI] == 0);
 
@@ -77,8 +77,9 @@ for exp_idx = 1 : size(experiments, 2)
         recdur = repmat(recdur, [size(stats, 1) 1]);
         opsin = repmat({experiment.IUEconstruct}, [size(stats, 1) 1]);
         condition = repmat({condition}, [size(stats, 1) 1]);
+        laserpower = repmat(experiment.laserpower, [size(stats, 1) 1]);
         temp = [table(mouse) table(age) table(start, stop, duration, lowfreq, highfreq, freqrange)...
-            stats(:, statsvars) table(usvfile, opsin, condition, recdur)]; %% update code for new stats output 
+            stats(:, statsvars) table(usvfile, opsin, condition, laserpower, recdur)]; %% update code for new stats output 
         % add to total variable
         calltot = [calltot; temp];
     else 

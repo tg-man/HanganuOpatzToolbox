@@ -3,7 +3,7 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments(449:464);
+experiments = experiments(503:506);
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto'));
 save_data = 1; 
 repeatCalc = 0; 

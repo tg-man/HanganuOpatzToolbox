@@ -9,9 +9,9 @@ clear all
 klusta = 1;
 common_average_reference = 1;
 experiments = get_experiment_redux(klusta);
-experiments = experiments(453:464);
+experiments = experiments(505:506);
 % experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'opto')); 
-cores = 4; 
+cores = 2; 
 
 PRMfolder = 'C:\Klusta\PRM\'; % main folder in which you store your PRM files 
                                     % (which then are in an area-specific and animal-specific subfolder, full path constructed in the loop)
