@@ -49,7 +49,10 @@ else
         if double(string(Calls.('Type')(1))) == 9 && double(string(Calls.('Type')(end))) == 8  
             syllables(:, 1) = Calls.('Box')(:,1); % extract beginning timestamps
             syllables(:, 2) = Calls.('Box')(:,1) + Calls.('Box')(:, 3); % extract end timestamps
-            syllables = round((syllables - syllables(1, 1)) * 1000); % justify recording beginning and convert to ms to fit to spike matrix 
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%             syllables = round((syllables - syllables(1, 1)) * 1000); % old code, wrong adjustment - not to mouse down click 
+            syllables = round((syllables - syllables(1, 2)) * 1000); % justify recording beginning and convert to ms to fit to spike matrix 
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             syllables(1, :) = []; % remove the first "call" - artificially added start
             syllables(end, :) = []; % remove the last "ca;;" - artificially added end 
         else 
@@ -78,7 +81,7 @@ else
                 signal = ZeroPhaseFilter(signal, fs, [low_cut high_cut]); % origianlly 0.1
                 LFP(channel, :) = signal(1 : downsampling_factor : end);
             end 
-    
+
             % in case the first one starts too early, drop 
             if songs(1) < minInterSyInt
                 songs(1,:) = []; 
@@ -100,15 +103,16 @@ else
             usvmat_tot = cat(3, usvmat_tot, usvmat);
             clear usvmat LFP 
         end 
-    end 
+    end
 
     % wavelet transform, loop through every channel and every call 
     if size(usvmat_tot, 3) > 1
         disp('wavelet tranforming...')
+        % version 1: transforming every channel. VERY LARGE DATA! 
         for ch = ch2load 
             for usv = 1: size(usvmat_tot, 3) 
                 % wavelet transform 
-                [cfs, freqs] = cwt(usvmat_tot(ch, :, usv), 'amor', fs_LFP, 'FrequencyLimits', [low_cut high_cut], 'VoicesPerOctave', 20);
+                [cfs, freqs] = cwt(usvmat_tot(ch, :, usv), 'amor', fs_LFP, 'FrequencyLimits', [low_cut high_cut], 'VoicesPerOctave', 24);
                 chwl(:, :, usv) = abs(cfs); % abs reserves amplitude and disgard phase information 
             end 
             % average across USV calls 
@@ -118,6 +122,7 @@ else
             USVwavelet.freqs = freqs; 
             USVwavelet.fs = fs_LFP; 
             USVwavelet.(['ch' num2str(ch)]) = chwl; % dynamically named 
+            USVwavelet.note = 'freq x time; trial averaged';
             clearvars chwl 
         end 
     else 

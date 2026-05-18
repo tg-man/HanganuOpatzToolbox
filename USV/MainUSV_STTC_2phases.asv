@@ -6,8 +6,8 @@
 %     spike matrix 
 % 
 % output: 
-%     struct with STTC values in 1) baseline 2) prep and 3) during 
-%     3 separate structure with 3 separate saving paths 
+%     struct with STTC values in 1) baseline 2) peri 
+%     2 separate structure with 2 separate saving paths 
 
 clear
 % load table with all USV sentences 
@@ -34,7 +34,7 @@ lags = [5, 10, 20, 50, 100, 500];
 
 % links
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
-folder2save = 'Q:\Personal\Tony\Analysis\Results_USVSTTC_sentence_noisocalls_clickrelease\'; 
+folder2save = 'Q:\Personal\Tony\Analysis\Results_USVSTTC_sentence_2phases\'; 
 
 % all animals 
 animals = unique(T.mouse); 
@@ -72,7 +72,7 @@ parfor (mouse_idx = 1 : numel(animals), cores)
     % get within-area2 STTC 
     tic
     disp(['computing STTC ' area1 ' x ' area2 '... ' num2str(mouse_idx) ' / ' num2str(numel(animals))])
-    getSentenceSTTCx(T_mouse, folder4SM, area1, area2, lags, repeat_calc, folder2save); 
+    getSentenceSTTCx_2phases(T_mouse, folder4SM, area1, area2, lags, repeat_calc, folder2save); 
     toc
 end 
 
@@ -102,32 +102,22 @@ for mouse_idx = 1 : numel(animals)
     pair_baseline = pair(~isnan(baseline));
     baseline = baseline(~isnan(baseline)); 
 
-    % prep section extract data and put into 
-    prep = squeeze(sentenceSTTC.prep(:, lag_idx, :));
+    % peri section extract data and put into 
+    peri = squeeze(sentenceSTTC.peri(:, lag_idx, :));
     % reshape to linear vector 
-    prep = reshape(prep, [], 1);
-    trial_prep = reshape(trial, [], 1);
+    peri = reshape(peri, [], 1);
+    trial_peri = reshape(trial, [], 1);
     % filter out NaNs (order is important!) 
-    trial_prep = trial_prep(~isnan(prep));
-    pair_prep = pair(~isnan(prep));
-    prep = prep(~isnan(prep)); 
-
-    % during section extract data and put into 
-    during = squeeze(sentenceSTTC.during(:, lag_idx, :));
-    % reshape to linear vector 
-    during = reshape(during, [], 1);
-    trial_during = reshape(trial, [], 1);
-    % filter out NaNs (order is important!) 
-    trial_during = trial_during(~isnan(during));
-    pair_during = pair(~isnan(during)); 
-    during = during(~isnan(during)); 
+    trial_peri = trial_peri(~isnan(peri));
+    pair_peri = pair(~isnan(peri));
+    peri = peri(~isnan(peri)); 
 
     % put into a table 
-    temp = table(repmat({mouse}, [numel([baseline; prep; during]), 1]), ...
-        [baseline; prep; during], ...
-        [trial_baseline; trial_prep; trial_during], ...
-        [pair_baseline; pair_prep; pair_during], ...
-        [repmat({'baseline'}, [numel(baseline), 1]); repmat({'prep'}, [numel(prep), 1]); repmat({'during'}, [numel(during), 1])], ...
+    temp = table(repmat({mouse}, [numel([baseline; peri]), 1]), ...
+        [baseline; peri], ...
+        [trial_baseline; trial_peri], ...
+        [pair_baseline; pair_peri], ...
+        [repmat({'baseline'}, [numel(baseline), 1]); repmat({'peri'}, [numel(peri), 1])], ...
         'VariableNames', {'mouse', 'sttc', 'trial', 'pair', 'phase'}); 
     % add to total table 
     USVSTTC = [USVSTTC; temp]; 
@@ -135,27 +125,5 @@ for mouse_idx = 1 : numel(animals)
     
 end 
 
-% % version 2: all pairs sentence mean
-% for mouse_idx = 1 : numel(animals) 
-%     mouse = animals{mouse_idx}; 
-%     load([folder2save area1 area2 '/' ,mouse]); 
-% 
-%     baseline = nanmean(squeeze(sentenceSTTC.baseline(:, lag_idx, :)), 2); 
-%     baseline = baseline(~isnan(baseline)); 
-% 
-%     prep = nanmean(squeeze(sentenceSTTC.prep(:, lag_idx, :)), 2);
-%     prep = prep(~isnan(prep)); 
-% 
-%     during = nanmean(squeeze(sentenceSTTC.during(:, lag_idx, :)), 2);
-%     during = during(~isnan(during)); 
-% 
-%     temp = table(repmat({mouse}, [numel([baseline; prep; during]), 1]), ...
-%         [baseline; prep; during], ...
-%         [repmat({'baseline'}, [numel(baseline), 1]); repmat({'prep'}, [numel(prep), 1]); repmat({'during'}, [numel(during), 1])], ...
-%         'VariableNames', {'mouse', 'sttc', 'phase'}); 
-% 
-%     USVSTTC = [USVSTTC; temp]; 
-%     clearvars temp sentenceSTTC baseline prep during
-% end 
 
-writetable(USVSTTC, [folder2save 'sentenceSTTC_ACCStr.csv' ], 'Delimiter', ',');
+writetable(USVSTTC, [folder2save 'sentenceSTTC_ACCStr' num2str '.csv' ], 'Delimiter', ',');

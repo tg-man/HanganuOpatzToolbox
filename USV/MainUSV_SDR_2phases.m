@@ -1,0 +1,114 @@
+%% Main USV SDR 
+% SDR change during USV call period 
+
+clear
+% load table with all USV sentences 
+filename = 'Q:/Personal/Tony/Analysis/USV_csvs/ephysUSV_sentence_features_1s.csv';
+opts = detectImportOptions(filename, 'Delimiter', ',');
+opts = setvartype(opts, "sentence", "string");
+T = readtable(filename, opts);
+
+% get rid of opto sessions 
+T = T(strcmp(T.condition, 'baseline'), :); 
+% get rid of single calls 
+T = T(T.length > 1, :); 
+
+% inter sentence interval 
+ISI = 5000; 
+
+% all animals 
+animals = unique(T.mouse); 
+
+% select experiments 
+experiments = get_experiment_redux;
+experiments = experiments(contains({experiments.animal_ID}, animals)); 
+experiments = experiments(strcmp({experiments.Exp_type}, 'baseline only')); 
+
+% links 
+folder4USVpower = 'Q:\Personal\Tony\Analysis\Results_USVpower_2phases\'; 
+folder4USVSDR = 'Q:\Personal\Tony\Analysis\Results_USVSDR_2phases\';
+
+% function params 
+params.ch_acc = 17 : 32; 
+params.ch_str = 1 : 16; 
+params.ch_th = 33 : 48; 
+
+[~] = getUSVSDR_2phases(experiments, folder4USVpower, folder4USVSDR, params);
+
+%% plotting section 
+
+% initalize some table 
+sdr_sentence = table(); 
+sdr_mouse = table(); 
+
+for mouse_idx = 1 : numel(animals)
+    mouse = animals{mouse_idx};
+    
+    % filter sentences for this animal 
+    T_mouse = T(strcmp(T.mouse, mouse), :);
+    % in case two neighboring sentences are too close, delete 2nd one 
+    % interval between previous event end and next event start
+    gap = T_mouse.stop(2:end) - T_mouse.start(1:end-1);
+    % delete the NEXT event if it starts too soon after the previous event
+    deleteIdx = [false; gap < ISI];
+    T_mouse = T_mouse(~deleteIdx, :);
+
+    % if the first call starts too early, drop 
+    if T_mouse.start(1) < ISI
+        T_mouse(1, :) = []; 
+    end 
+
+    % load USV SDR file 
+    load([folder4USVSDR mouse])
+
+    % extract baseline SDR, only include baseline recordings 
+    baseline = USVSDR.SDRbaseline_accstr(strcmp(T_mouse.condition, 'baseline'), :); 
+    % normalize 
+    baseline = (baseline(:, 1) - baseline(:, 2)) ./ (baseline(:, 1) + baseline(:, 2)); 
+
+    % extract peri SDR, only include baseline recordings 
+    peri = USVSDR.SDRperi_accstr(strcmp(T_mouse.condition, 'baseline'), :); 
+    % normalize 
+    peri = (peri(:, 1) - peri(:, 2)) ./ (peri(:, 1) + peri(:, 2)); 
+    
+    % put into a table 
+    temp = table(); 
+    temp.mouse = repmat({mouse}, [numel(baseline) 1]); 
+    temp.baseline = baseline; 
+    temp.peri = peri; 
+    % add to sum table 
+    sdr_sentence = [sdr_sentence; temp]; 
+    clearvars temp 
+
+    % now do the mouse average table 
+    sdr_mouse.mouse(mouse_idx) = {mouse}; 
+    sdr_mouse.baseline(mouse_idx) = nanmedian(baseline); 
+    sdr_mouse.peri(mouse_idx) = nanmedian(peri); 
+
+    clearvars baseline peri
+end 
+
+
+figure; hold on
+plot([1.1 1.9], [sdr_mouse.baseline sdr_mouse.peri], 'Color', [0.7 0.7 0.7], 'LineWidth', 1)
+yline(0, '--', 'LineWidth', 1.5)
+ylim([-1 1])
+xlim([0.5 2.5])
+% violin plot 
+violins = violinplot(sdr_mouse(:, {'baseline', 'peri'}), {'Baseline', 'Prep'}, 'Width', 0.2, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0], 'ViolinAlpha', 0.8);
+for idx = 1 : size(violins, 2)
+%     violins(idx).ViolinColor = YlGnBu(round(100/8*idx),:);
+    violins(idx).ScatterPlot.MarkerFaceColor = [0 0 0]; 
+    violins(idx).ScatterPlot.MarkerFaceAlpha = 0; 
+end
+ifn = viridis; 
+violins(1).ViolinColor = ifn(100, :);
+violins(2).ViolinColor = ifn(230, :);
+xticklabels({'Baseline', 'Peri'}); 
+ylabel('Normalized SDR');
+set(gca, 'TickDir', 'out', 'FontSize', 20, 'FontName', 'Arial', 'LineWidth', 2); 
+
+% save sentence sdr table for R 
+sdr_long = stack(sdr_sentence, {'baseline', 'peri'}, 'NewDataVariableName', 'SDR', 'IndexVariableName', 'phase');
+writetable(sdr_long, [folder4USVSDR, 'USVSDR_sentence.csv'], 'QuoteStrings', true);
+

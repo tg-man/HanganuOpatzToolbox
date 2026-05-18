@@ -3,13 +3,25 @@
 clear
 % get experiments 
 experiments = get_experiment_redux;
+experiments = experiments(strcmp({experiments.Exp_type}, 'baseline only')); 
 
 % load table with all USV sentences 
-T = readtable('Q:/Personal/Tony/Analysis/USV_csvs/ephysUSV_sentence_features.csv', 'Delimiter',','); 
+filename = 'Q:/Personal/Tony/Analysis/USV_csvs/ephysUSV_sentence_features_1s.csv';
+opts = detectImportOptions(filename, 'Delimiter', ',');
+opts = setvartype(opts, "sentence", "string");
+T = readtable(filename, opts);
+
+% sentence interval 
+ISI = 5000; 
+
+% get rid of opto sessions 
+T = T(strcmp(T.condition, 'baseline'), :); 
+% get rid of single calls 
+T = T(T.length > 1, :); 
 
 % signal loading params 
 sigparams.ch2load = 1:48; 
-sigparams.cores = 3; 
+sigparams.cores = 4; 
 sigparams.fs = 32000; % sampling rate from data
 sigparams.downsampling_factor = 160; % downsample for LFP analysis
 sigparams.low_cut = 1; 
@@ -23,7 +35,7 @@ psparams. nfft = 256;
 psparams. maxFreq = 100;
 
 repeat_calc = 0;
-folder2save = 'Q:\Personal\Tony\Analysis\Results_USVpower\'; 
+folder2save = 'Q:\Personal\Tony\Analysis\Results_USVpower_noisocall_clickrelease\'; 
 
 % get unique animal numbers 
 animals = unique(T.mouse); 
@@ -35,12 +47,28 @@ for animal_idx = 1 : size(animals, 1)
     % get animal number and all experiments for this animal 
     mouse = animals{animal_idx}; 
     T_mouse = T(strcmp(T.mouse, mouse), :); 
+
+    % in case two neighboring sentences are too close, delete 2nd one 
+    % interval between previous event end and next event start
+    gap = T_mouse.stop(2:end) - T_mouse.start(1:end-1);
+    % delete the NEXT event if it starts too soon after the previous event
+    deleteIdx = [false; gap < ISI];
+    T_mouse = T_mouse(~deleteIdx, :);
+
+    % if the first call starts too early, drop 
+    if T_mouse.start(1) < ISI
+        T_mouse(1, :) = []; 
+    end 
+
+    % get experiment of the mouse 
     experiments_mouse = experiments(strcmp(extractfield(experiments, 'animal_ID'), mouse)); 
 
+    % compute 
     USVpower = getUSVpower(experiments_mouse, T_mouse, sigparams, psparams, repeat_calc, folder2save); 
     toc
 end 
 
+datetime
 
 %% plotting 
 
@@ -111,26 +139,25 @@ set(gca, 'TickDir', 'out', 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2);
 set(gca, 'YScale', 'log'); 
 xlim([1 49]); 
 legend('', 'during', '', 'baseline', '', 'prep')
-title('ACC')
+title('Cingulate')
 
-% figure; hold on; 
-% % plot(freqs, nanmedian(pre_acc)); 
-% % plot(freqs, nanmedian(during_acc), 'r');
-% boundedline(freqs, nanmedian(pre_str), nanstd(pre_str) ./ sqrt(size(pre_str, 1))); 
-% boundedline(freqs, nanmedian(post_str), nanstd(post_str) ./ sqrt(size(post_str, 1)), 'cmap', [0.4660 0.6740 0.1880]);
-% boundedline(freqs, nanmedian(during_str), nanstd(during_str) ./ sqrt(size(pre_str, 1)), 'r');
-% lines = findobj(gcf,'Type','Line');
-% for i = 1:numel(lines)
-%   lines(i).LineWidth = 2;
-% end
-% xlabel('Frequency (Hz)'); 
-% ylabel('Power (\muV^2)');
-% set(gca, 'TickDir', 'out', 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2); 
-% set(gca, 'YScale', 'log'); 
-% xlim([1 49]); 
-% legend('', 'pre-USV', '', 'during USV', '', 'post-USV')
-% title('DMS')
-% 
+figure; hold on; 
+boundedline(freqs, nanmedian(during_str) + 0.4, nanstd(during_str) ./ sqrt(size(during_str, 1)));
+boundedline(freqs, nanmedian(baseline_str)+ 0.4, nanstd(baseline_str) ./ sqrt(size(baseline_str, 1)), 'cmap', [0.4660 0.6740 0.1880]);
+boundedline(freqs, nanmedian(prep_str) + 0.4, nanstd(prep_str) ./ sqrt(size(prep_str, 1)),'r'); 
+lines = findobj(gcf,'Type','Line');
+for i = 1:numel(lines)
+  lines(i).LineWidth = 2;
+end
+xlabel('Frequency (Hz)'); 
+ylabel('Power (\muV^2)');
+set(gca, 'TickDir', 'out', 'FontName', 'Arial', 'FontSize', 14, 'LineWidth', 2); 
+set(gca, 'YScale', 'log'); 
+xlim([1 49]); 
+legend('', 'during', '', 'baseline', '', 'prep')
+title('Striatum')
+
+(nanmedian(during_str) + 0.4) - (nanstd(during_str) ./ sqrt(size(during_str, 1)))
 % figure; hold on; 
 % % plot(freqs, nanmedian(pre_acc)); 
 % % plot(freqs, nanmedian(during_acc), 'r');

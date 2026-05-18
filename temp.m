@@ -1,4 +1,3 @@
-%% Contour path ratio
 % contour skeleton length divided by the box diagonal 
 % * diagonal length is only taken for the actual vocalizing time 
 % * if the call has a time break, the box diagonal is shortened accordingly
@@ -16,7 +15,7 @@ clear
 
 % get experiments
 experiments = get_experiment_redux;
-experiments = experiments(256:506);
+experiments = experiments(256:556);
 experiments = experiments([experiments.target2] == 1);
 experiments = experiments([experiments.DiI] == 0);
 
@@ -43,18 +42,22 @@ nfft = 1024;                     % Number of FFT points
 for exp_idx = 1 : size(experiments, 2)
     experiment = experiments(exp_idx); 
 
-    if repeat_calc == 0 && exist([folder2save experiment.USV '.csv'], 'file')
-        readtable([folder2save experiment.USV '.csv']); 
-        disp(['skipping experiment ' num2str(exp_idx) ' / ' num2str(size(experiments, 2))])
-    else 
-        % load call file
-        load([experiment.USV_path experiment.USV '.mat'])
-        % filter only accepted calls 
-        Calls = Calls(Calls.Accept, :); 
-        Calls.Box(:, 2) = Calls.Box(:, 2)*1000; % from kHz to Hz 
-        Calls.Box(:, 4) = Calls.Box(:, 4)*1000; % from kHz to Hz 
     
-        if size(Calls, 1) > 2 % check if the animal vocalized at all  
+    % load call file
+    load([experiment.USV_path experiment.USV '.mat'])
+    % filter only accepted calls 
+    Calls = Calls(Calls.Accept, :); 
+    Calls.Box(:, 2) = Calls.Box(:, 2)*1000; % from kHz to Hz 
+    Calls.Box(:, 4) = Calls.Box(:, 4)*1000; % from kHz to Hz 
+
+    
+    if size(Calls, 1) > 2 % check if the animal vocalized at all
+
+        % load calculated contour ratio file 
+        contours = readtable([folder2save experiment.USV '.csv']);
+
+        if ~(size(Calls, 1)  == (size(contours, 1) + 2)) && size(Calls, 1) > 2
+
             disp(['running experiment ' num2str(exp_idx) ' / ' num2str(size(experiments, 2))])
             % get spectrogram of audio file
             [~, F, T, P] = spectrogram(audioread(audiodata.Filename), window, noverlap, nfft, audiodata.SampleRate, 'yaxis');
@@ -70,25 +73,14 @@ for exp_idx = 1 : size(experiments, 2)
                 % find the index in the time vector for this call
                 idx_xmin = find(T > (Calls.Box(j,1) - 0.08), 1); 
                 idx_xmax = find(T > (Calls.Box(j,1) + Calls.Box(j,3) + 0.08), 1);
+                % in case this call is very close to the beginning 
+                if isempty(idx_xmin)
+                    idx_xmin = 1; 
+                end 
                 % in case this call is very close to the end 
                 if isempty(idx_xmax) 
                     idx_xmax = size(T, 2); 
                 end 
-% 
-%                 % create the figure
-%                 figure;
-%                 subplot(121);
-%                 imagesc(T(idx_xmin:idx_xmax), F, 10*log10(P(:, idx_xmin:idx_xmax)));
-%                 axis xy;
-%                 xlabel('Time (s)');
-%                 ylabel('Frequency (Hz)');
-%                 colormap inferno;
-%                 colorbar;
-%                 clim([-115 -73]);
-%                 set(gca, 'TickDir', 'out')
-%                 title(j)
-%                 % add a box
-%                 rectangle('Position', Calls.Box(j, :),'EdgeColor' , 'g');
             
                 % absolute thresholding 
                 C_abs = conv2(10*log10(P(:, idx_xmin:idx_xmax)), smoothing, 'same') > threshold_abs; 
@@ -157,7 +149,7 @@ for exp_idx = 1 : size(experiments, 2)
     
                 % get contour skeleton and its length 
                 [skel, skelLength] = getContourSkeletonLength(contour); 
-            
+     
                 % get the box diagonal length (in pixel as before) 
                 box_length = stop - start; 
                 box_height = top - bottom;
@@ -179,9 +171,9 @@ for exp_idx = 1 : size(experiments, 2)
                 end 
     
                 % calculate path ratio 
-                if skelLength < diagonal 
+                if skelLength <= diagonal 
                     PathRatio = 1 + 0.01*rand; % force case where box is small
-                else 
+                else
                     PathRatio = skelLength / diagonal; 
                 end 
     
@@ -189,26 +181,39 @@ for exp_idx = 1 : size(experiments, 2)
                 % use bwboundaries(contour) and then similar approach 
                 % but think about normalization or something first 
              
-    %             % plot it 
-    %             subplot(122)
-    %             imagesc(T(idx_xmin:idx_xmax), F, contour); hold on; 
-    %             axis xy; 
-    %             xlabel('Time (s)');
-    %             ylabel('Frequency (Hz)');
-    %             colormap inferno;
-    %             colorbar;
-    %             set(gca, 'TickDir', 'out')
-    %             % add a box
-    %             rectangle('Position', Calls.Box(j, :),'EdgeColor', 'g');
-    %             % plot skeleton over it
-    %             % get pixel indices
-    %             [r, c] = find(skel);
-    %             % map to axis coordinates
-    %             Tx = T(idx_xmin:idx_xmax);          % time axis for the shown columns
-    %             plot(Tx(c), F(r), 'b.', 'MarkerSize', 2);
-    %             title(PathRatio);
-    %             set(gcf, 'Units','pixels', 'Position',[100 100 575 180]);
-               
+                % create the figure
+%                 figure;
+%                 subplot(121);
+%                 imagesc(T(idx_xmin:idx_xmax), F, 10*log10(P(:, idx_xmin:idx_xmax)));
+%                 axis xy;
+%                 xlabel('Time (s)');
+%                 ylabel('Frequency (Hz)');
+%                 colormap inferno;
+%                 colorbar;
+%                 clim([-115 -73]);
+%                 set(gca, 'TickDir', 'out')
+%                 title(j)
+%                 % add a box
+%                 rectangle('Position', Calls.Box(j, :),'EdgeColor' , 'g');
+%                 subplot(122)
+%                 imagesc(T(idx_xmin:idx_xmax), F, contour); hold on; 
+%                 axis xy; 
+%                 xlabel('Time (s)');
+%                 ylabel('Frequency (Hz)');
+%                 colormap inferno;
+%                 colorbar;
+%                 set(gca, 'TickDir', 'out')
+%                 % add a box
+%                 rectangle('Position', Calls.Box(j, :),'EdgeColor', 'g');
+%                 % plot skeleton over it
+%                 % get pixel indices
+%                 [r, c] = find(skel);
+%                 % map to axis coordinates
+%                 Tx = T(idx_xmin:idx_xmax);          % time axis for the shown columns
+%                 plot(Tx(c), F(r), 'b.', 'MarkerSize', 2);
+%                 title(PathRatio);
+%                 set(gcf, 'Units','pixels', 'Position',[100 100 575 180]);
+%                
                 % add call data to table
                 df_mouse = [df_mouse; table({experiment.USV}, skelLength, PathRatio, VariableNames={'usvfile', 'PathLength', 'PathRatio'})];
         
@@ -226,30 +231,3 @@ for exp_idx = 1 : size(experiments, 2)
 
     end % repeat_calc check end    
 end % experiment loop end 
-
-
-%% section 2 to aggregate everything together into one file 
-
-% initialize global df accordingly 
-% if exisits and don't wanna repeat, load and trim experiments list
-if repeat_calc == 0 && exist('Q:\Personal\Tony\Analysis\USV_csvs\ephysUSV_call_PathRatio.csv', 'file')
-    df = readtable('Q:\Personal\Tony\Analysis\USV_csvs\ephysUSV_call_PathRatio.csv'); 
-else 
-    df = []; 
-end 
-
-% loop through experiments
-for exp_idx = 1 : size(experiments, 2)
-    experiment = experiments(exp_idx); 
-
-    % if the experiment met criteria to be calculated before 
-    if exist([folder2save experiment.USV '.csv'], 'file')
-        % load mouse dataframe
-        df_mouse = readtable([folder2save experiment.USV '.csv']);
-        % aggregate and add to total df 
-        df = [df; df_mouse];
-    end 
-end
-
-% save the global dataframe at the end 
-writetable(df, 'Q:\Personal\Tony\Analysis\USV_csvs\ephysUSV_call_PathRatio.csv', 'QuoteStrings', true);

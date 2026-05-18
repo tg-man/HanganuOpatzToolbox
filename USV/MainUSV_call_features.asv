@@ -20,7 +20,7 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments(256:566);
+experiments = experiments(256:556);
 experiments = experiments([experiments.target2] == 1);
 experiments = experiments([experiments.DiI] == 0);
 
@@ -49,12 +49,8 @@ for exp_idx = 1 : size(experiments, 2)
     % check labels and adjust timestamps 
     if double(string(Calls.('Type')(1))) == 9 && double(string(Calls.('Type')(end))) == 8
         recdur = Calls.Box(end, 1) - Calls.Box(1,1);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%         align timestamps to click release (ephys starts on release)
-%         before always aligned to down click 
 %         Calls.Box(:, 1) = Calls.Box(:, 1) - Calls.Box(1, 1); % adjust timestamps to align to click down (on ephys GUI)
         Calls.Box(:, 1) = Calls.Box(:, 1) - (Calls.Box(1, 1) + Calls.Box(1, 3)); % alternative way of timestamps adjustment, align to click release (on ephys GUI) 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         Calls(1, :) = []; % remove first timestamp, aritificially added start 
         Calls(end, :) = []; % remove last timestemp, ariticially added end 
     end 

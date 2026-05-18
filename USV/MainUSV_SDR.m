@@ -3,7 +3,18 @@
 
 clear
 % load table with all USV sentences 
-T = readtable('Q:/Personal/Tony/Analysis/USV_csvs/ephysUSV_sentence_features.csv', 'Delimiter',','); 
+filename = 'Q:/Personal/Tony/Analysis/USV_csvs/ephysUSV_sentence_features_1s.csv';
+opts = detectImportOptions(filename, 'Delimiter', ',');
+opts = setvartype(opts, "sentence", "string");
+T = readtable(filename, opts);
+
+% get rid of opto sessions 
+T = T(strcmp(T.condition, 'baseline'), :); 
+% get rid of single calls 
+T = T(T.length > 1, :); 
+
+% inter sentence interval 
+ISI = 5000; 
 
 % all animals 
 animals = unique(T.mouse); 
@@ -11,10 +22,11 @@ animals = unique(T.mouse);
 % select experiments 
 experiments = get_experiment_redux;
 experiments = experiments(contains({experiments.animal_ID}, animals)); 
+experiments = experiments(strcmp({experiments.Exp_type}, 'baseline only')); 
 
 % links 
-folder4USVpower = 'Q:\Personal\Tony\Analysis\Results_USVpower\'; 
-folder4USVSDR = 'Q:\Personal\Tony\Analysis\Results_USVSDR\';
+folder4USVpower = 'Q:\Personal\Tony\Analysis\Results_USVpower_noisocall_clickrelease\'; 
+folder4USVSDR = 'Q:\Personal\Tony\Analysis\Results_USVSDR_noisocall_clickrelease\';
 
 % function params 
 params.ch_acc = 17 : 32; 
@@ -34,6 +46,17 @@ for mouse_idx = 1 : numel(animals)
     
     % filter sentences for this animal 
     T_mouse = T(strcmp(T.mouse, mouse), :);
+    % in case two neighboring sentences are too close, delete 2nd one 
+    % interval between previous event end and next event start
+    gap = T_mouse.stop(2:end) - T_mouse.start(1:end-1);
+    % delete the NEXT event if it starts too soon after the previous event
+    deleteIdx = [false; gap < ISI];
+    T_mouse = T_mouse(~deleteIdx, :);
+
+    % if the first call starts too early, drop 
+    if T_mouse.start(1) < ISI
+        T_mouse(1, :) = []; 
+    end 
 
     % load USV SDR file 
     load([folder4USVSDR mouse])
@@ -79,7 +102,7 @@ plot([2.1 2.9], [sdr_mouse.prep sdr_mouse.during], 'Color', [0.7 0.7 0.7], 'Line
 % plot([1 2], nanmean([sdr_mouse.baseline sdr_mouse.prep]), 'Color', 'b', 'LineWidth', 2) 
 % plot([2 3], nanmean([sdr_mouse.prep sdr_mouse.during]), 'Color', 'b', 'LineWidth', 2)
 yline(0, '--', 'LineWidth', 1.5)
-ylim([-0.83 0.76])
+ylim([-1 1])
 xlim([0.5 3.5])
 % violin plot 
 violins = violinplot(sdr_mouse(:, {'baseline', 'prep', 'during'}), {'Baseline', 'Prep', 'During'}, 'Width', 0.2, 'EdgeColor', [0 0 0], 'BoxColor', [0 0 0], 'ViolinAlpha', 0.8);
@@ -97,6 +120,22 @@ ylabel('Normalized SDR');
 set(gca, 'TickDir', 'out', 'FontSize', 20, 'FontName', 'Arial', 'LineWidth', 2); 
 
 
+% Stats on mouse average data
+% define the within-subject factor
+withinDesign = table(categorical(["baseline"; "prep"; "during"]), 'VariableNames', {'phase'});
+% repeated-measures model
+rm = fitrm(sdr_mouse, 'baseline-during ~ 1', 'WithinDesign', withinDesign);
+% overall repeated-measures ANOVA
+ranovatbl = ranova(rm, 'WithinModel', 'phase')
+pairwise = multcompare(rm, 'phase')
+
+% save sentence sdr table for R 
+sdr_long = stack(sdr_sentence, {'baseline', 'prep', 'during'}, 'NewDataVariableName', 'SDR', 'IndexVariableName', 'phase');
+writetable(sdr_long, [folder4USVSDR, 'USVSDR_sentence.csv'], 'QuoteStrings', true);
+
+
+
+% violin plot 
 % figure; 
 % violinplot(sdr_sentence(:, {'baseline', 'prep', 'during'}))
 % yline(0, '--', 'LineWidth', 1.5)

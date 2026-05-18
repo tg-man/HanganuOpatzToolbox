@@ -31,6 +31,12 @@ for k = 1:numel(lin)
     end
 end
 
+% in case the contour is only one point (happens when contour too small and round
+% count the horizontal length of the contour 
+if edgeSum <= 3 
+    edgeSum = sum(~sum(contour) == 0);  
+end 
+
 length = edgeSum;
 
 end 

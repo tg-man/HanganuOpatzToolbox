@@ -15,7 +15,6 @@ filename = 'Q:/Personal/Tony/Analysis/USV_csvs/ephysUSV_sentence_features_1s.csv
 opts = detectImportOptions(filename, 'Delimiter', ',');
 opts = setvartype(opts, "sentence", "string");
 T = readtable(filename, opts);
-
 % get rid of opto sessions 
 T = T(strcmp(T.condition, 'baseline'), :); 
 % get rid of single calls 
@@ -29,12 +28,12 @@ area2 = 'Str';
 % intervals between sentences, in ms
 ISI = 5000; 
 % STTC function wrapper stuff
-repeat_calc = 0;
+repeat_calc = 1;
 lags = [5, 10, 20, 50, 100, 500];
 
 % links
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
-folder2save = 'Q:\Personal\Tony\Analysis\Results_USVSTTC_sentence_noisocalls_clickrelease\'; 
+folder2save = 'Q:\Personal\Tony\Analysis\Results_USVSTTC_sentence_noisocalls\'; 
 
 % all animals 
 animals = unique(T.mouse); 
@@ -50,12 +49,7 @@ parfor (mouse_idx = 1 : numel(animals), cores)
     gap = T_mouse.stop(2:end) - T_mouse.start(1:end-1);
     % delete the NEXT event if it starts too soon after the previous event
     deleteIdx = [false; gap < ISI];
-    T_mouse = T_mouse(~deleteIdx, :);
-
-    % if the first call starts too early, drop 
-    if T_mouse.start(1) < ISI
-        T_mouse(1, :) = []; 
-    end 
+    songs = T_mouse(~deleteIdx, :);
 
 %     % get within-area1 STTC 
 %     tic

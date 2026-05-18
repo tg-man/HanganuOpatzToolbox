@@ -3,7 +3,8 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments(256:end);  % 256:380 [300 301 324:380]
+experiments = experiments(256:556);  % 256:380 [300 301 324:380]
+experiments = experiments(strcmp({experiments.Exp_type}, 'baseline only'));
 
 minInterSyInt = 5000; % threshold to merge USV calls together, in ms
 
@@ -15,7 +16,7 @@ sigparams.low_cut = 1;
 sigparams.ExtractMode = 1; % extract from neuralynx into matlab
 
 repeat_calc = 0; 
-folder2save = 'Q:\Personal\Tony\Analysis\Results_USVwavelet\'; 
+folder2save = 'Q:\Personal\Tony\Analysis\Results_USVwavelet_5s_clickend\'; 
 
 % get unique animal numbers 
 animals = extractfield(experiments, 'animal_ID');
@@ -24,12 +25,17 @@ animals = unique(cellfun(@num2str, animals, 'un', 0));
 
 % calculate one animal at a time 
 for animal_idx = 1 : size(animals, 2) 
+    tic
+    disp(['computing animal ' num2str(animal_idx) ' / ' num2str(numel(animals))])
     % get animal number and all experiments for this animal 
     animal = animals{animal_idx}; 
     experiments4mouse = experiments(strcmp(extractfield(experiments, 'animal_ID'), animal)); 
 
     USVwavelet = getUSVwavelet(experiments4mouse, minInterSyInt, sigparams, repeat_calc, folder2save); 
+    toc
 end 
+
+datetime
 
 %% plotting section 
 
@@ -88,6 +94,7 @@ plot4th = nanmean(plot4th, 3);
 x = linspace(-(size(plot4acc, 2) / USVwavelet.fs)/2, (size(plot4acc, 2) / USVwavelet.fs)/2, size(plot4acc, 2)); 
 % ACC wavelet plot 
 figure; imagesc('Xdata', x, 'YData', USVwavelet.freqs, 'CData', plot4acc); %colormap parula; 
+colormap(gca, viridis(256));  
 xlim([-4.7 4.7]); 
 ylim([1 70]); 
 xticks([-4 -2 0 2 4]); 
@@ -97,14 +104,15 @@ yticks([10 40 70]);
 xlabel('Time (s)'); 
 ylabel('Freq (Hz)')
 set(gca, 'FontName', 'Arial', 'FontSize', 18, 'TickDir', 'out')
-clim([0.5 13])
+clim([5 13])
 cb = colorbar('eastoutside');
-cb.Ticks = 1:6:13;
+cb.Ticks = 5:4:13;
 set(gcf, 'Units', 'pixels', 'Position', [200, 200, 610, 230]);
 title('ACC', 'FontWeight','normal')
 
 % Str wavelet plot 
 figure; imagesc('Xdata', x, 'YData', USVwavelet.freqs, 'CData', plot4str); colormap parula; 
+colormap(gca, viridis(256));  
 xlim([-4.7 4.7]);  
 ylim([1 70]); 
 xticks([-4 -2 0 2 4]); 
@@ -114,9 +122,9 @@ yticks([10 40 70]);
 xlabel('Time (s)'); 
 ylabel('Freq (Hz)')
 set(gca, 'FontName', 'Arial', 'FontSize', 18, 'TickDir', 'out')
-clim([0.5 13])
-cb = colorbar;
-cb.Ticks = 1:6:13;
+clim([5 13])
+cb = colorbar('eastoutside');
+cb.Ticks = 5:4:13;
 set(gcf, 'Units', 'pixels', 'Position', [200, 200, 610, 230]);
 title('Str', 'FontWeight','normal')
 
