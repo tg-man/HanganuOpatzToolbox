@@ -16,7 +16,7 @@ end
 experiments = experiments(logical(keep)); %[300 301 324:426]
 experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baseline only'));
 % experiments = experiments([experiments.DiI] == 0); 
-experiments = experiments(extractfield(experiments, 'IUEconstruct') == 13 | isnan(extractfield(experiments, 'IUEconstruct')));
+% experiments = experiments(extractfield(experiments, 'IUEconstruct') == 13 | isnan(extractfield(experiments, 'IUEconstruct')));
 
 cores = 6; 
 folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 

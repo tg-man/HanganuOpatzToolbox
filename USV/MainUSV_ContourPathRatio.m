@@ -16,7 +16,7 @@ clear
 
 % get experiments
 experiments = get_experiment_redux;
-experiments = experiments(256:566);
+experiments = experiments(256:end);
 experiments = experiments([experiments.target2] == 1);
 experiments = experiments([experiments.DiI] == 0);
 
@@ -261,6 +261,7 @@ end
 if size(df_feat, 1) == size(df, 1)
     % save the global dataframe at the end 
     writetable(df, 'Q:\Personal\Tony\Analysis\USV_csvs\ephysUSV_call_PathRatio.csv', 'QuoteStrings', true);
+    disp('New contour stats saved')
 else 
     disp('Dimension mismatch! Troubleshoot needed!')
 end 

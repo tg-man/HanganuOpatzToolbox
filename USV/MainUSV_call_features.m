@@ -20,7 +20,7 @@
 
 clear
 experiments = get_experiment_redux;
-experiments = experiments(256:566);
+experiments = experiments(256:end);
 experiments = experiments([experiments.target2] == 1);
 experiments = experiments([experiments.DiI] == 0);
 
@@ -41,6 +41,8 @@ for exp_idx = 1 : size(experiments, 2)
         condition = 'accstim'; 
     elseif strcmp(experiment.Exp_type, 'opto') && strcmp(experiment.ramp, 'Str')
         condition = 'strstim'; 
+    elseif strcmp(experiment.Exp_type, 'opto') && isnan(experiment.ramp) && strcmp(experiment.square, 'Str')
+        condition = 'strinhi'; 
     end 
 
     % load Calls.mat file 
@@ -93,9 +95,9 @@ for exp_idx = 1 : size(experiments, 2)
 
 end 
 
-% rename two columns for better variable name 
+% rename two columns for better variable name
 calltot.Properties.VariableNames{'PeakFreq_kHz_'} = 'peakfreq';
 calltot.Properties.VariableNames{'MeanPower_dB_Hz_'} = 'meanpower';
 
-% save 
+% save
 writetable(calltot, 'Q:\Personal\Tony\Analysis\USV_csvs\ephysUSV_call_features.csv', 'QuoteStrings', true);

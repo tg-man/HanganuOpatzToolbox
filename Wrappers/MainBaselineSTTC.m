@@ -16,9 +16,9 @@ experiments = experiments(strcmp(extractfield(experiments, 'Exp_type'), 'baselin
 cores = 6; 
 
 BrainArea = 'ACC'; % ACC, Str, TH 
-folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\'; 
+folder4SM = 'Q:\Personal\Tony\Analysis\Results_SpikeMatrix\';
 
-folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\'; 
+folder4SUAinfo = 'Q:\Personal\Tony\Analysis\Results_SUAinfo\';
 
 lags = [5, 10, 20, 50, 100, 500]; % single lags for which to compute tiling coeff
 repeat_calc = 0;

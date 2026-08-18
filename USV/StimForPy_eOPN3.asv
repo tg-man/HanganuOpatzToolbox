@@ -1,0 +1,78 @@
+%% generate stimulation property files for python 
+
+clear
+% get experiments
+experiments = get_experiment_redux;
+experiments = experiments(557:end);
+experiments = experiments(strcmp({experiments.Exp_type}, 'opto'));
+
+folder4stim = 'Q:\Personal\Tony\Analysis\Results_StimProp\'; 
+folder2save = 'Q:\Personal\Tony\Analysis\Results_StimProp\CSVs\'; 
+
+stims = table('Size',[0 8], ...
+    'VariableTypes', {'string','string','double','double','double','double','string','string'}, ...
+    'VariableNames', {'mouse','usvfile','start1','stop1','start2','stop2', 'stim', 'type'});
+
+
+for exp_idx = 1 : size(experiments, 2)
+    experiment = experiments(exp_idx); 
+
+    % load stim prop file
+    load([folder4stim experiment.name '_StimulationProperties_raw.mat']);
+
+    % check stimulation paradigm
+    if experiment.laserpower < 3 && size(StimulationProperties_raw, 1) == 1
+
+        start1 = round(cell2mat(StimulationProperties_raw(1, 1)) / 3.2); 
+        stop1 = round(cell2mat(StimulationProperties_raw(1, 2)) / 3.2); 
+        % filler variables for table
+        start2 = NaN; 
+        stop2 = NaN; 
+        
+        % save in table 
+        mouse = {experiment.animal_ID}; 
+        usvfile = {experiment.USV}; 
+        stim = {experiment.square}; 
+        if experiment.IUEconstruct == 27
+            type = {'eOPN3'}; 
+        elseif isnan(experiment.IUEconstruct)
+            type = {'eOPN3ctrl'};
+        end 
+           
+        temp = [table(mouse) table(usvfile) array2table([start1 stop1 start2 stop2], 'VariableNames', {'start1', 'stop1', 'start2', 'stop2'}) table(stim) table(type)]; 
+    
+        stims = [stims; temp]; 
+        clear StimulationProperties_raw ramps start1 stop1 start2 stop2 mouse usvfile stim type
+
+    elseif experiment.laserpower > 4
+        % all start time stamps
+        starts = round(cell2mat(StimulationProperties_raw(:, 1)) / 3.2);
+        stops = round(cell2mat(StimulationProperties_raw(:, 2)) / 3.2);
+        % find stim breaks 
+        lightsoff = find(diff(starts) > 290000); % find stim breaks
+
+        % time stamps 
+        start1 = stops(lightsoff(1)); 
+        stop1 = starts(lightsoff(1) + 1); 
+        start2 = stops(lightsoff(2));
+        stop2 = starts(lightsoff(2) + 1); 
+        
+        % save in table 
+        mouse = {experiment.animal_ID}; 
+        usvfile = {experiment.USV}; 
+        stim = {experiment.square}; 
+        if experiment.IUEconstruct == 27
+            type = {'eOPN3'}; 
+        elseif isnan(experiment.IUEconstruct)
+            type = {'eOPN3ctrl'};
+        end 
+           
+        temp = [table(mouse) table(usvfile) array2table([start1 stop1 start2 stop2], 'VariableNames', {'start1', 'stop1', 'start2', 'stop2'}) table(stim) table(type)]; 
+    
+        stims = [stims; temp]; 
+        clear StimulationProperties_raw ramps start1 start2 stop1 stop2 starts stops mouse usvfile stim type
+
+    end 
+end 
+
+writetable(stims, [folder4stim 'stims_eOPN3.csv'], 'QuoteStrings', true);

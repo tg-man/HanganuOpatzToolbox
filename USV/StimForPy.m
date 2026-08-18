@@ -3,7 +3,7 @@
 clear
 % get experiments
 experiments = get_experiment_redux;
-experiments = experiments(256:end);
+experiments = experiments(256:556);
 experiments = experiments([experiments.target2] == 1);
 experiments = experiments([experiments.DiI] == 0);
 experiments = experiments(strcmp({experiments.Exp_type}, 'opto'));
